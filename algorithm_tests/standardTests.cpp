@@ -363,18 +363,18 @@ int validate_evidence(int argc, char *argv[])
 	priorRange[0][1] = 10;
 	sampler->priorRanges = priorRange;
 	//sampler->priorRanges = nullptr;
-	sampler->burnPriorIterations = 5000;
+	sampler->burnPriorIterations = 100000;
 	//sampler->burnPriorIterations = 500;
-	sampler->priorIterations = 5000;
+	sampler->priorIterations = 100000;
 	//sampler->priorIterations = 500;
 	sampler->writePriorData=true;
 	sampler->ignoreExistingCheckpoint=true;
 
 	sampler->outputDir = dirname;
 	sampler->outputFileMoniker = "transdimensionalChebyshev";
-	sampler->iterations = 50000;
+	sampler->iterations = 100000;
 	//sampler->iterations = 500;
-	sampler->burnIterations = 30000;
+	sampler->burnIterations = 50000;
 	//sampler->burnIterations = 100;
 	//sampler->burnIterations = 0;
 	sampler->ensembleN = 5;
