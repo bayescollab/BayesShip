@@ -38,10 +38,15 @@ class chebLikelihood(bilby.Likelihood):
         ll = -1*np.sum(np.power(self.data - recon_signal,2) )/(2.* sigma * sigma)- (len(self.data)/2.) * np.log(2.*np.pi * sigma * sigma)
         return ll
 
-
-outdir = 'data/bilby_transdimensional'
+beta = 2
+M = 3
+sigma = 1
+t = 100
+dt = 1
+run_id = "{}_{}_{}_{}_{}".format(beta,M,sigma,t,dt)
+outdir = 'data/transdimensionalChebyshev/'+run_id+"/bilby/"
 #data = np.loadtxt("data/full_data_transdimensional_5_5_1_100.csv",delimiter=',')
-data = np.loadtxt("data/full_data_transdimensional_5_3_1_100.csv",delimiter=',')
+data = np.loadtxt("data/transdimensionalChebyshev/{}/full_data_transdimensional.csv".format(run_id),delimiter=',')
 
 ###############################
 #likelihoodTest = chebLikelihood(3, data)
@@ -52,8 +57,8 @@ data = np.loadtxt("data/full_data_transdimensional_5_3_1_100.csv",delimiter=',')
 
 
 #for P in np.arange(1,10):
-for P in [3]:
-#for P in [3,4,5]:
+#for P in [3]:
+for P in [3,4,5]:
     print(P)
     label = "{}".format(P)
     likelihood = chebLikelihood(P, data)
@@ -61,7 +66,7 @@ for P in [3]:
     priors['sigma'] = bilby.core.prior.Uniform(.01,10,'sigma')
     for x in np.arange(P):
         priors["x{}".format(x)]  = bilby.core.prior.Uniform(-10,10,'x{}'.format(x))
-    result = bilby.run_sampler(likelihood=likelihood, priors = priors, outdir = outdir, label = label,clean=True,nlive=1000, npool=4, nact=10,dlogz=.01 )
+    result = bilby.run_sampler(likelihood=likelihood, priors = priors, outdir = outdir, label = label,clean=True,nlive=1000, npool=8, nact=10,dlogz=.1 )
     
     print("Evidence: ",result.log_evidence)
     np.savetxt(outdir+"log_evidence_{}.txt".format(P),np.array([result.log_evidence]))

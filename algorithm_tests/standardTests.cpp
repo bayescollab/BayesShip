@@ -322,14 +322,18 @@ double transdimensional_prior(
 //}
 int validate_evidence(int argc, char *argv[])
 {
-	std::string data_file("full_data_transdimensional_5_3_1_100.csv");
-	//std::string data_file("full_data_transdimensional_5_5_1_100.csv");
-	//std::string data_file("full_data_transdimensional_5_6_1_100.csv");
+	std::string beta = "2";
+	std::string M = "3";
+	std::string sigma = "1";
+	std::string t = "100";
+	std::string dtstr = "1";
+	std::string dirname = "data/transdimensionalChebyshev/"+beta+"_"+M+"_"+sigma+"_"+t+"_"+dtstr+"/";
+	std::string data_file("full_data_transdimensional.csv");
 	int N = 100;
 	double dt = 1;
 
 	double *data=new double[N] ;
-	bayesship::readCSVFile("data/"+data_file, data);
+	bayesship::readCSVFile(dirname+data_file, data);
 
 
 	//######################################################################
@@ -359,24 +363,24 @@ int validate_evidence(int argc, char *argv[])
 	priorRange[0][1] = 10;
 	sampler->priorRanges = priorRange;
 	//sampler->priorRanges = nullptr;
-	sampler->burnPriorIterations = 50000;
+	sampler->burnPriorIterations = 5000;
 	//sampler->burnPriorIterations = 500;
-	sampler->priorIterations = 50000;
+	sampler->priorIterations = 5000;
 	//sampler->priorIterations = 500;
 	sampler->writePriorData=true;
 	sampler->ignoreExistingCheckpoint=true;
 
-	sampler->outputDir = "data/";
+	sampler->outputDir = dirname;
 	sampler->outputFileMoniker = "transdimensionalChebyshev";
 	sampler->iterations = 50000;
 	//sampler->iterations = 500;
-	sampler->burnIterations = 300000;
+	sampler->burnIterations = 30000;
 	//sampler->burnIterations = 100;
 	//sampler->burnIterations = 0;
 	sampler->ensembleN = 5;
 	sampler->ensembleSize=10;
 	int chain_N = sampler->ensembleN*sampler->ensembleSize;
-	sampler->threads = 8;
+	sampler->threads = 10;
 	int chainN = sampler->ensembleSize*sampler->ensembleN;
 	sampler->initialPosition = new bayesship::positionInfo(sampler->maxDim,true);
 	for(int i = 0 ; i<sampler->maxDim; i++){
@@ -442,13 +446,18 @@ int validate_evidence(int argc, char *argv[])
 
 int validate_evidence_single(int argc, char *argv[])
 {
-	std::string data_file("full_data_transdimensional_5_5_1_100.csv");
-	//std::string data_file("full_data_transdimensional_5_6_1_100.csv");
+	std::string beta = "2";
+	std::string M = "3";
+	std::string sigma = "1";
+	std::string t = "100";
+	std::string dtstr = "1";
+	std::string dirname = "data/transdimensionalChebyshev/"+beta+"_"+M+"_"+sigma+"_"+t+"_"+dtstr+"/";
+	std::string data_file("full_data_transdimensional.csv");
 	int N = 100;
 	double dt = 1;
 
 	double *data=new double[N] ;
-	bayesship::readCSVFile("data/"+data_file, data);
+	bayesship::readCSVFile(dirname+data_file, data);
 
 
 	//######################################################################
@@ -464,7 +473,7 @@ int validate_evidence_single(int argc, char *argv[])
 
 	sampler->RJ = false;
 
-	sampler->maxDim = 4;
+	sampler->maxDim = 3;
 
 	double **priorRange = new double*[sampler->maxDim];
 	for(int i = 0 ; i<sampler->maxDim; i++){
@@ -482,7 +491,7 @@ int validate_evidence_single(int argc, char *argv[])
 	sampler->writePriorData=true;
 	sampler->ignoreExistingCheckpoint=true;
 
-	sampler->outputDir = "data/";
+	sampler->outputDir = dirname;
 	sampler->outputFileMoniker = "transdimensionalChebyshevSingle_"+std::to_string(sampler->maxDim-1);
 	//sampler->iterations = 50000;
 	//sampler->iterations = 500;
