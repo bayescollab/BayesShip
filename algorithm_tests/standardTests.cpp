@@ -322,7 +322,8 @@ double transdimensional_prior(
 //}
 int validate_evidence(int argc, char *argv[])
 {
-	std::string data_file("full_data_transdimensional_5_5_1_100.csv");
+	std::string data_file("full_data_transdimensional_5_3_1_100.csv");
+	//std::string data_file("full_data_transdimensional_5_5_1_100.csv");
 	//std::string data_file("full_data_transdimensional_5_6_1_100.csv");
 	int N = 100;
 	double dt = 1;

@@ -6,6 +6,10 @@ from multiprocessing import Pool
 def cheb_fn(P,coeff,x ):
     return np.sum(coeff[:P] * np.cos(np.arange(P)*np.arccos(x)))
 
+def cheb_fn_vec(P,coeff,x ):
+    return np.matmul(coeff[:P], np.cos(np.outer(np.arange(P),np.arccos(x))))
+    #return np.sum(coeff[:P] * np.cos(np.arange(P)*np.arccos(x)))
+
 class chebLikelihood(bilby.Likelihood):
     def __init__(self, P,data):
         self.keys = ["x{}".format(i) for i in np.arange(P)]
@@ -21,8 +25,10 @@ class chebLikelihood(bilby.Likelihood):
         sigma = self.parameters["sigma"]
         dn = 2./(len(self.data)-1)
         recon_signal = np.ones(len(self.data),dtype=np.double)
-        for x in np.arange(len(self.data)):
-            recon_signal[x] = cheb_fn(self.P, coeff,-1 + x*dn);
+        #for x in np.arange(len(self.data)):
+        #    recon_signal[x] = cheb_fn(self.P, coeff,-1 + x*dn);
+        xvec = np.linspace(-1,1,len(self.data))
+        recon_signal = cheb_fn_vec(self.P, coeff, xvec)
         #print(recon_signal)
         #recon_signal= cheb_fn(self.P, coeff,-1 + np.arange(len(self.data))*dn)
         #ll = 0
@@ -34,7 +40,8 @@ class chebLikelihood(bilby.Likelihood):
 
 
 outdir = 'data/bilby_transdimensional'
-data = np.loadtxt("data/full_data_transdimensional_5_5_1_100.csv",delimiter=',')
+#data = np.loadtxt("data/full_data_transdimensional_5_5_1_100.csv",delimiter=',')
+data = np.loadtxt("data/full_data_transdimensional_5_3_1_100.csv",delimiter=',')
 
 ###############################
 #likelihoodTest = chebLikelihood(3, data)
@@ -45,8 +52,8 @@ data = np.loadtxt("data/full_data_transdimensional_5_5_1_100.csv",delimiter=',')
 
 
 #for P in np.arange(1,10):
-#for P in [5]:
-for P in [3,4,5]:
+for P in [3]:
+#for P in [3,4,5]:
     print(P)
     label = "{}".format(P)
     likelihood = chebLikelihood(P, data)
@@ -54,7 +61,7 @@ for P in [3,4,5]:
     priors['sigma'] = bilby.core.prior.Uniform(.01,10,'sigma')
     for x in np.arange(P):
         priors["x{}".format(x)]  = bilby.core.prior.Uniform(-10,10,'x{}'.format(x))
-    result = bilby.run_sampler(likelihood=likelihood, priors = priors, outdir = outdir, label = label,clean=True,nlive=1000, npool=8, nact=10,dlogz=.01 )
+    result = bilby.run_sampler(likelihood=likelihood, priors = priors, outdir = outdir, label = label,clean=True,nlive=1000, npool=4, nact=10,dlogz=.01 )
     
     print("Evidence: ",result.log_evidence)
     np.savetxt(outdir+"log_evidence_{}.txt".format(P),np.array([result.log_evidence]))
