@@ -93,30 +93,50 @@ typedef void(*proposalFn)(
 	double *MHRatioModifications/**< Modifications to the MH ration (like asymmetric proposals*/
 	);
 
+
+
+
+
+class probabilityFn
+{
+public:
+	probabilityFn(){};
+	~probabilityFn(){};
+	virtual double eval(positionInfo *position, int chainID) { std::cout<<"OOPS"<<std::endl;return 0;}
+};
+
+
+
+
+
+
 /*! \brief Likelihood function typedef 
  *
  * Specifies the form of likelihood functions
  * 
  * All user defined likelihood functions must be caste-able to this type
  * */
-typedef double(*likelihoodFn)(
-	positionInfo *position,/**< positionInfo for current point in parameter space*/
-	int chainID,/**< Proposal ID for extracting proposal variables */
-	bayesshipSampler *sampler,/**< Sampler object that is currently sampling*/
-	void *userParameters /**< User specific parameters that can be passed to the sampler through its member variables. These are then passed on to the likelihood function*/
-	);
+//typedef double(*likelihoodFn)(
+//	positionInfo *position,/**< positionInfo for current point in parameter space*/
+//	int chainID,/**< Proposal ID for extracting proposal variables */
+//	bayesshipSampler *sampler,/**< Sampler object that is currently sampling*/
+//	void *userParameters /**< User specific parameters that can be passed to the sampler through its member variables. These are then passed on to the likelihood function*/
+//	);
 /*! \brief Prior function typedef 
  *
  * Specifies the form of prior functions
  * 
  * All user defined likelihood functions must be caste-able to this type
  * */
-typedef double(*priorFn)(
-	positionInfo *position,/**< positionInfo for current point in parameter space*/
-	int chainID,/**< Proposal ID for extracting proposal variables */
-	bayesshipSampler *sampler,/**< Sampler object that is currently sampling*/
-	void *userParameters/**< User specific parameters that can be passed to the sampler through its member variables. These are then passed on to the likelihood function*/
-	);
+//typedef double(*priorFn)(
+//	positionInfo *position,/**< positionInfo for current point in parameter space*/
+//	int chainID,/**< Proposal ID for extracting proposal variables */
+//	bayesshipSampler *sampler,/**< Sampler object that is currently sampling*/
+//	void *userParameters/**< User specific parameters that can be passed to the sampler through its member variables. These are then passed on to the likelihood function*/
+//	);
+
+
+
 /*! \brief proposalFn write checkpoint function typedef 
  *
  * Specifies the form of proposal function write checkpoint functions.
@@ -244,9 +264,11 @@ public:
 	/*! Output files base name*/
 	std::string outputFileMoniker="BayesShip";
 	/*! Likelihood function*/
-	likelihoodFn likelihood;
+	//likelihoodFn likelihood;
+	probabilityFn *likelihood;
 	/*! Prior function*/
-	likelihoodFn prior;
+	//likelihoodFn prior;
+	probabilityFn *prior;
 	/*! User Parameters -- These parameters are passed into the likelihood function and the prior function -- shape should be (void *)[chainN]*/
 	void **userParameters=nullptr;
 	/*! If a checkpoint file exists in the output directory, ignore it (true) or load it (false)*/
@@ -330,7 +352,8 @@ public:
 	bool checkStatus();
 	void allocateMemory();
 	void deallocateMemory();
-	bayesshipSampler(likelihoodFn likelihood, priorFn prior);
+	//bayesshipSampler(likelihoodFn likelihood, priorFn prior);
+	bayesshipSampler(probabilityFn *likelihood, probabilityFn *prior);
 	~bayesshipSampler();
 	void sample();
 	void sampleLoop(int iterations,samplerData *data);

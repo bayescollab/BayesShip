@@ -11,7 +11,8 @@
 
 namespace bayesship{
 
-double uniformPrior(positionInfo *position, int chainID, bayesshipSampler *sampler, void *userparameters)
+
+double uniformPrior::eval(positionInfo *position, int chainID)
 {
 	double lp = 0;
 	if(sampler->RJ){
@@ -40,5 +41,38 @@ double uniformPrior(positionInfo *position, int chainID, bayesshipSampler *sampl
 	}
 	//return lp;
 	return 1;
+
+	return lp;
 }
+
+//double uniformPrior(positionInfo *position, int chainID, bayesshipSampler *sampler, void *userparameters)
+//{
+//	double lp = 0;
+//	if(sampler->RJ){
+//		for(int i= 0; i< sampler->maxDim; i++){
+//			if(position->status[i] == 1){
+//				if(position->parameters[i]<sampler->priorRanges[i][0] || position->parameters[i]>sampler->priorRanges[i][1] ){
+//					return limitInf;
+//				}
+//				else{
+//					lp-= std::log(sampler->priorRanges[i][1] - sampler->priorRanges[i][0]);//Minus because 1/range
+//				}
+//			}
+//		}
+//			
+//	}
+//	else{
+//		for(int i= 0; i< sampler->maxDim; i++){
+//			if(position->parameters[i]<sampler->priorRanges[i][0] || position->parameters[i]>sampler->priorRanges[i][1] ){
+//				return limitInf;
+//			}
+//			else{
+//				lp-= std::log(sampler->priorRanges[i][1] - sampler->priorRanges[i][0]);//Minus because 1/range
+//			}
+//		}
+//		
+//	}
+//	//return lp;
+//	return 1;
+//}
 }

@@ -10,7 +10,14 @@ namespace bayesship{
  * # Header file for the general priors
  */
 
-double uniformPrior(positionInfo *position, int chainID, bayesshipSampler *sampler, void *userParameters);
+class uniformPrior: public probabilityFn
+{
+public:
+	bayesshipSampler *sampler;
+	double eval(positionInfo *position, int chainID);
+};
+
+//double uniformPrior(positionInfo *position, int chainID, bayesshipSampler *sampler, void *userParameters);
 
 }
 

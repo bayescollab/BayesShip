@@ -5,6 +5,7 @@ project(BayesShip
 	LANGUAGES CXX C)
 
 option(RUN_TESTS "RUN_TESTS" ON)
+option(BUILD_EXAMPLES "BUILD_EXAMPLES" ON)
 option(DOCS "DOCS" OFF)
 option(IMPLEMENT_HDF5 "Implement HDF5 if available" ON)
 option(IMPLEMENT_OMP "Implement OMP if available" ON)
@@ -96,6 +97,11 @@ add_subdirectory("${CMAKE_SOURCE_DIR}/src")
 if(RUN_TESTS)
 	#add_subdirectory("${CMAKE_SOURCE_DIR}/unit_tests")
 	add_subdirectory("${CMAKE_SOURCE_DIR}/algorithm_tests")
+endif()
+
+if(BUILD_EXAMPLES)
+	#add_subdirectory("${CMAKE_SOURCE_DIR}/unit_tests")
+	add_subdirectory("${CMAKE_SOURCE_DIR}/examples")
 endif()
 
 

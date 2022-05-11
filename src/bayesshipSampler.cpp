@@ -32,8 +32,11 @@ namespace bayesship{
  *
  * Needs the likelihood function and the prior function, the bare minimum to run the sampler
  */
-bayesshipSampler::bayesshipSampler( likelihoodFn likelihood, /**< Likelihood function pointer -- See Ptrjmcmc.h for definition of likelihoodFn*/
-	priorFn prior/**< Prior function pointer -- See Ptrjmcmc.h for definition of priorFn*/
+//bayesshipSampler::bayesshipSampler( likelihoodFn likelihood, /**< Likelihood function pointer -- See Ptrjmcmc.h for definition of likelihoodFn*/
+//	priorFn prior/**< Prior function pointer -- See Ptrjmcmc.h for definition of priorFn*/
+//	)
+bayesshipSampler::bayesshipSampler( probabilityFn *likelihood, /**< Likelihood function pointer -- See Ptrjmcmc.h for definition of likelihoodFn*/
+	probabilityFn *prior/**< Prior function pointer -- See Ptrjmcmc.h for definition of priorFn*/
 	)
 {
 	this->likelihood = likelihood;
@@ -71,9 +74,11 @@ void bayesshipSampler::assignInitialPosition(samplerData *data)
 	
 	/*With initial positions specified, assign prior and likelihood values*/
 	for(int i =0; i<chainN; i++){
-		data->priorVals[i][0] = prior(data->positions[i][0],i, this,userParameters[i]);
+		//data->priorVals[i][0] = prior(data->positions[i][0],i, this,userParameters[i]);
+		data->priorVals[i][0] = prior->eval(data->positions[i][0],i);
 		if(data->priorVals[i][0] != limitInf){
-			data->likelihoodVals[i][0] = likelihood(data->positions[i][0],i, this,userParameters[i]);
+			//data->likelihoodVals[i][0] = likelihood(data->positions[i][0],i, this,userParameters[i]);
+			data->likelihoodVals[i][0] = likelihood->eval(data->positions[i][0],i);
 		}
 		else{
 			std::cout<<"ERROR -- You have bad initial points!"<<std::endl;
@@ -119,9 +124,15 @@ void bayesshipSampler::sample()
 	if(priorIterations >0 && priorRanges){
 		std::cout<<"Sampling Prior "<<std::endl;
 
-		likelihoodFn tempL = likelihood;
+		//likelihoodFn tempL = likelihood;
+		probabilityFn *tempL = likelihood;
 		likelihood = prior;
-		prior = uniformPrior;
+
+		//prior = uniformPrior;
+		uniformPrior *tempprior = new uniformPrior();
+		tempprior->sampler = this;
+		prior = tempprior;
+
 		priorData = new samplerData(maxDim, ensembleN,ensembleSize, priorIterations, proposalFns->proposalFnN, RJ,betas);
 		if(burnPriorIterations >0){
 			std::cout<<"Burning in for prior"<<std::endl;
@@ -189,6 +200,7 @@ void bayesshipSampler::sample()
 		sampleLoop(priorIterations,priorData);
 		priorData->writeStatFile(outputDir+outputFileMoniker+"Prior_stat.txt");
 
+		delete tempprior;
 		prior = likelihood;
 		likelihood = tempL;
 		
@@ -211,8 +223,10 @@ void bayesshipSampler::sample()
 		//if(false){
 			for(int i = 0 ; i<chainN; i++){
 				burnData->positions[i][0]->updatePosition(priorData->positions[i][priorData->currentStepID[i]]);
-				burnData->likelihoodVals[i][0] = likelihood(burnData->positions[i][0],i, this,userParameters[i]);
-				burnData->priorVals[i][0] = prior(burnData->positions[i][0],i, this,userParameters[i]);
+				//burnData->likelihoodVals[i][0] = likelihood(burnData->positions[i][0],i, this,userParameters[i]);
+				burnData->likelihoodVals[i][0] = likelihood->eval(burnData->positions[i][0],i);
+				//burnData->priorVals[i][0] = prior(burnData->positions[i][0],i, this,userParameters[i]);
+				burnData->priorVals[i][0] = prior->eval(burnData->positions[i][0],i);
 			}
 
 		}
@@ -1062,7 +1076,8 @@ void bayesshipSampler::stepMH(
 
 	/*Calculate log of the prior values*/
 	start = omp_get_wtime();	
-	double logPrior = prior(data->positions[chainID][proposalStep], chainID, this,userParameters[chainID]);
+	//double logPrior = prior(data->positions[chainID][proposalStep], chainID, this,userParameters[chainID]);
+	double logPrior = prior->eval(data->positions[chainID][proposalStep], chainID);
 	time = omp_get_wtime() - start;
 	data->priorTimes[chainID] *= (data->currentStepID[chainID] );
 	data->priorTimes[chainID] += time;
@@ -1078,7 +1093,8 @@ void bayesshipSampler::stepMH(
 	}
 	/*Calculate likelihood valeu*/
 	start = omp_get_wtime();	
-	double logLikelihood = likelihood(data->positions[chainID][proposalStep], chainID, this,userParameters[chainID]);
+	//double logLikelihood = likelihood(data->positions[chainID][proposalStep], chainID, this,userParameters[chainID]);
+	double logLikelihood = likelihood->eval(data->positions[chainID][proposalStep], chainID);
 	time = omp_get_wtime() - start;
 	data->likelihoodTimes[chainID] *= (data->likelihoodEvals[chainID] );
 	data->likelihoodTimes[chainID] += time;

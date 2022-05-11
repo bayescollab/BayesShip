@@ -26,16 +26,26 @@ int main(int argc, char *argv[])
 
 //#####################################################
 //#####################################################
-double toy_L(bayesship::positionInfo *pos, int chainID, bayesship::bayesshipSampler *sampler, void *p)
+class toy_L : public bayesship::probabilityFn
 {
-
-	return 0;
-}
-double toy_P(bayesship::positionInfo *pos, int chainID, bayesship::bayesshipSampler *sampler, void *p)
+public:
+	virtual double eval(bayesship::positionInfo *pos, int chainID){return 0;}
+};
+class toy_P : public bayesship::probabilityFn
 {
-
-	return 0;
-}
+public:
+	virtual double eval(bayesship::positionInfo *pos, int chainID){return 0;}
+};
+//double toy_L(bayesship::positionInfo *pos, int chainID, bayesship::bayesshipSampler *sampler, void *p)
+//{
+//
+//	return 0;
+//}
+//double toy_P(bayesship::positionInfo *pos, int chainID, bayesship::bayesshipSampler *sampler, void *p)
+//{
+//
+//	return 0;
+//}
 int KDEDrawTesting(int argc, char *argv[])
 {
 	//if(!std::filesystem::exists("data/KDE_test_data.csv")){
@@ -43,7 +53,10 @@ int KDEDrawTesting(int argc, char *argv[])
 	//	return 1;
 	//}
 
-	bayesship::bayesshipSampler *sampler = new bayesship::bayesshipSampler(toy_L, toy_P);
+	toy_L *ll = new toy_L();
+	toy_P *lp = new toy_P();
+	//bayesship::bayesshipSampler *sampler = new bayesship::bayesshipSampler(toy_L, toy_P);
+	bayesship::bayesshipSampler *sampler = new bayesship::bayesshipSampler(ll, lp);
 	sampler->ensembleN = 1;
 	sampler->ensembleSize = 3;
 	//sampler->maxDim = 9;
@@ -125,6 +138,8 @@ int KDEDrawTesting(int argc, char *argv[])
 		delete [] dataOut[i];
 	}
 	delete [] dataOut;
+	delete ll;
+	delete lp;
 
 	
 	
