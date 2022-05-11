@@ -23,7 +23,7 @@ namespace bayesship{
  *
  * # PTRJMCMC Source Code
  * 
- * Source code for a majority of the PTRJMCMC sampler routines.
+ * Source code for a majority of the bayesShip sampler routines.
  * 
  */
 

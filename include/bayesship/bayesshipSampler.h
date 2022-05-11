@@ -29,33 +29,50 @@ class bayesshipSampler;
 
 
 
-/*! \brief Structure to package swap jobs for sampling
+/*! \brief Structure to package swap ``jobs'' for sampling
  *
  * Packages up a job to queue up a chain for swapping
+ *
+ * See ThreadPool.h to see how this relates to parallel processing, and see the bayesShip.cpp for the implementation of this structure
  */
 struct swapJob
 {
+	/*! Chain ID to be swapped*/
 	int chainID;
+	/*! samplerData for the sampler storing current data for chainID*/
 	samplerData *data;
+	/*! The sampler being currently run*/
 	bayesshipSampler *sampler;
 
 };
 
 /*! \brief Structure to package sample jobs for sampling
  *
- * Packages up a job to perform MH sampling
+ * Packages up a job to perform Metropolis-Hastings sampling
  * 
+ * See ThreadPool.h to see how this relates to parallel processing, and see the bayesShip.cpp for the implementation of this structure
+ *
  * */
 struct sampleJob
 {
+	/*! The sampler being currently run*/
 	bayesshipSampler *sampler;
+	/*! samplerData for the sampler storing current data for chainID*/
 	samplerData *data;
+	/*! Chain ID to be stepped*/
 	int chainID;
+	/*! Pool for swapping -- The sampler periodically passes the chain on to be swapped after steping with Metropolis-Hastings*/
 	ThreadPoolPair<swapJob> *swapPool;
 
 };
 
 
+/*! \brief Wrapper function to perform stepMH for sampleJob job and with thread threadID
+ *
+ * Simply calls stepMH for the chain associated with sampleJob job using thread threadID.
+ * 
+ * stepMH performs a step in parameter space using the Metropolis-Hastings algorithm.
+ */
 void sampleThreadedFunctionNoSwap(int threadID, sampleJob job);
 void sampleThreadedFunction(int threadID, sampleJob job);
 void swapThreadedFunction(int threadID, swapJob job1, swapJob job2);
