@@ -583,6 +583,9 @@ void bayesshipSampler::allocateMemory( )
 	if(!waitingMutexes){
 		waitingMutexes = new std::mutex[chainN];
 	}
+	if(!statusMutex){
+		statusMutex = new std::mutex;
+	}
 	
 }
 /*! \brief helper to return the beta parameter for the chain at index chainID
@@ -652,6 +655,10 @@ void bayesshipSampler::deallocateMemory()
 	if(waitingMutexes){
 		delete [] waitingMutexes;
 		waitingMutexes = nullptr;		
+	}
+	if(statusMutex){
+		delete statusMutex;
+		statusMutex = nullptr;		
 	}
 	if(priorRanges && internalPriorRanges){
 		for(int i = 0 ; i<maxDim; i++){
@@ -795,7 +802,7 @@ void bayesshipSampler::sampleLoop(int samples,samplerData *data)
 						if(i < ensembleN){
 							
 							{
-								std::unique_lock<std::mutex> lock{statusMutex};
+								std::unique_lock<std::mutex> lock{*statusMutex};
 								referenceStatus[i] = false;
 							}
 							{
@@ -860,7 +867,7 @@ bool bayesshipSampler::checkStatus()
 {
 	bool result = false;
 	{
-		std::unique_lock<std::mutex> lock{statusMutex};
+		std::unique_lock<std::mutex> lock{*statusMutex};
 		for(int i = 0 ; i<ensembleN; i++){
 			if(referenceStatus[i]){
 				result =  true;	

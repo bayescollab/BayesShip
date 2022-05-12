@@ -84,8 +84,9 @@ if(IMPLEMENT_HDF5)
 endif()
 
 if(SWIG_FOUND AND ENABLE_SWIG )
-	message("${SWIG_VERSION}")
+	
 	find_package(PythonLibs REQUIRED)
+	cmake_policy(SET CMP0078 NEW)
 	message("Using SWIG to compile python wrappers")
 	include(UseSWIG)
 	set(LIBS "${PYTHON_LIBRARIES};${LIBS}")

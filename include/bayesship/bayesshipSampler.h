@@ -270,7 +270,7 @@ public:
 	bool *waitingSample=nullptr;
 	bool *referenceStatus=nullptr;
 	std::mutex *waitingMutexes=nullptr;
-	std::mutex statusMutex;
+	std::mutex *statusMutex=nullptr;
 	bool burnPeriod = false;
 	bool adjustTemps = false;
 	/* Parameters for burn in temperature adjustment*/

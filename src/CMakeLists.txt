@@ -39,13 +39,14 @@ install(TARGETS bayesship_static DESTINATION lib)
 
 
 if(USE_SWIG)
-	message(${SWIG_EXECUTABLE})
-
 	set (UseSWIG_TARGET_NAME_PREFERENCE STANDARD)
-	include_directories(${INCLUDE_DIRS})
+
+	#set_source_files_properties(${SWIG_SRC_LIST} PROPERTIES COMPILE_OPTIONS "-Xlinker -export-dynamic")
 	set_source_files_properties(${SWIG_SRC_LIST} PROPERTIES CPLUSPLUS ON)
 	set_source_files_properties(${SWIG_SRC_LIST} PROPERTIES INCLUDE_DIRECTORIES ${INCLUDE_DIRS})
-	swig_add_library(bayesshippy LANGUAGE python SOURCES ${SWIG_SRC_LIST} )
-	swig_link_libraries(bayesshippy bayesship ${LIBS})
+	swig_add_library(bayesshippy TYPE SHARED LANGUAGE python SOURCES ${SWIG_SRC_LIST} )
+	target_link_libraries(bayesshippy bayesship ${LIBS})
+	#swig_link_libraries(bayesshippy bayesship ${LIBS})
+	target_include_directories(bayesshippy PUBLIC ${INCLUDE_DIRS})
 	set_property(TARGET bayesshippy PROPERTY SWIG_INCLUDE_DIRECTORIES "${INCLUDE_DIRS}")
 endif()

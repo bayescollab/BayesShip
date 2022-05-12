@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
 	//sampler->priorIterations = 0;
 
 
-	sampler->threadPool = false;
+	sampler->threadPool = true;
 
 
 	sampler->outputDir = "data/";
@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
 	sampler->ensembleN = 4;
 	//sampler->ensembleN = 1;
 	sampler->ensembleSize=5;
-	sampler->threads = 8;
+	sampler->threads = 4;
 	int chainN = sampler->ensembleSize*sampler->ensembleN;
 	sampler->initialPosition = new bayesship::positionInfo(sampler->maxDim,false);
 	for(int i = 0 ; i<sampler->maxDim; i++){
