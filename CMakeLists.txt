@@ -4,11 +4,12 @@ project(BayesShip
 	DESCRIPTION "A Parallel Tempering Reversible Jump Markov Chain Monte Carlo library"
 	LANGUAGES CXX C)
 
-option(RUN_TESTS "RUN_TESTS" ON)
-option(BUILD_EXAMPLES "BUILD_EXAMPLES" ON)
+option(RUN_TESTS "Build tests" ON)
+option(BUILD_EXAMPLES "Build example codes" ON)
 option(DOCS "DOCS" OFF)
 option(IMPLEMENT_HDF5 "Implement HDF5 if available" ON)
 option(IMPLEMENT_OMP "Implement OMP if available" ON)
+option(ENABLE_SWIG "Use SWIG to compile python modules" ON)
 option(DEBUG "set debugger options" OFF)
 
 
@@ -66,6 +67,9 @@ find_package(Threads REQUIRED)
 find_package(Armadillo REQUIRED)
 find_package(FFTW3 REQUIRED)
 
+find_package(SWIG COMPONENTS python )
+
+
 #find_package(MLPACK)
 #if(MLPACK_FOUND)
 #	add_compile_definitions(_MLPACK)
@@ -78,11 +82,26 @@ if(IMPLEMENT_HDF5)
 	set(LIBS "${HDF5_LIBRARIES};${LIBS}")
 	set(INCLUDE_DIRS "${HDF5_INCLUDE_DIR};${INCLUDE_DIRS}")
 endif()
+
+if(SWIG_FOUND AND ENABLE_SWIG )
+	message("${SWIG_VERSION}")
+	find_package(PythonLibs REQUIRED)
+	message("Using SWIG to compile python wrappers")
+	include(UseSWIG)
+	set(LIBS "${PYTHON_LIBRARIES};${LIBS}")
+	set(INCLUDE_DIRS "${PYTHON_INCLUDE_DIR};${INCLUDE_DIRS}")
+	#set(LIBS "${SWIG_DIR};${LIBS}")
+	#set(INCLUDE_DIRS "${SWIG_INCLUDE_DIR};${INCLUDE_DIRS}")
+	set (USE_SWIG TRUE)
+else()
+	set (USE_SWIG FALSE)
+endif()
 if(MLPACK_FOUND)
 	message("Using MLPACK")
 	set(LIBS "${MLPACK_LIBRARIES};${LIBS}")
 	set(INCLUDE_DIRS "${MLPACK_INCLUDE_DIR};${INCLUDE_DIRS}")
 endif()
+
 
 
 #Library

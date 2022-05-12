@@ -1,6 +1,7 @@
 
 # Create list of source files looking for cpp files
 file(GLOB SRC_LIST CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/src/*.cpp")
+file(GLOB SWIG_SRC_LIST CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/src/*.i")
 
 
 # Create object files for all source files
@@ -35,3 +36,16 @@ set_target_properties(bayesship_static PROPERTIES OUTPUT_NAME "bayesship")
 #Install
 install(TARGETS bayesship DESTINATION lib)
 install(TARGETS bayesship_static DESTINATION lib)
+
+
+if(USE_SWIG)
+	message(${SWIG_EXECUTABLE})
+
+	set (UseSWIG_TARGET_NAME_PREFERENCE STANDARD)
+	include_directories(${INCLUDE_DIRS})
+	set_source_files_properties(${SWIG_SRC_LIST} PROPERTIES CPLUSPLUS ON)
+	set_source_files_properties(${SWIG_SRC_LIST} PROPERTIES INCLUDE_DIRECTORIES ${INCLUDE_DIRS})
+	swig_add_library(bayesshippy LANGUAGE python SOURCES ${SWIG_SRC_LIST} )
+	swig_link_libraries(bayesshippy bayesship ${LIBS})
+	set_property(TARGET bayesshippy PROPERTY SWIG_INCLUDE_DIRECTORIES "${INCLUDE_DIRS}")
+endif()
