@@ -316,7 +316,7 @@ public:
 				//std::vector<int>::iterator ptr;
 				bool found = false;
 				jobtype job2;
-				for(int j =0; j<prePaired.size(); j++){
+				for(size_t j =0; j<prePaired.size(); j++){
 					if(pair_match(job_id,prePaired.at(j))){
 						job2 = prePaired.at(j);
 						prePaired.erase(prePaired.begin() + j);

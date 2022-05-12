@@ -538,7 +538,7 @@ double KDEProposalVariables::evalKDECustom(positionInfo *position,int chainID)
 	double *data_points_whitened = new double[maxDim];
 	double *eval_points_whitened = new double[maxDim];
 	matrixDot(runningCovCholeskyDecomp[chainID], position->parameters,eval_points_whitened, maxDim, maxDim );
-	for(int i = 0 ; i<trainingIDs[chainID].size(); i++){
+	for(size_t i = 0 ; i<trainingIDs[chainID].size(); i++){
 		int id = trainingIDs[chainID][i];
 		matrixDot(runningCovCholeskyDecomp[chainID], storedSamples[chainID][id]->parameters,data_points_whitened,maxDim, maxDim );
 		double arg=0;
@@ -612,11 +612,6 @@ void KDEProposal(samplerData *data, int chainID, int stepID, bayesshipSampler *s
 
 	if(kdepv->stepNumber[chainID] <=100 ){return;}
 
-	//int burnIterations = sampler->burnIterations;
-	int internalDim = sampler->maxDim;
-	if(sampler->RJ && sampler->minDim !=0 ){
-		internalDim = sampler->minDim;
-	}
 	else if(sampler->RJ){
 		std::cout<<"KDE DOESN'T WORK WITH RJ YET"<<std::endl;
 	}

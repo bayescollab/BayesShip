@@ -24,59 +24,11 @@ const double limitInf = - std::numeric_limits<double>::infinity();
  */
 
 
-/*Must forwardd declare the calss to use it in the declarations of the functions below*/
+/*Must forwardd declare the class to use it in the declarations of the functions below*/
 class bayesshipSampler;
 
 
 
-/*! \brief Structure to package swap ``jobs'' for sampling
- *
- * Packages up a job to queue up a chain for swapping
- *
- * See ThreadPool.h to see how this relates to parallel processing, and see the bayesShip.cpp for the implementation of this structure
- */
-struct swapJob
-{
-	/*! Chain ID to be swapped*/
-	int chainID;
-	/*! samplerData for the sampler storing current data for chainID*/
-	samplerData *data;
-	/*! The sampler being currently run*/
-	bayesshipSampler *sampler;
-
-};
-
-/*! \brief Structure to package sample jobs for sampling
- *
- * Packages up a job to perform Metropolis-Hastings sampling
- * 
- * See ThreadPool.h to see how this relates to parallel processing, and see the bayesShip.cpp for the implementation of this structure
- *
- * */
-struct sampleJob
-{
-	/*! The sampler being currently run*/
-	bayesshipSampler *sampler;
-	/*! samplerData for the sampler storing current data for chainID*/
-	samplerData *data;
-	/*! Chain ID to be stepped*/
-	int chainID;
-	/*! Pool for swapping -- The sampler periodically passes the chain on to be swapped after steping with Metropolis-Hastings*/
-	ThreadPoolPair<swapJob> *swapPool;
-
-};
-
-
-/*! \brief Wrapper function to perform stepMH for sampleJob job and with thread threadID
- *
- * Simply calls stepMH for the chain associated with sampleJob job using thread threadID.
- * 
- * stepMH performs a step in parameter space using the Metropolis-Hastings algorithm.
- */
-void sampleThreadedFunctionNoSwap(int threadID, sampleJob job);
-void sampleThreadedFunction(int threadID, sampleJob job);
-void swapThreadedFunction(int threadID, swapJob job1, swapJob job2);
-bool swapPairFunction( swapJob job1, swapJob job2);
 
 
 /*! \brief Proposal function typedef 
@@ -101,7 +53,7 @@ class probabilityFn
 {
 public:
 	probabilityFn(){};
-	~probabilityFn(){};
+	virtual ~probabilityFn(){};
 	virtual double eval(positionInfo *position, int chainID) { std::cout<<"OOPS"<<std::endl;return 0;}
 };
 

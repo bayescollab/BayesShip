@@ -28,6 +28,62 @@ namespace bayesship{
  */
 
 
+/*! \brief Structure to package swap ``jobs'' for sampling
+ *
+ * Packages up a job to queue up a chain for swapping
+ *
+ * See ThreadPool.h to see how this relates to parallel processing, and see the bayesShip.cpp for the implementation of this structure
+ */
+struct swapJob
+{
+	/*! Chain ID to be swapped*/
+	int chainID;
+	/*! samplerData for the sampler storing current data for chainID*/
+	samplerData *data;
+	/*! The sampler being currently run*/
+	bayesshipSampler *sampler;
+
+};
+
+/*! \brief Structure to package sample jobs for sampling
+ *
+ * Packages up a job to perform Metropolis-Hastings sampling
+ * 
+ * See ThreadPool.h to see how this relates to parallel processing, and see the bayesShip.cpp for the implementation of this structure
+ *
+ * */
+struct sampleJob
+{
+	/*! The sampler being currently run*/
+	bayesshipSampler *sampler;
+	/*! samplerData for the sampler storing current data for chainID*/
+	samplerData *data;
+	/*! Chain ID to be stepped*/
+	int chainID;
+	/*! Pool for swapping -- The sampler periodically passes the chain on to be swapped after steping with Metropolis-Hastings*/
+	ThreadPoolPair<swapJob> *swapPool;
+
+};
+
+
+/*! \brief Wrapper function to perform stepMH for sampleJob job and with thread threadID
+ *
+ * Simply calls stepMH for the chain associated with sampleJob job using thread threadID.
+ * 
+ * stepMH performs a step in parameter space using the Metropolis-Hastings algorithm.
+ */
+void sampleThreadedFunctionNoSwap(int threadID, sampleJob job);
+void sampleThreadedFunction(int threadID, sampleJob job);
+void swapThreadedFunction(int threadID, swapJob job1, swapJob job2);
+bool swapPairFunction( swapJob job1, swapJob job2);
+
+
+
+
+
+
+
+
 /*! \brief Constructor for bayesshipSampler class
  *
  * Needs the likelihood function and the prior function, the bare minimum to run the sampler
@@ -136,16 +192,11 @@ void bayesshipSampler::sample()
 		priorData = new samplerData(maxDim, ensembleN,ensembleSize, priorIterations, proposalFns->proposalFnN, RJ,betas);
 		if(burnPriorIterations >0){
 			std::cout<<"Burning in for prior"<<std::endl;
-			bool saveRandomizeSwappingFlag = randomizeSwapping;
-			bool savePool = threadPool;
-			double saveSwapProb = swapProb;
-			//randomizeSwapping = false;
+			
 			t0 = burnPriorIterations /2.;
 
 			burnPeriod=true;
 			adjustTemps=false;
-			//swapProb=1;
-			//threadPool=false;
 
 			burnData = new samplerData(maxDim, ensembleN,ensembleSize, burnPriorIterations, proposalFns->proposalFnN, RJ,betas);
 			assignInitialPosition(burnData);
@@ -187,9 +238,7 @@ void bayesshipSampler::sample()
 			}
 			
 			
-			//randomizeSwapping = saveRandomizeSwappingFlag;
-			//threadPool = savePool;
-			//swapProb=saveSwapProb;
+
 			delete burnData;
 			burnData = nullptr;
 		}
@@ -983,20 +1032,12 @@ void bayesshipSampler::adjustTemperatures(int t)
 		for(int i = 1 ; i<ensembleSize-1; i++){
 			for(int j = 0 ; j<ensembleN; j++){
 				int currentID = chainIndex(j, i);
-				int hotterID = chainIndex(j, i+1);
 				int colderID = chainIndex(j, i-1);
 
 				double TColder = 1./betas[colderID];
-				double THotter = 1./(betas[hotterID]+1e-10);
-				if(!((i+1) == ensembleSize-1) ){
-					THotter = 1./betas[hotterID];
-				}
+
 				double TOld = 1./oldBetas[currentID];
 				double TOldColder = 1./oldBetas[colderID];
-				double TOldHotter = 1./(oldBetas[hotterID]+1e-10);
-				if(!((i+1) == ensembleSize-1) ){
-					TOldHotter = 1./betas[hotterID];
-				}
 					
 				power = kappa * (AverageA[i] - AverageA[i+1]);
 				double TNew = TColder + (TOld - TOldColder)*std::exp(power);
@@ -1013,16 +1054,9 @@ void bayesshipSampler::adjustTemperatures(int t)
 				int colderID = chainIndex(j, i-1);
 
 				double TColder = 1./betas[colderID];
-				double THotter = 1./(betas[hotterID]+1e-10);
-				if(!((i+1) == ensembleSize-1) ){
-					THotter = 1./betas[hotterID];
-				}
+	
 				double TOld = 1./oldBetas[currentID];
 				double TOldColder = 1./oldBetas[colderID];
-				double TOldHotter = 1./(oldBetas[hotterID]+1e-10);
-				if(!((i+1) == ensembleSize-1) ){
-					TOldHotter = 1./betas[hotterID];
-				}
 					
 				//power = kappa * (A[currentID] - A[hotterID]);
 				power = kappa * (A[currentID] - A[hotterID]);

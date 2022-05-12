@@ -762,7 +762,7 @@ samplerData::~samplerData()
 		maxACs = nullptr;
 	}
 	if(dump_files.size() != 0){
-		for(int i = 0 ; i<dump_files.size(); i++){
+		for(size_t i = 0 ; i<dump_files.size(); i++){
 			if(dump_files[i]->fileTrimLengths){
 				delete [] dump_files[i]->fileTrimLengths;
 				dump_files[i]->fileTrimLengths = NULL;
@@ -792,7 +792,7 @@ int samplerData::create_data_dump(bool cold_only, bool trim,std::string filename
 	int file_id = 0;
 	bool found = false;
 	if(dump_files.size() != 0){
-		for(int i = 0 ; i<dump_file_names.size(); i++){
+		for(size_t i = 0 ; i<dump_file_names.size(); i++){
 			if( filename == dump_file_names[i]){
 				found = true;
 				file_id = i;
@@ -1147,7 +1147,7 @@ int samplerData::append_to_data_dump( std::string filename)
 {
 	int file_id = 0;
 	bool found=false;
-	for(int i = 0 ; i<dump_file_names.size(); i++){
+	for(size_t i = 0 ; i<dump_file_names.size(); i++){
 		if( filename == dump_file_names[i]){
 			found = true;
 			file_id = i;
@@ -1224,8 +1224,6 @@ int samplerData::append_to_data_dump( std::string filename)
 
 			hsize_t base_dims[RANK];
 			hsize_t base_dims_ll_lp[RANK_ll_lp];
-			herr_t statusH5 = dataspace->getSimpleExtentDims(base_dims);
-			statusH5 = dataspace_ll_lp->getSimpleExtentDims(base_dims_ll_lp);
 			int RANK_chunked;
 			int RANK_chunked_ll_lp;
 			hsize_t base_chunk_dims[RANK];
@@ -1313,12 +1311,7 @@ int samplerData::append_to_data_dump( std::string filename)
 				plist_status= new H5::DSetCreatPropList(dataset_status->getCreatePlist());
 				int RANK_status = dataspace_status->getSimpleExtentNdims();
 				hsize_t base_dims_status[RANK_status];
-				herr_t statusH5 = dataspace_status->getSimpleExtentDims(base_dims_status);
-				int RANK_chunked_status;
 				hsize_t base_chunk_dims_status[RANK_status];
-				if(H5D_CHUNKED == plist_status->getLayout()){
-					RANK_chunked_status= plist_status->getChunk(RANK_status,base_chunk_dims_status);
-				}
 				
 				hsize_t new_size_status[RANK];
 				if(dump_files[file_id]->trimmed){
@@ -1371,7 +1364,6 @@ int samplerData::append_to_data_dump( std::string filename)
 					plist_model_status= new H5::DSetCreatPropList(dataset_model_status->getCreatePlist());
 					int RANK_model_status = dataspace_model_status->getSimpleExtentNdims();
 					hsize_t base_dims_model_status[RANK_model_status];
-					herr_t model_statusH5 = dataspace_model_status->getSimpleExtentDims(base_dims_model_status);
 					int RANK_chunked_model_status;
 					hsize_t base_chunk_dims_model_status[RANK_model_status];
 					if(H5D_CHUNKED == plist_model_status->getLayout()){

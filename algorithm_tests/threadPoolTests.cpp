@@ -70,7 +70,6 @@ int standardThreadPoolPairTest(int argc, char*argv[])
 	double vals[length];
 	double vals1[length];
 	double vals2[length];
-	double finalGrid[length];
 	for(int i = 0 ; i<length; i++){
 		xgrid[i] = 2*i+1;
 		xgrid2[i] = -2*i-1;
