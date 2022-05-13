@@ -2,11 +2,7 @@
 %{
 #include "bayesship/bayesshipSampler.h"
 #include "bayesship/dataUtilities.h"
-#include "bayesship/proposalFunctions.h"
 #include "bayesship/utilities.h"
-#include "bayesship/ThreadPool.h"
-#include "bayesship/autocorrelationUtilities.h"
-#include "bayesship/standardPriors.h"
 %}
 
 %include "carrays.i"

@@ -313,7 +313,7 @@ public:
 	int getChainN();
 	double getBeta(int chainID);
 
-	void setInitialPositionIdentical(positionInfo *position);
+	//void setInitialPositionIdentical(positionInfo *position);
 
 	void assignInitialPosition(samplerData *data);
 
