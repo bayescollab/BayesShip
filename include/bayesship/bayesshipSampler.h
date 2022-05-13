@@ -348,7 +348,7 @@ private:
 
 };
 
-void to_json(nlohmann::json& j, const bayesshipSampler& s);
+//void to_json(nlohmann::json& j, const bayesshipSampler& s);
 //void from_json(nlohmann::json& j, bayesshipSampler& s);
 
 }
