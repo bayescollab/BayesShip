@@ -48,6 +48,7 @@ public:
 	int countActiveDimensions();
 	/*! Boolean for RJ or not*/
 	bool RJ=false;
+	
 	positionInfo(int dimension, bool RJ=false)	
 	{
 		this->dimension = dimension;
@@ -67,6 +68,9 @@ public:
 			delete [] status;
 			status = nullptr;
 		}
+	}
+	void setElement(double val, int id){
+		parameters[id] = val;
 	}
 };
 
