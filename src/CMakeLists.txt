@@ -1,7 +1,7 @@
 
 # Create list of source files looking for cpp files
 file(GLOB SRC_LIST CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/src/*.cpp")
-file(GLOB SWIG_SRC_LIST CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/src/*.i")
+#file(GLOB SWIG_SRC_LIST CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/src/*.i")
 
 
 # Create object files for all source files
@@ -34,19 +34,32 @@ set_target_properties(bayesship_static PROPERTIES OUTPUT_NAME "bayesship")
 
 
 #Install
-install(TARGETS bayesship DESTINATION lib)
-install(TARGETS bayesship_static DESTINATION lib)
+install(TARGETS bayesship DESTINATION "${CMAKE_INSTALL_PREFIX}/lib")
+install(TARGETS bayesship_static DESTINATION "${CMAKE_INSTALL_PREFIX}/lib")
 
 
-if(USE_SWIG)
-	set (UseSWIG_TARGET_NAME_PREFERENCE STANDARD)
-
-	#set_source_files_properties(${SWIG_SRC_LIST} PROPERTIES COMPILE_OPTIONS "-Xlinker -export-dynamic")
-	set_source_files_properties(${SWIG_SRC_LIST} PROPERTIES CPLUSPLUS ON)
-	set_source_files_properties(${SWIG_SRC_LIST} PROPERTIES INCLUDE_DIRECTORIES ${INCLUDE_DIRS})
-	swig_add_library(bayesshippy TYPE SHARED LANGUAGE python SOURCES ${SWIG_SRC_LIST} )
-	target_link_libraries(bayesshippy PUBLIC bayesship ${LIBS})
-	#swig_link_libraries(bayesshippy bayesship ${LIBS})
-	target_include_directories(bayesshippy PUBLIC ${INCLUDE_DIRS} )
-	set_property(TARGET bayesshippy PROPERTY SWIG_INCLUDE_DIRECTORIES "${INCLUDE_DIRS}")
-endif()
+#if(USE_SWIG)
+#	set (UseSWIG_TARGET_NAME_PREFERENCE STANDARD)
+#	set_source_files_properties(${SWIG_SRC_LIST} PROPERTIES CPLUSPLUS ON)
+#	set_source_files_properties(${SWIG_SRC_LIST} PROPERTIES INCLUDE_DIRECTORIES ${INCLUDE_DIRS})
+#
+#	swig_add_library(bayesshippy TYPE SHARED LANGUAGE python SOURCES ${SWIG_SRC_LIST} )
+#
+#	#target_link_libraries(bayesshippy PUBLIC bayesship ${LIBS})
+#	#swig_link_libraries(bayesshippy bayesship ${LIBS} )
+#	target_link_libraries(bayesshippy bayesship ${LIBS} )
+#
+#	target_include_directories(bayesshippy PUBLIC ${INCLUDE_DIRS} )
+#
+#	set(PYTHON_INSTALL_FILES ${CMAKE_CURRENT_BINARY_DIR}/bayesshippy.py ${CMAKE_CURRENT_BINARY_DIR}/_bayesshippy.so )
+#
+#	set(SETUP_PY_IN ${CMAKE_CURRENT_SOURCE_DIR}/setup.py.in)
+#	set(SETUP_PY_OUT ${CMAKE_CURRENT_BINARY_DIR}/setup.py)
+#	configure_file(${SETUP_PY_IN} ${SETUP_PY_OUT})
+#
+#
+#	set_property(TARGET bayesshippy PROPERTY SWIG_INCLUDE_DIRECTORIES "${INCLUDE_DIRS}")
+#
+#	add_custom_target(install-python  COMMAND python3 ${SETUP_PY_OUT} install)
+#	#install(TARGETS bayesshippy DESTINATION python)
+#endif()

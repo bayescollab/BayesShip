@@ -1,4 +1,4 @@
-%module(directors="1") bayesshippy
+%module(directors="1") bayesshipSamplerpy
 %{
 #include "bayesship/bayesshipSampler.h"
 #include "bayesship/dataUtilities.h"

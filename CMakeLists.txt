@@ -86,6 +86,7 @@ endif()
 if(SWIG_FOUND AND ENABLE_SWIG )
 	
 	find_package(PythonLibs REQUIRED)
+	find_package(Python REQUIRED)
 	cmake_policy(SET CMP0078 NEW)
 	message("Using SWIG to compile python wrappers")
 	include(UseSWIG)
@@ -128,6 +129,10 @@ endif()
 find_package(Doxygen)
 if(DOCS AND DOXYGEN_FOUND)
 	add_subdirectory(docs)	
+endif()
+
+if(USE_SWIG)
+	add_subdirectory(python)
 endif()
  
 # add the binary tree to the search path for include files
