@@ -41,6 +41,9 @@ lp = prior()
 s = bss.bayesshipSampler(ll,lp)
 s.initialPosition = bss.positionInfo(1,False)
 s.initialPosition.setElement(10.,0)
+
+
+
 print("InitialPosition ll",ll.eval(s.initialPosition,1))
 print("InitialPosition lp",lp.eval(s.initialPosition,1))
 s.maxDim = 1
