@@ -9,6 +9,7 @@ target_include_directories( gaussian1D PUBLIC "${INCLUDE_DIRS}")
 file(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/examples/gaussian1D/python/")
 file(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/examples/gaussian1D/plots/")
 file(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/examples/gaussian1D/data/")
+file(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/examples/gaussian1D/data/python/")
 file(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/examples/gaussian1D/bin/")
 
 file(GLOB pythonScripts "python/*.py")

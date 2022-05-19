@@ -69,8 +69,11 @@ public:
 			status = nullptr;
 		}
 	}
-	void setElement(double val, int id){
+	void setParameter(double val, int id){
 		parameters[id] = val;
+	}
+	double getParameter( int id){
+		return parameters[id] ;
 	}
 };
 

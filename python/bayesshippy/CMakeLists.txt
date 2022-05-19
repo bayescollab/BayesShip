@@ -6,6 +6,7 @@ file(GLOB SWIG_SRC_LIST CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/*.i")
 set (UseSWIG_TARGET_NAME_PREFERENCE STANDARD)
 set_source_files_properties(${SWIG_SRC_LIST} PROPERTIES CPLUSPLUS ON)
 set_source_files_properties(${SWIG_SRC_LIST} PROPERTIES INCLUDE_DIRECTORIES ${INCLUDE_DIRS})
+set_source_files_properties(${SWIG_SRC_LIST} PROPERTIES SWIG_FLAGS "-threads")
 
 swig_add_library(bayesshipSamplerpy TYPE SHARED LANGUAGE python SOURCES ${SWIG_SRC_LIST} )
 
