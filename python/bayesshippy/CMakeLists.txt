@@ -1,24 +1,37 @@
 
 # Create list of source files looking for cpp files
-file(GLOB SWIG_SRC_LIST CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/*.i")
-
-
 set (UseSWIG_TARGET_NAME_PREFERENCE STANDARD)
-set_source_files_properties(${SWIG_SRC_LIST} PROPERTIES CPLUSPLUS ON)
-set_source_files_properties(${SWIG_SRC_LIST} PROPERTIES INCLUDE_DIRECTORIES ${INCLUDE_DIRS})
-set_source_files_properties(${SWIG_SRC_LIST} PROPERTIES SWIG_FLAGS "-threads")
 
-swig_add_library(bayesshipSamplerpy TYPE SHARED LANGUAGE python SOURCES ${SWIG_SRC_LIST} )
-
+set(bayesshipSamplerpySRC "${CMAKE_CURRENT_SOURCE_DIR}/bayesshipSamplerpy.i")
+set_source_files_properties(${bayesshipSamplerpySRC} PROPERTIES CPLUSPLUS ON)
+set_source_files_properties(${bayesshipSamplerpySRC} PROPERTIES INCLUDE_DIRECTORIES ${INCLUDE_DIRS})
+set_source_files_properties(${bayesshipSamplerpySRC} PROPERTIES SWIG_FLAGS "-threads")
+swig_add_library(bayesshipSamplerpy TYPE SHARED LANGUAGE python SOURCES ${bayesshipSamplerpySRC} )
 target_link_libraries(bayesshipSamplerpy bayesship ${LIBS} )
-
 target_include_directories(bayesshipSamplerpy PUBLIC ${INCLUDE_DIRS} )
+set_property(TARGET bayesshipSamplerpy PROPERTY SWIG_INCLUDE_DIRECTORIES "${INCLUDE_DIRS}")
 
-#set(PYTHON_INSTALL_FILES ${CMAKE_CURRENT_BINARY_DIR}/bayesshippy.py ${CMAKE_CURRENT_BINARY_DIR}/_bayesshippy.so )
+
+set(dataUtilitiespySRC "${CMAKE_CURRENT_SOURCE_DIR}/dataUtilitiespy.i")
+set_source_files_properties(${dataUtilitiespySRC} PROPERTIES CPLUSPLUS ON)
+set_source_files_properties(${dataUtilitiespySRC} PROPERTIES INCLUDE_DIRECTORIES ${INCLUDE_DIRS})
+set_source_files_properties(${dataUtilitiespySRC} PROPERTIES SWIG_FLAGS "-threads")
+swig_add_library(dataUtilitiespy TYPE SHARED LANGUAGE python SOURCES ${dataUtilitiespySRC} )
+target_link_libraries(dataUtilitiespy bayesship ${LIBS} )
+target_include_directories(dataUtilitiespy PUBLIC ${INCLUDE_DIRS} )
+set_property(TARGET dataUtilitiespy PROPERTY SWIG_INCLUDE_DIRECTORIES "${INCLUDE_DIRS}")
+
+set(utilitiespySRC "${CMAKE_CURRENT_SOURCE_DIR}/utilitiespy.i")
+set_source_files_properties(${utilitiespySRC} PROPERTIES CPLUSPLUS ON)
+set_source_files_properties(${utilitiespySRC} PROPERTIES INCLUDE_DIRECTORIES ${INCLUDE_DIRS})
+set_source_files_properties(${utilitiespySRC} PROPERTIES SWIG_FLAGS "-threads")
+swig_add_library(utilitiespy TYPE SHARED LANGUAGE python SOURCES ${utilitiespySRC} )
+target_link_libraries(utilitiespy bayesship ${LIBS} )
+target_include_directories(utilitiespy PUBLIC ${INCLUDE_DIRS} )
+set_property(TARGET utilitiespy PROPERTY SWIG_INCLUDE_DIRECTORIES "${INCLUDE_DIRS}")
+
 
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/__init__.py" "${CMAKE_CURRENT_BINARY_DIR}/__init__.py" COPYONLY)
-
-set_property(TARGET bayesshipSamplerpy PROPERTY SWIG_INCLUDE_DIRECTORIES "${INCLUDE_DIRS}")
 
 #execute_process(COMMAND ${Python_EXECUTABLE} ${SETUP_PY_OUT} install)
 #install(CODE "execute_process(COMMAND ${Python_EXECUTABLE} -m pip install ${CMAKE_CURRENT_BINARY_DIR} )" )

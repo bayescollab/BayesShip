@@ -6,11 +6,12 @@ from distutils.sysconfig import get_python_lib
 if __name__ == '__main__':
     setuptools.setup(
         name='BayesShipPy',
-        version='0.0.0',
+        version='@CMAKE_PROJECT_VERSION@',
         packages=['bayesshippy'],
         package_dir={'bayesshippy':'bayesshippy'},
         package_data={'bayesshippy':'_bayesshipSamplerpy.*'},
         author='Scott Perkins',
         author_email='seperkins94@gmail.com',
-        #cmdclass={'install': CompiledLibInstall}
+        description="Python wrapping of the BayesShip package.",
+        long_description=open('README.md').read(),
     )

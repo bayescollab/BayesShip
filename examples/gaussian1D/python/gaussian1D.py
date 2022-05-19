@@ -40,7 +40,7 @@ ll = likelihood()
 lp = prior()
 s = bss.bayesshipSampler(ll,lp)
 s.initialPosition = bss.positionInfo(1,False)
-s.initialPosition.setElement(10.,0)
+s.initialPosition.setParameter(10.,0)
 
 
 

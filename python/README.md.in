@@ -1,0 +1,12 @@
+--- 
+author: Scott Perkins
+title: BayesShipPy
+---
+
+# BayesShipPy
+
+A python wrapping of the BayesShip c++ package for statistical inference.
+
+## Version
+
+@CMAKE_PROJECT_VERSION@
