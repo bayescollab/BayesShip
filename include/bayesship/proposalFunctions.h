@@ -17,6 +17,19 @@
 
 namespace bayesship{
 
+//class proposalFn
+//{
+//public:
+//	proposalFn();
+//	~proposalFn();
+//	virtual void propose(positionInfo *current, positionInfo *proposed, int chainID)
+//	{
+//		proposed.updatePosition(current);
+//		return;	
+//	};
+//
+//};
+
 /*! Generic framework for setting up a class for a proposal function and its associated data
  */
 class genericProposalVariables
