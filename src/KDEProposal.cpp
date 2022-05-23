@@ -24,9 +24,10 @@ namespace bayesship{
 //###########################################################
 //###########################################################
 /*! Constructor function*/
-KDEProposalVariables::KDEProposalVariables(
+KDEProposal::KDEProposal(
 	int chainN, /**< Number of chains in the ensemble*/
 	int maxDim, /**< Maximum dimension of the space*/
+	bayesshipSampler *sampler,
 	bool RJ,
 	int batchSize ,/**< Maximum number of data points to store*/
 	int KDETrainingBatchSize,
@@ -40,6 +41,7 @@ KDEProposalVariables::KDEProposalVariables(
 	this->chainN = chainN;
 	this->maxDim = maxDim;
 	this->RJ = RJ;
+	this->sampler = sampler;
 	gsl_rng_env_setup();
 	r = new gsl_rng *[chainN];
 	runningSTD = new double*[chainN];
@@ -88,7 +90,7 @@ KDEProposalVariables::KDEProposalVariables(
 	}
 }
 
-KDEProposalVariables::~KDEProposalVariables()
+KDEProposal::~KDEProposal()
 {
 	if(trainingIDs){
 		delete [] trainingIDs;
@@ -214,7 +216,7 @@ int KDEDraw(positionInfo *sampleLocation, double **cov, positionInfo *output, gs
 }
 
 
-void KDEProposalVariables::updateStorageSize(int chainID)
+void KDEProposal::updateStorageSize(int chainID)
 {
 	positionInfo **temp = storedSamples[chainID];
 	currentStorageSize[chainID] +=batchSize;	
@@ -238,7 +240,7 @@ void KDEProposalVariables::updateStorageSize(int chainID)
 
 
 
-void KDEProposalVariables::reset(int chainID)
+void KDEProposal::reset(int chainID)
 {
 	stepNumber[chainID] = 0;
 	drawCt[chainID] = 0;
@@ -270,7 +272,7 @@ void KDEProposalVariables::reset(int chainID)
 	return;
 }
 
-void KDEProposalVariables::updateCov( int chainID)
+void KDEProposal::updateCov( int chainID)
 {
 	for(int i = 0 ; i<maxDim ; i++){
 		runningMean[chainID][i] = 0;
@@ -297,7 +299,7 @@ void KDEProposalVariables::updateCov( int chainID)
 	}
 	return;
 }
-//void KDEProposalVariables::updateVar( int chainID)
+//void KDEProposal::updateVar( int chainID)
 //{
 //	int samples = trainingIDs[chainID].size();
 //	for(int i = 0 ; i<maxDim ; i++){
@@ -330,7 +332,7 @@ void KDEProposalVariables::updateCov( int chainID)
 //}
 
 #if _MLPACK
-int KDEProposalVariables::trainKDEMLPACK(int chainID )
+int KDEProposal::trainKDEMLPACK(int chainID )
 {
 	int samples = trainingIDs[chainID].size();
 	//Train KDE
@@ -388,7 +390,7 @@ int KDEProposalVariables::trainKDEMLPACK(int chainID )
 
 	return 0 ;
 }
-double KDEProposalVariables::evalKDEMLPACK(positionInfo *position,int chainID)
+double KDEProposal::evalKDEMLPACK(positionInfo *position,int chainID)
 {
 	double val = 0;
 	arma::mat query(maxDim, 1);
@@ -406,7 +408,7 @@ double KDEProposalVariables::evalKDEMLPACK(positionInfo *position,int chainID)
 
 #endif
 
-int KDEProposalVariables::trainKDECustom(int chainID)
+int KDEProposal::trainKDECustom(int chainID)
 {
 	gsl_matrix *matrix = gsl_matrix_alloc(maxDim, maxDim);
 	gsl_matrix *matrix_inv = gsl_matrix_alloc(maxDim, maxDim);
@@ -447,7 +449,7 @@ int KDEProposalVariables::trainKDECustom(int chainID)
 	return status ;
 }
 
-int KDEProposalVariables::trainKDE(int chainID)
+int KDEProposal::trainKDE(int chainID)
 {
 	//if(kde[chainID]){
 	//	delete kde[chainID];
@@ -512,7 +514,7 @@ int KDEProposalVariables::trainKDE(int chainID)
 	
 }
 
-double KDEProposalVariables::evalKDE(positionInfo *position,int chainID)
+double KDEProposal::evalKDE(positionInfo *position,int chainID)
 {
 	#if _MLPACK
 	if(useMLPack){
@@ -527,7 +529,7 @@ double KDEProposalVariables::evalKDE(positionInfo *position,int chainID)
 }
 
 
-double KDEProposalVariables::evalKDECustom(positionInfo *position,int chainID)
+double KDEProposal::evalKDECustom(positionInfo *position,int chainID)
 {
 	double val = 0;
 	double norm = pow(2.*M_PI, -1*maxDim/2.);
@@ -557,104 +559,98 @@ double KDEProposalVariables::evalKDECustom(positionInfo *position,int chainID)
 }
 
 /*Just use a premade KDE package.. Why do this from scratch?*/
-void KDEProposal(samplerData *data, int chainID, int stepID, bayesshipSampler *sampler, double *MHRatioCorrection)
+void KDEProposal::propose(positionInfo *currentPosition, positionInfo *proposedPosition, int chainID,int stepID,double *MHRatioModifications)
 {
-	//std::cout<<"KDE"<<" "<<chainID<<std::endl;
-	int currentStep = data->currentStepID[chainID];
-
-	positionInfo *currentPosition = data->positions[chainID][currentStep];
-	positionInfo *proposedPosition = data->positions[chainID][currentStep+1];
+	int currentStep = sampler->getActiveData()->currentStepID[chainID];
 
 	proposedPosition->updatePosition(currentPosition);
 	
 	//Not working on RJ yet
-	if(sampler->RJ){
+	if(RJ){
 		return;
 	}
 	
-	//std::cout<<chainID<<std::endl;
-	KDEProposalVariables *kdepv = (KDEProposalVariables *)(sampler->proposalFns->proposalFnVariables[stepID]);
-
+	samplerData * data = sampler->getActiveData();
 	//Reset data harvesting parameters if data structure has changed
-	if(data!=kdepv->currentData[chainID]){
+	if(data!=currentData[chainID]){
 		//std::cout<<chainID<<std::endl;
-		//kdepv->lastUpdatePositionID[chainID]=0;
-		kdepv->reset(chainID);
-		kdepv->currentData[chainID] = data;
+		//lastUpdatePositionID[chainID]=0;
+		reset(chainID);
+		currentData[chainID] = data;
 	}
 	
-	if( ( ( (currentStep-1) - kdepv->lastUpdatePositionID[chainID] )/kdepv->updateInterval > 1 )){
-		int positionUpdates = ((currentStep-1) - kdepv->lastUpdatePositionID[chainID] )/kdepv->updateInterval;
+	if( ( ( (currentStep-1) - lastUpdatePositionID[chainID] )/updateInterval > 1 )){
+		int positionUpdates = ((currentStep-1) - lastUpdatePositionID[chainID] )/updateInterval;
 
 		//std::cout<<chainID<<" "<<positionUpdates<<std::endl;
-		while( ( kdepv->stepNumber[chainID] +positionUpdates - (kdepv->currentStorageSize[chainID]-1)  ) >= 0 ){
+		while( ( stepNumber[chainID] +positionUpdates - (currentStorageSize[chainID]-1)  ) >= 0 ){
 			//update storage size to storagesize + batchsize 
-			kdepv->updateStorageSize(chainID);
+			updateStorageSize(chainID);
 		}
 		//Update storage	
 		for(int i = 0 ; i<positionUpdates;i++){
-			kdepv->lastUpdatePositionID[chainID]+=kdepv->updateInterval;
-			kdepv->storedSamples[chainID][kdepv->stepNumber[chainID]]->updatePosition(data->positions[chainID][kdepv->lastUpdatePositionID[chainID] ]);
-			kdepv->stepNumber[chainID]+=1;
-			//std::cout<<kdepv->lastUpdatePositionID[chainID]<<" "<<currentStep<<" "<<chainID<<std::endl;
+			lastUpdatePositionID[chainID]+=updateInterval;
+			storedSamples[chainID][stepNumber[chainID]]->updatePosition(data->positions[chainID][lastUpdatePositionID[chainID] ]);
+			stepNumber[chainID]+=1;
+			//std::cout<<lastUpdatePositionID[chainID]<<" "<<currentStep<<" "<<chainID<<std::endl;
 		}
 		
 		//Update var and mean
-		//kdepv->updateCov( chainID);
+		//updateCov( chainID);
 		
 		//train kde on new reference matrix
-		if(kdepv->stepNumber[chainID] <=100 ){return;}
-		int status = kdepv->trainKDE(chainID);
+		if(stepNumber[chainID] <=100 ){return;}
+		int status = trainKDE(chainID);
 		if(status != 0 ){
 			return;
 		}
 	}
 
-	if(kdepv->stepNumber[chainID] <=100 ){return;}
+	if(stepNumber[chainID] <=100 ){return;}
 
 	else if(sampler->RJ){
 		std::cout<<"KDE DOESN'T WORK WITH RJ YET"<<std::endl;
 	}
 
 	/* Draw random sample and compute probability from KDE for each step*/
-	//int sampleID = gsl_rng_uniform(sampler->rvec[chainID])*kdepv->stepNumber[chainID];
-	//positionInfo *samplePosition = kdepv->storedSamples[chainID][sampleID];
+	//int sampleID = gsl_rng_uniform(sampler->rvec[chainID])*stepNumber[chainID];
+	//positionInfo *samplePosition = storedSamples[chainID][sampleID];
 
-	int sampleID = kdepv->trainingIDs[chainID][(int)(gsl_rng_uniform(sampler->rvec[chainID])*kdepv->trainingIDs[chainID].size())];
-	positionInfo *samplePosition = kdepv->storedSamples[chainID][sampleID];
+	int sampleID = trainingIDs[chainID][(int)(gsl_rng_uniform(sampler->rvec[chainID])*trainingIDs[chainID].size())];
+	positionInfo *samplePosition = storedSamples[chainID][sampleID];
 
 	double **cov = new double*[sampler->maxDim];
-	if(kdepv->useMLPack){
+	if(useMLPack){
 		for(int i = 0 ; i<sampler->maxDim; i++){
 			cov[i] = new double[sampler->maxDim];
 			for(int j = 0 ; j<sampler->maxDim; j++){
 				cov[i][j] = 0;
 			}
-			cov[i][i] = kdepv->bandwidth[chainID]*kdepv->bandwidth[chainID];
+			cov[i][i] = bandwidth[chainID]*bandwidth[chainID];
 		}
 	}
 	else{
 		for(int i = 0 ; i<sampler->maxDim; i++){
 			cov[i] = new double[sampler->maxDim];
 			for(int j = 0 ; j<sampler->maxDim; j++){
-				cov[i][j] = kdepv->runningCov[chainID][i][j]*kdepv->bandwidth[chainID]*kdepv->bandwidth[chainID];
+				cov[i][j] = runningCov[chainID][i][j]*bandwidth[chainID]*bandwidth[chainID];
 			}
 		}
 
 	}
-	int status = KDEDraw(samplePosition,cov,proposedPosition,kdepv->r[chainID],kdepv->runningSTD[chainID]);
+	int status = KDEDraw(samplePosition,cov,proposedPosition,r[chainID],runningSTD[chainID]);
 
 	if(status ==0){
 
 	
 		double evalFormer, evalProposed;
 			
-		evalFormer = std::log(kdepv->evalKDE(currentPosition,chainID));
-		evalProposed = std::log(kdepv->evalKDE(proposedPosition,chainID));
+		evalFormer = std::log(evalKDE(currentPosition,chainID));
+		evalProposed = std::log(evalKDE(proposedPosition,chainID));
 
 		//update MH ratio
-		*MHRatioCorrection +=evalFormer;
-		*MHRatioCorrection -=evalProposed;
+		*MHRatioModifications +=evalFormer;
+		*MHRatioModifications -=evalProposed;
 
 		//######################################3
 		//TESTING

@@ -32,21 +32,11 @@ namespace bayesship{
  *
  * If priorRanges is provided, it proposes a uniform number in that range. Otherwise, uses a uniform number between (0,1)
  */
-void sequentialLayerRJProposal(
-	samplerData *data,
-	int chainID,
-	int stepID, 
-	bayesshipSampler *sampler,
-	double *MH_corrections
-	)
+void sequentialLayerRJProposal::propose(positionInfo *currentStep, positionInfo *proposedStep, int chainID,int stepID,double *MHRatioModifications)
 { 
-	*MH_corrections = 0;
-	positionInfo *currentStep = data->positions[chainID][data->currentStepID[chainID]];
-	positionInfo *proposedStep = data->positions[chainID][data->currentStepID[chainID]+1];
+	*MHRatioModifications = 0;
 
 	proposedStep->updatePosition(currentStep);
-
-	sequentialLayerRJProposalVariables *var = (sequentialLayerRJProposalVariables *)sampler->proposalFns->proposalFnVariables[stepID];
 
 	int activeDims = 0;
 	
@@ -60,20 +50,20 @@ void sequentialLayerRJProposal(
 
 	//##################################################
 	//create
-	if(prob < var->alpha ){
+	if(prob < alpha ){
 		if( activeDims < sampler->maxDim){
 			proposedStep->status[lastID+1] = 1;
 			if(sampler->priorRanges){
 				proposedStep->parameters[lastID+1] = gsl_rng_uniform(sampler->rvec[chainID])*(sampler->priorRanges[lastID+1][1]-sampler->priorRanges[lastID + 1][0])+sampler->priorRanges[lastID + 1][0];
-				//*MH_corrections -=std::log(1./(sampler->priorRanges[lastID+1][1]-sampler->priorRanges[lastID+1][0])) ;
-				*MH_corrections -=std::log(1./(sampler->priorRanges[lastID+1][1]-sampler->priorRanges[lastID+1][0])) ;
+				//*MHRatioModifications -=std::log(1./(sampler->priorRanges[lastID+1][1]-sampler->priorRanges[lastID+1][0])) ;
+				*MHRatioModifications -=std::log(1./(sampler->priorRanges[lastID+1][1]-sampler->priorRanges[lastID+1][0])) ;
 			}
 			else{
 				proposedStep->parameters[lastID+1] = gsl_rng_uniform(sampler->rvec[chainID]);
 			}
-			*MH_corrections+=std::log((1.-var->alpha)/(var->alpha));
+			*MHRatioModifications+=std::log((1.-alpha)/(alpha));
 			//proposedStep->parameters[P+1] = gsl_rng_uniform(h->r);
-			//*MH_corrections-=std::log( 1./(20.)  );
+			//*MHRatioModifications-=std::log( 1./(20.)  );
 		}
 
 	}
@@ -83,12 +73,12 @@ void sequentialLayerRJProposal(
 			proposedStep->status[lastID] = 0;
 			proposedStep->parameters[lastID] = 0;
 			if(sampler->priorRanges){
-				*MH_corrections +=std::log(1./(sampler->priorRanges[lastID][1]-sampler->priorRanges[lastID][0])) ;
+				*MHRatioModifications +=std::log(1./(sampler->priorRanges[lastID][1]-sampler->priorRanges[lastID][0])) ;
 			}
-			*MH_corrections+=std::log(var->alpha/(1.-var->alpha));
-			//*MH_corrections+=std::log(1./(20.));
+			*MHRatioModifications+=std::log(alpha/(1.-alpha));
+			//*MHRatioModifications+=std::log(1./(20.));
 			//if(P-1 == 1){
-			//	*MH_corrections+=std::log(1./(.5));
+			//	*MHRatioModifications+=std::log(1./(.5));
 			//}
 		}
 	}
@@ -97,6 +87,12 @@ void sequentialLayerRJProposal(
 	return ;
 }
 
-
+sequentialLayerRJProposal::sequentialLayerRJProposal(bayesshipSampler *sampler,double alpha )
+{
+	this->alpha = alpha;
+	this->sampler = sampler;
+	return;
+	
+}
 
 }

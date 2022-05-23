@@ -8,12 +8,15 @@
  */
 
 namespace bayesship{
-
-void differentialEvolutionProposal(samplerData *data, int chainID, int stepID, bayesshipSampler *sampler, double *MHRatioCorrection)
+differentialEvolutionProposal::differentialEvolutionProposal(bayesshipSampler *sampler)
 {
+	this->sampler = sampler;
+}
+
+void differentialEvolutionProposal::propose(positionInfo *currentPosition, positionInfo *proposedPosition, int chainID,int stepID,double *MHRatioModifications)
+{
+	samplerData *data = sampler->getActiveData();
 	int currentStep = data->currentStepID[chainID];
-	positionInfo *currentPosition = data->positions[chainID][currentStep];
-	positionInfo *proposedPosition = data->positions[chainID][currentStep+1];
 
 	proposedPosition->updatePosition(currentPosition);
 

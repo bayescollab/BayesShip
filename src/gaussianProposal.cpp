@@ -13,31 +13,30 @@
 
 namespace bayesship{
 
-void gaussianProposalWriteCheckpoint( void *var , bayesshipSampler *sampler)
+void gaussianProposal::writeCheckpoint(  std::string outputDirectory, std::string runMoniker)
 {
-	std::string outfile(sampler->outputDir+sampler->outputFileMoniker + "_checkpoint_gaussianProposalVariables.json");
+	
+	std::string outfile(outputDirectory+runMoniker + "_checkpoint_gaussianProposalVariables.json");
 	std::cout<<"Writing Gaussian checkpoint to "<<outfile<<std::endl;
-	gaussianProposalVariables *gpv = (gaussianProposalVariables *)var;	
 
 	nlohmann::json j;
 	
 	for(int i = 0 ; i<sampler->ensembleN*sampler->ensembleSize; i++){
 		j["Gaussian Widths"]["Chain "+std::to_string(i)] 
-			= std::vector<double>( gpv->gaussWidths[i],gpv->gaussWidths[i] + sampler->maxDim);
+			= std::vector<double>( gaussWidths[i],gaussWidths[i] + sampler->maxDim);
 	}
 	std::ofstream fileOut(outfile);
 	fileOut << j;
 
 	return;
 }
-void gaussianProposalLoadCheckpoint( void *var,bayesshipSampler *sampler)
+void gaussianProposal::loadCheckpoint(  std::string inputDirectory, std::string runMoniker)
 {
-	std::string inputFile(sampler->outputDir+sampler->outputFileMoniker + "_checkpoint_gaussianProposalVariables.json");
+	std::string inputFile(inputDirectory+runMoniker + + "_checkpoint_gaussianProposalVariables.json");
 	if(!checkDirExist(inputFile)){
 		return;
 	}
 	std::cout<<"Loading Gaussian checkpoint to "<<inputFile<<std::endl;
-	gaussianProposalVariables *gpv = (gaussianProposalVariables *)var;
 
 	nlohmann::json j ;
 	std::ifstream fileIn(inputFile);
@@ -47,7 +46,7 @@ void gaussianProposalLoadCheckpoint( void *var,bayesshipSampler *sampler)
 		std::vector<double> widthTemp;
 		j["Gaussian Widths"]["Chain "+std::to_string(i)].get_to(widthTemp);
 		for(int j = 0 ; j<sampler->maxDim;j++){
-			gpv->gaussWidths[i][j] = widthTemp[j];
+			gaussWidths[i][j] = widthTemp[j];
 		}
 	}
 	return;
@@ -56,9 +55,10 @@ void gaussianProposalLoadCheckpoint( void *var,bayesshipSampler *sampler)
 
 
 /*! Constructor function*/
-gaussianProposalVariables::gaussianProposalVariables(
+gaussianProposal::gaussianProposal(
 	int chainN, /**< Number of chains in the ensemble*/
 	int maxDim, /**< Maximum dimension of the space*/
+	bayesshipSampler *sampler,
 	int seed /**< Seed to use for initiating random numbers*/
 	)
 {
@@ -67,6 +67,7 @@ gaussianProposalVariables::gaussianProposalVariables(
 	gsl_rng_env_setup();
 	r = new gsl_rng *[chainN];
 	gaussWidths = new double*[chainN];
+	this->sampler=sampler;
 
 	const gsl_rng_type *T=gsl_rng_default;
 
@@ -87,7 +88,7 @@ gaussianProposalVariables::gaussianProposalVariables(
 		previousAccepts[i] = 0;
 	}
 }
-gaussianProposalVariables::~gaussianProposalVariables()
+gaussianProposal::~gaussianProposal()
 {
 	if(r){
 		for(int i =0 ;i<chainN; i++){
@@ -121,30 +122,29 @@ gaussianProposalVariables::~gaussianProposalVariables()
  *
  */ 
 
-void gaussianProposal(samplerData *data, int chainID, int stepID, bayesshipSampler *sampler, double *MHRatioCorrection)
+void gaussianProposal::propose(positionInfo *currentPosition, positionInfo *proposedPosition, int chainID, int stepID, double *MHRatioModifications)
 {
-	positionInfo *currentPosition = data->positions[chainID][data->currentStepID[chainID]];
-	positionInfo *proposedPosition = data->positions[chainID][data->currentStepID[chainID]+1];
-	gaussianProposalVariables *gpv = (gaussianProposalVariables *)sampler->proposalFns->proposalFnVariables[stepID];	
 	proposedPosition->updatePosition(currentPosition);
+
+	samplerData *data = sampler->getActiveData();
 	
 	/*! Update step widths based on accepted fraction*/
 	/*! TODO needs revamp -- shouldn't update all the time -- shooting for 20%*/
 	if(sampler->burnPeriod){
 	//if(false){
 		//Accepts haven't changed -- proposal was rejected
-		if(gpv->previousAccepts[chainID] == data->successN[chainID][stepID]){
-			gpv->gaussWidths[chainID][gpv->previousDimID[chainID]]*=.9;
+		if(previousAccepts[chainID] == data->successN[chainID][stepID]){
+			gaussWidths[chainID][previousDimID[chainID]]*=.9;
 		}
 		//Accepts have changed -- proposal was accepted
 		else{
-			gpv->gaussWidths[chainID][gpv->previousDimID[chainID]]*=1.1;
+			gaussWidths[chainID][previousDimID[chainID]]*=1.1;
 
 		}
 	}
 	int currentDim = currentPosition->countActiveDimensions();
 		
-	int beta = (int) (gsl_rng_uniform(gpv->r[chainID])*currentDim);
+	int beta = (int) (gsl_rng_uniform(r[chainID])*currentDim);
 	int dim = beta;
 	if(sampler->RJ){
 		dim = 0 ;
@@ -159,10 +159,11 @@ void gaussianProposal(samplerData *data, int chainID, int stepID, bayesshipSampl
 	}
 
 	if(sampler->burnPeriod){
-		gpv->previousDimID[chainID] = dim;
-		gpv->previousAccepts[chainID] = data->successN[chainID][stepID];
+	//if(false){
+		previousDimID[chainID] = dim;
+		previousAccepts[chainID] = data->successN[chainID][stepID];
 	}
-	proposedPosition->parameters[dim] +=   gsl_ran_gaussian(gpv->r[chainID],gpv->gaussWidths[chainID][dim]);
+	proposedPosition->parameters[dim] +=   gsl_ran_gaussian(r[chainID],gaussWidths[chainID][dim]);
 	return;
 }
 

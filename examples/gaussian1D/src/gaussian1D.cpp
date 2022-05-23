@@ -47,8 +47,8 @@ int main(int argc, char *argv[])
 	priorRange[0][1] = 10;
 	sampler->priorRanges = priorRange;
 	//sampler->priorIterations = 10000;
-	sampler->priorIterations = 0;
-	sampler->burnPriorIterations = 0;
+	sampler->priorIterations = 10000;
+	sampler->burnPriorIterations = 1000;
 	sampler->writePriorData = true;
 	sampler->ignoreExistingCheckpoint=true;
 	//sampler->priorIterations = 0;

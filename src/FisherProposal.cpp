@@ -9,7 +9,7 @@
  */
 namespace bayesship{
 
-FisherProposalVariables::FisherProposalVariables(int chainN, int maxDim, FisherCalculation fisherCalc, void **parameters, int updateFreq)
+fisherProposal::fisherProposal(int chainN, int maxDim, FisherCalculation fisherCalc, void **parameters, int updateFreq, bayesshipSampler *sampler)
 {
 
 	this->parameters = parameters;
@@ -17,6 +17,7 @@ FisherProposalVariables::FisherProposalVariables(int chainN, int maxDim, FisherC
 	this->maxDim = maxDim;
 	this->fisherCalc = fisherCalc;
 	this->updateFreq = updateFreq;
+	this->sampler = sampler;
 
 	if(!Fisher){
 		Fisher = new double**[chainN];
@@ -51,7 +52,7 @@ FisherProposalVariables::FisherProposalVariables(int chainN, int maxDim, FisherC
 
 }
 	
-FisherProposalVariables::~FisherProposalVariables()
+fisherProposal::~fisherProposal()
 {
 	if(Fisher){
 		for(int i = 0 ; i<chainN; i++){
@@ -82,23 +83,20 @@ FisherProposalVariables::~FisherProposalVariables()
 	}
 }
 
-void FisherProposal(samplerData *data, int chainID, int stepID, bayesshipSampler *sampler, double *MHRatioModification)
+void fisherProposal::propose(positionInfo *currentPosition, positionInfo *proposedPosition,int chainID,int stepID,  double *MHRatioModification)
 {
-	positionInfo *currentPosition = data->positions[chainID][data->currentStepID[chainID]];
-	positionInfo *proposedPosition = data->positions[chainID][data->currentStepID[chainID]+1];
-	FisherProposalVariables *fpv = (FisherProposalVariables *)sampler->proposalFns->proposalFnVariables[stepID];	
 	proposedPosition->updatePosition(currentPosition);
 
-	if((fpv->FisherAttemptsSinceLastUpdate[chainID] >= fpv->updateFreq) && (sampler->burnPeriod)){
-	//if((fpv->FisherAttemptsSinceLastUpdate[chainID] >= fpv->updateFreq) ){
-		fpv->fisherCalc(currentPosition, sampler, fpv->Fisher[chainID], fpv->parameters[chainID]);
+	if((FisherAttemptsSinceLastUpdate[chainID] >= updateFreq) && (sampler->burnPeriod)){
+	//if((FisherAttemptsSinceLastUpdate[chainID] >= updateFreq) ){
+		fisherCalc(currentPosition,  Fisher[chainID], parameters[chainID]);
 		//Update eigenvalues/eigenvectors
 		arma::mat f;
-		f.zeros(fpv->maxDim,fpv->maxDim);
+		f.zeros(maxDim,maxDim);
 		for(int i = 0 ; i<sampler->maxDim; i++){
 			for(int j = 0 ; j<sampler->maxDim; j++){
-				//std::cout<<fpv->Fisher[chainID][i][j]<<", ";
-				f(i,j) = fpv->Fisher[chainID][i][j];
+				//std::cout<<Fisher[chainID][i][j]<<", ";
+				f(i,j) = Fisher[chainID][i][j];
 			}
 			//std::cout<<std::endl;
 		}
@@ -109,27 +107,27 @@ void FisherProposal(samplerData *data, int chainID, int stepID, bayesshipSampler
 			//std::cout<<"Failed Fisher"<<std::endl;
 			return;	
 		}
-		for(int i = 0 ; i<sampler->maxDim; i++){
-			for(int j = 0 ; j<sampler->maxDim; j++){
-				fpv->FisherEigenVecs[chainID][i][j] = eigenvec(i,j);
+		for(int i = 0 ; i<maxDim; i++){
+			for(int j = 0 ; j<maxDim; j++){
+				FisherEigenVecs[chainID][i][j] = eigenvec(i,j);
 			}
-			fpv->FisherEigenVals[chainID][i] = eigval(i);
+			FisherEigenVals[chainID][i] = eigval(i);
 		}
-		fpv->FisherAttemptsSinceLastUpdate[chainID] = 0;
+		FisherAttemptsSinceLastUpdate[chainID] = 0;
 
 		
 	}
 
-	int randDim = (int)(gsl_rng_uniform(sampler->rvec[chainID])*sampler->maxDim);	
+	int randDim = (int)(gsl_rng_uniform(sampler->rvec[chainID])*maxDim);	
 	//Adding 1e-10 to soften the effect of broadening gaussian step based on Temperature dependence -- beta==0 is problematic
-	double scaling = std::abs(fpv->FisherEigenVals[chainID][randDim]); 
+	double scaling = std::abs(FisherEigenVals[chainID][randDim]); 
 	if(scaling <10. ){scaling = 10.;}
 	scaling *=(sampler->betas[chainID]+1e-5);
 	double randGauss = gsl_ran_gaussian(sampler->rvec[chainID], 1./std::sqrt(scaling));	
-	for(int i = 0 ; i<sampler->maxDim; i++){
-		proposedPosition->parameters[i] += randGauss * (fpv->FisherEigenVecs[chainID][randDim][i]);
+	for(int i = 0 ; i<maxDim; i++){
+		proposedPosition->parameters[i] += randGauss * (FisherEigenVecs[chainID][randDim][i]);
 	}
-	fpv->FisherAttemptsSinceLastUpdate[chainID] ++;
+	FisherAttemptsSinceLastUpdate[chainID] ++;
 	
 	return;
 }

@@ -17,23 +17,49 @@
 
 namespace bayesship{
 
-//class proposalFn
+//class proposal
 //{
 //public:
-//	proposalFn();
-//	~proposalFn();
-//	virtual void propose(positionInfo *current, positionInfo *proposed, int chainID)
+//	proposal();
+//	virtual ~proposal();
+//	virtual void propose(positionInfo *current, positionInfo *proposed, int chainID,double *MHRatioModifications)
 //	{
-//		proposed.updatePosition(current);
+//		proposed->updatePosition(current);
 //		return;	
+//	};
+//	/*! \brief proposalFn write checkpoint function typedef 
+//	 *
+//	 * Specifies the form of proposal function write checkpoint functions.
+//	 *
+//	 * These functions are called when writing out checkpoint files. It's up to the user whether and how these files should be written.
+//	 *
+//	 * These functions are only necessary if the proposal saves data or optimizes itself in some way. If not necessary, (void *) can be passed instead.
+//	 *
+//	 * The write and read checkpoint functions *should be compatible*. That is, the file naming should be consistent between the two, in such a way the files being written out can be read in without external information.
+//	 * 
+//	 * */
+//	virtual void writeCheckpoint(std::string outputDirectory, std::string runMoniker )
+//	{
+//		return ;
+//	};
+//	/*! \brief proposalFn read checkpoint function typedef 
+//	 *
+//	 * Specifies the form of proposal function read checkpoint functions.
+//	 *
+//	 * These functions are called when reading in checkpoint files. It's up to the user whether and how these files should be written.
+//	 *
+//	 * These functions are only necessary if the proposal saves data or optimizes itself in some way. If not necessary, (void *) can be passed instead.
+//	 *
+//	 * The write and read checkpoint functions *should be compatible*. That is, the file naming should be consistent between the two, in such a way the files being written out can be read in without external information.
+//	 * 
+//	 * */
+//	virtual void loadCheckpoint( std::string inputDirectory, std::string runMoniker)
+//	{
+//		return ;
 //	};
 //
 //};
 
-/*! Generic framework for setting up a class for a proposal function and its associated data
- */
-class genericProposalVariables
-{};
 
 
 //###################################################################
@@ -41,17 +67,12 @@ class genericProposalVariables
 
 typedef void(*FisherCalculation)(
 	positionInfo *pos,
-	bayesshipSampler *sampler,
 	double **fisher,
 	void *parameters
 	);
 
-/*! Gaussian proposal*/
-void FisherProposal(samplerData *data, int chainID, int stepID, bayesshipSampler *sampler,double *MHRatioModifications);
 
-/*! Class for storing data associated with the gaussian proposal
- */
-class FisherProposalVariables : public genericProposalVariables
+class fisherProposal: public proposal
 {
 public:
 	/*! Number of chains*/
@@ -67,37 +88,27 @@ public:
 	int updateFreq = 200;
 
 	void **parameters=nullptr;
+
+	bayesshipSampler *sampler=nullptr;
 	
 	FisherCalculation fisherCalc;
 
-	/*! Constructor function*/
-	FisherProposalVariables(
-		int chainN, /**< Number of chains in the ensemble*/
-		int maxDim, /**< Maximum dimension of the space*/
-		FisherCalculation fisherCalc,
-		void ** parameters,
-		int updateFreq=200
-		);
-	~FisherProposalVariables();
+	fisherProposal(int chainN, int maxDim, FisherCalculation fisherCalc, void **parameters, int updateFreq,bayesshipSampler *sampler);
+	virtual ~fisherProposal();
+	virtual void propose(positionInfo *current, positionInfo *proposed, int chainID,int stepID,double *MHRatioModifications);
 
 };
 
+
+
 //###################################################################
 //###################################################################
 
 
 //###################################################################
 //###################################################################
-//Checkpoint functions to read and write out gaussianProposalVariables object
-void gaussianProposalWriteCheckpoint( void *var,bayesshipSampler *sampler);
-void gaussianProposalLoadCheckpoint( void *var,bayesshipSampler *sampler);
 
-/*! Gaussian proposal*/
-void gaussianProposal(samplerData *data, int chainID, int stepID, bayesshipSampler *sampler,double *MHRatioModifications);
-
-/*! Class for storing data associated with the gaussian proposal
- */
-class gaussianProposalVariables : public genericProposalVariables
+class gaussianProposal: public proposal
 {
 public:
 	/*! Vector of random number generators*/
@@ -112,26 +123,21 @@ public:
 	int *previousDimID=nullptr;
 	/*! Track what the last acceptance was for updating widths*/
 	int *previousAccepts=nullptr;
+	bayesshipSampler *sampler=nullptr;
 
-	/*! Constructor function*/
-	gaussianProposalVariables(
-		int chainN, /**< Number of chains in the ensemble*/
-		int maxDim, /**< Maximum dimension of the space*/
-		int seed=1 /**< Seed to use for initiating random numbers*/
-		);
-	~gaussianProposalVariables();
+	gaussianProposal(int chainN, int maxDim , bayesshipSampler *sampler,int seed=1);
+	virtual ~gaussianProposal();
+	virtual void propose(positionInfo *current, positionInfo *proposed, int chainID,int stepID,double *MHRatioModifications);
+	virtual void writeCheckpoint(std::string outputDirectory , std::string runMoniker);
+	virtual void loadCheckpoint( std::string inputDirectory, std::string runMoniker);
 
 };
 
+
 //###################################################################
 //###################################################################
 
-/*KDE proposal*/
-void KDEProposal(samplerData *data, int chainID, int stepID, bayesshipSampler *sampler,double *MHRatioModifications);
-
-/*! Class for storing data associated with the KDE proposal
- */
-class KDEProposalVariables : public genericProposalVariables
+class KDEProposal: public proposal
 {
 public:
 	/*! Vector of random number generators*/
@@ -156,6 +162,8 @@ public:
 	double *bandwidth = nullptr;
 	/*! Pointer of the current samplerData object -- if this changes, we can restart counters (Does NOT erase old samples)*/
 	samplerData **currentData = nullptr;
+	
+	bayesshipSampler *sampler;
 
 	/*! Previous samples stored for KDE usage*/
 	/*! Could make this a new structure as a linked list to have variable size, but not now*/
@@ -181,18 +189,18 @@ public:
 #ifdef _MLPACK
 	mlpack::kde::KDE<mlpack::kernel::GaussianKernel,mlpack::metric::EuclideanDistance,arma::mat, mlpack::tree::KDTree> **kde=nullptr;
 #endif
-	
-	/*! Constructor function*/
-	KDEProposalVariables(
+	KDEProposal(
 		int chainN, /**< Number of chains in the ensemble*/
 		int maxDim, /**< Maximum dimension of the space*/
+		bayesshipSampler *sampler,
 		bool RJ=false,
 		int batchSize = 5000,/**< Batch size to allocate memory for data points */
 		int KDETrainingBatchSize= 1000,/**< Batch size to use for KDE training/eval ; -1 means full*/
 		int updateInterval = 5,/**< number of steps to take before storing a sample*/
 		int seed=1 /**< Seed to use for initiating random numbers*/
-		);
-	~KDEProposalVariables();
+	);
+	virtual ~KDEProposal();
+	virtual void propose(positionInfo *current, positionInfo *proposed, int chainID,int stepID,double *MHRatioModifications);
 	void updateCov( int chainID);
 	//void updateVar( int chainID);
 	int trainKDE(int chainID );
@@ -203,6 +211,7 @@ public:
 	double evalKDEMLPACK(positionInfo *position,int chainID); 
 	double evalKDECustom(positionInfo *position,int chainID); 
 	double evalKDE(positionInfo *position,int chainID); 
+
 };
 
 
@@ -211,22 +220,30 @@ int KDEDraw(positionInfo *sampleLocation, double **cov, positionInfo *output);
 //###################################################################
 //###################################################################
 
-/*differentialEvolution proposal*/
-void differentialEvolutionProposal(samplerData *data, int chainID, int stepID, bayesshipSampler *sampler,double *MHRatioModifications);
+class differentialEvolutionProposal: public proposal
+{
+public:
+	bayesshipSampler *sampler=nullptr;
+	differentialEvolutionProposal(bayesshipSampler *sampler);
+	virtual ~differentialEvolutionProposal(){return;};
+	virtual void propose(positionInfo *current, positionInfo *proposed, int chainID,int stepID,double *MHRatioModifications);
+
+};
+
 
 //###################################################################
 //###################################################################
 /*Reversible Jump proposal -- layer on modifications sequentially with creation probability alpha and destruction probability 1-alpha*/
 
-void sequentialLayerRJProposal(samplerData *data, int chainID, int stepID, bayesshipSampler *sampler,double *MHRatioModifications);
-
-class sequentialLayerRJProposalVariables : public genericProposalVariables
+class sequentialLayerRJProposal: public proposal
 {
 public:
-	sequentialLayerRJProposalVariables(double alpha=.5){
-		this->alpha = alpha;
-	}
 	double alpha= .5;
+	bayesshipSampler *sampler;
+	sequentialLayerRJProposal(bayesshipSampler *sampler,double alpha=.5 );
+	virtual ~sequentialLayerRJProposal(){return;};
+	virtual void propose(positionInfo *current, positionInfo *proposed, int chainID,int stepID,double *MHRatioModifications);
+
 };
 
 }

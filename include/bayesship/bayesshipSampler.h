@@ -26,24 +26,50 @@ const double limitInf = - std::numeric_limits<double>::infinity();
 
 /*Must forwardd declare the class to use it in the declarations of the functions below*/
 class bayesshipSampler;
+//class proposal;
 
+class proposal
+{
+public:
+	proposal(){return;};
+	virtual ~proposal(){return;};
+	virtual void propose(positionInfo *current, positionInfo *proposed, int chainID,int stepID,double *MHRatioModifications)
+	{
+		proposed->updatePosition(current);
+		return;	
+	};
+	/*! \brief proposalFn write checkpoint function typedef 
+	 *
+	 * Specifies the form of proposal function write checkpoint functions.
+	 *
+	 * These functions are called when writing out checkpoint files. It's up to the user whether and how these files should be written.
+	 *
+	 * These functions are only necessary if the proposal saves data or optimizes itself in some way. If not necessary, (void *) can be passed instead.
+	 *
+	 * The write and read checkpoint functions *should be compatible*. That is, the file naming should be consistent between the two, in such a way the files being written out can be read in without external information.
+	 * 
+	 * */
+	virtual void writeCheckpoint(std::string outputDirectory, std::string runMoniker )
+	{
+		return ;
+	};
+	/*! \brief proposalFn read checkpoint function typedef 
+	 *
+	 * Specifies the form of proposal function read checkpoint functions.
+	 *
+	 * These functions are called when reading in checkpoint files. It's up to the user whether and how these files should be written.
+	 *
+	 * These functions are only necessary if the proposal saves data or optimizes itself in some way. If not necessary, (void *) can be passed instead.
+	 *
+	 * The write and read checkpoint functions *should be compatible*. That is, the file naming should be consistent between the two, in such a way the files being written out can be read in without external information.
+	 * 
+	 * */
+	virtual void loadCheckpoint( std::string inputDirectory, std::string runMoniker)
+	{
+		return ;
+	};
 
-
-
-
-/*! \brief Proposal function typedef 
- *
- * Specifies the form of proposal functions
- * 
- * All user defined proposal functions must be caste-able to this type
- * */
-typedef void(*proposalFn)(
-	samplerData *data,
-	int chainID,/**< ID of the chain being utilized*/
-	int stepID,/**< Proposal ID for extracting proposal variables */
-	bayesshipSampler *sampler,/**< Sampler object that is currently sampling*/
-	double *MHRatioModifications/**< Modifications to the MH ration (like asymmetric proposals*/
-	);
+};
 
 
 
@@ -54,7 +80,7 @@ class probabilityFn
 public:
 	probabilityFn(){};
 	virtual ~probabilityFn(){};
-	virtual double eval(positionInfo *position, int chainID) { std::cout<<"OOPS"<<std::endl;return 0;}
+	virtual double eval(positionInfo *position, int chainID) { return 0;}
 };
 
 
@@ -89,38 +115,6 @@ public:
 
 
 
-/*! \brief proposalFn write checkpoint function typedef 
- *
- * Specifies the form of proposal function write checkpoint functions.
- *
- * These functions are called when writing out checkpoint files. It's up to the user whether and how these files should be written.
- *
- * These functions are only necessary if the proposal saves data or optimizes itself in some way. If not necessary, (void *) can be passed instead.
- *
- * The write and read checkpoint functions *should be compatible*. That is, the file naming should be consistent between the two, in such a way the files being written out can be read in without external information.
- * 
- * */
-typedef void(*proposalFnWriteCheckpoint)(
-	void *proposalFnVariables,
-	bayesshipSampler *sampler
-	);
-
-/*! \brief proposalFn read checkpoint function typedef 
- *
- * Specifies the form of proposal function read checkpoint functions.
- *
- * These functions are called when reading in checkpoint files. It's up to the user whether and how these files should be written.
- *
- * These functions are only necessary if the proposal saves data or optimizes itself in some way. If not necessary, (void *) can be passed instead.
- *
- * The write and read checkpoint functions *should be compatible*. That is, the file naming should be consistent between the two, in such a way the files being written out can be read in without external information.
- * 
- * */
-typedef void(*proposalFnLoadCheckpoint)(
-	void *proposalFnVariables,
-	bayesshipSampler *sampler
-	);
-
 
 /*! \brief Class containing all the information about proposal functions for the bayesshipSampler object
  *
@@ -130,47 +124,39 @@ typedef void(*proposalFnLoadCheckpoint)(
  *
  * Implementations that want to use custom proposals will need to declare and populate one of these structures, then pass it to the bayesshipSampler object
  */
-class proposalFnData
+class proposalData
 {
 public:
 	/*! Number of proposal functions*/
-	int proposalFnN;
+	int proposalN;
 	/*! Array of proposal function pointers */
-	proposalFn *proposalFnArray=nullptr;
-	/*! Probability of each proposalFn*/
-	float **proposalFnProb=nullptr;
-	/*! Any necessary variables/data for each proposal Fn*/
-	void **proposalFnVariables=nullptr;
-	/*! writeCheckpointFns for all proposals. If not necessary for a specific proposal, pass (void *)*/
-	proposalFnWriteCheckpoint *writeCheckpointFns=nullptr;
-	/*! readCheckpointFns for all proposals. If not necessary for a specific proposal, pass (void *)*/
-	proposalFnLoadCheckpoint *loadCheckpointFns=nullptr;
+	proposal **proposals=nullptr;
+	/*! Probability of each proposal*/
+	double **proposalProb=nullptr;
 	
 	/*! \brief Constructor for the class 
  *
  * 		Manual assignment.
  */
-	proposalFnData(
+	proposalData(
 		int chainN,/**< Number of chains being used*/
-		int proposalFnN,/**< Number of proposal functions */
-		proposalFn *proposalFnArray,/**< array of proposalFn objects of length proposalFnN*/
-		void **proposalFnVariables,/**< Array of auxiliary parameters for each proposal. If not needed, pass (void *)*/
-		float *proposalFnProbFixed=nullptr ,/**< Probabilities of each step, float length proposalFnN -- if populated, all chains (regardless of temperature) have the same probabilities*/
-		float **proposalFnProb=nullptr ,/**< Probabilities of each step for each chain, 2d float shape [chainN][proposalFnN] -- if populated, chains *do not* have the same probabilities necessarily*/
-		proposalFnWriteCheckpoint *writeCheckpointFns=nullptr,/**< array of proposalWriteCheckpoint functions. If not needed, pass (void *)*/
-		proposalFnLoadCheckpoint *loadCheckpointFns=nullptr/**< array of proposalReadCheckpoint functions. If not needed, pass (void *)*/
+		int proposalN,/**< Number of proposal functions */
+		proposal **proposals,/**< array of proposalFn objects of length proposalFnN*/
+		double *proposalProbFixed=nullptr ,/**< Probabilities of each step, float length proposalFnN -- if populated, all chains (regardless of temperature) have the same probabilities*/
+		double **proposalProb=nullptr /**< Probabilities of each step for each chain, 2d float shape [chainN][proposalFnN] -- if populated, chains *do not* have the same probabilities necessarily*/
 		);
 	/*! \brief Constructor for the class 
  *
  * 		Default values will use the standard proposals 
  */
-	proposalFnData(
+	proposalData(
 		int chainN,/**< number of chains being used*/
 		int maxDim,/**< Maximum number of dimensions*/
+		bayesshipSampler *sampler,/**< Sampler associated with this data*/
 		bool RJ/**< Bool for RJ or regular MCMC*/
 		);
 	/*! \brief Destructor to free data*/
-	~proposalFnData();
+	~proposalData();
 
 private:
 	/*! Number of chains in the ensemble*/
@@ -210,7 +196,7 @@ public:
 	/*! Number of threads to launch*/
 	int threads=1;
 	/*! Class containing all the information about the proposal functions used in the sampling*/
-	proposalFnData *proposalFns=nullptr;
+	proposalData *proposalFns=nullptr;
 	/*! Output Destinations*/
 	std::string outputDir="";
 	/*! Output files base name*/
@@ -259,7 +245,9 @@ public:
 	/*! If the ensemble position is not specified, and the single position is specified, the initial position is assigned to every chain in the ensemble*/
 	positionInfo *initialPosition=nullptr;
 	/************************************/
+
 	
+	samplerData *activeData=nullptr;
 
 	// non-user-facing members (should probably be private but that's annoying
 	/* Re-initialized between runs*/
@@ -278,6 +266,8 @@ public:
 	double nu=100;
 	double *A=nullptr;
 	gsl_rng **rvec=nullptr;
+
+	
 		
 
 	///*! All positions for sampler (ptrs) -- shape [chainN][iterations]*/
@@ -321,6 +311,9 @@ public:
 	void adjustTemperatures(int t);
 	int chainIndex(int ensemble, int betaN);
 	int betaN(int chainID);
+	samplerData *getActiveData();
+	void setActiveData( samplerData *newData);
+
 	
 	/*! Write checkpoint file for sampler -- stores data in json to completely reconstruct Sampler object*/
 	void writeCheckpoint(samplerData *data);

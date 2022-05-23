@@ -167,14 +167,14 @@ void bayesshipSampler::sample()
  */
 	if(independentSamples != 0){
 		if(batchSize != 0){
-			data = new samplerData(maxDim, ensembleN,ensembleSize, batchSize, proposalFns->proposalFnN, RJ,betas);
+			data = new samplerData(maxDim, ensembleN,ensembleSize, batchSize, proposalFns->proposalN, RJ,betas);
 		}
 		else{
-			data = new samplerData(maxDim, ensembleN,ensembleSize, independentSamples, proposalFns->proposalFnN, RJ,betas);
+			data = new samplerData(maxDim, ensembleN,ensembleSize, independentSamples, proposalFns->proposalN, RJ,betas);
 		}
 	}
 	else{
-		data = new samplerData(maxDim, ensembleN,ensembleSize, iterations, proposalFns->proposalFnN, RJ,betas);
+		data = new samplerData(maxDim, ensembleN,ensembleSize, iterations, proposalFns->proposalN, RJ,betas);
 	}
 	
 	if(priorIterations >0 && priorRanges){
@@ -189,7 +189,7 @@ void bayesshipSampler::sample()
 		tempprior->sampler = this;
 		prior = tempprior;
 
-		priorData = new samplerData(maxDim, ensembleN,ensembleSize, priorIterations, proposalFns->proposalFnN, RJ,betas);
+		priorData = new samplerData(maxDim, ensembleN,ensembleSize, priorIterations, proposalFns->proposalN, RJ,betas);
 		if(burnPriorIterations >0){
 			std::cout<<"Burning in for prior"<<std::endl;
 			
@@ -198,7 +198,7 @@ void bayesshipSampler::sample()
 			burnPeriod=true;
 			adjustTemps=false;
 
-			burnData = new samplerData(maxDim, ensembleN,ensembleSize, burnPriorIterations, proposalFns->proposalFnN, RJ,betas);
+			burnData = new samplerData(maxDim, ensembleN,ensembleSize, burnPriorIterations, proposalFns->proposalN, RJ,betas);
 			assignInitialPosition(burnData);
 
 			//swapProb=saveSwapProb;
@@ -267,7 +267,7 @@ void bayesshipSampler::sample()
 		randomizeSwapping = false;
 		t0 = burnIterations /8.;
 
-		burnData = new samplerData(maxDim, ensembleN,ensembleSize, burnIterations, proposalFns->proposalFnN, RJ,betas);
+		burnData = new samplerData(maxDim, ensembleN,ensembleSize, burnIterations, proposalFns->proposalN, RJ,betas);
 		if(priorData){
 		//if(false){
 			for(int i = 0 ; i<chainN; i++){
@@ -546,7 +546,7 @@ void bayesshipSampler::allocateMemory( )
 	if(!proposalFns){
 		/* Set internal flag reminding us to release the object in the end*/
 		internalProposalFnsFlag=true;
-		this->proposalFns = new proposalFnData(chainN,maxDim,RJ);
+		this->proposalFns = new proposalData(chainN,maxDim,this,RJ);
 	}
 
 
@@ -690,7 +690,7 @@ bayesshipSampler::~bayesshipSampler()
  */
 void bayesshipSampler::sampleLoop(int samples,samplerData *data)
 {
-	
+	setActiveData(data);	
 	if(!threadPool){
 		ThreadPool<sampleJob> *samplePool = new ThreadPool<sampleJob>(threads, sampleThreadedFunctionNoSwap,false);
 		//#ifdef _OPENMP
@@ -1096,9 +1096,9 @@ void bayesshipSampler::stepMH(
 	double beta = (gsl_rng_uniform(rvec[chainID]));
 	int randStep = 0;
 	double runningSum = 0;
-	for(int i = 1 ; i<proposalFns->proposalFnN; i++){
-		runningSum+=proposalFns->proposalFnProb[chainID][i-1];
-		double upper = runningSum + proposalFns->proposalFnProb[chainID][i];
+	for(int i = 1 ; i<proposalFns->proposalN; i++){
+		runningSum+=proposalFns->proposalProb[chainID][i-1];
+		double upper = runningSum + proposalFns->proposalProb[chainID][i];
 		double lower = runningSum ;
 			
 		if(beta > lower && beta < upper){
@@ -1108,7 +1108,7 @@ void bayesshipSampler::stepMH(
 	double MHRatioCorrection = 0;
 	/*Perform the proposal*/
 	double start = omp_get_wtime();	
-	proposalFns->proposalFnArray[randStep](data, chainID, randStep, this, &MHRatioCorrection);
+	proposalFns->proposals[randStep]->propose(data->positions[chainID][currentStep], data->positions[chainID][proposalStep],chainID,  randStep,&MHRatioCorrection);
 	double time = omp_get_wtime() - start;
 	data->proposalTimes[chainID][randStep] *= (data->rejectN[chainID][randStep] +data->successN[chainID][randStep] );
 	data->proposalTimes[chainID][randStep] += time;
@@ -1238,76 +1238,60 @@ void samplerData::deallocatePrimitivePointer(double ***newPointer)
 
 
 
-proposalFnData::proposalFnData(
+proposalData::proposalData(
 	int chainN,
-	int proposalFnN,
-	proposalFn *proposalFnArray,
-	void **proposalFnVariables ,
-	float *proposalFnProbFixed ,
-	float **proposalFnProb ,
-	proposalFnWriteCheckpoint *writeCheckpointFns,
-	proposalFnLoadCheckpoint *loadCheckpointFns
+	int proposalN,
+	proposal **proposals,
+	double *proposalProbFixed ,
+	double **proposalProb 
 	)
 {
 
 	/*User supplied*/
 
-	this->proposalFnN = proposalFnN;
+	this->proposalN = proposalN;
 	this->chainN = chainN;
 	
-	this->proposalFnArray = new proposalFn[proposalFnN];
-	this->proposalFnProb = new float*[chainN];	
-	this->proposalFnVariables = new void *[proposalFnN];
+	this->proposals = new proposal*[proposalN];
+	this->proposalProb = new double*[chainN];	
 
 	
-	for(int i = 0 ; i<proposalFnN ; i++){
-		this->proposalFnArray[i] = proposalFnArray[i];
-		this->proposalFnVariables[i] = proposalFnVariables[i];
+	for(int i = 0 ; i<proposalN ; i++){
+		this->proposals[i] = proposals[i];
 	}
-	if(proposalFnProb){
+	if(proposalProb){
 		for(int i =0  ; i<chainN; i++){
-			this->proposalFnProb[i] = new float[proposalFnN];	
-			for(int j = 0 ; j<proposalFnN ; j++){
-				this->proposalFnProb[i][j] = proposalFnProb[i][j];
+			this->proposalProb[i] = new double[proposalN];	
+			for(int j = 0 ; j<proposalN ; j++){
+				this->proposalProb[i][j] = proposalProb[i][j];
 			}
 		}
 	}
-	else if (proposalFnProbFixed){
+	else if (proposalProbFixed){
 		for(int i =0  ; i<chainN; i++){
-			this->proposalFnProb[i] = new float[proposalFnN];	
-			for(int j = 0 ; j<proposalFnN ; j++){
-				this->proposalFnProb[i][j] = proposalFnProbFixed[j];
+			this->proposalProb[i] = new double[proposalN];	
+			for(int j = 0 ; j<proposalN ; j++){
+				this->proposalProb[i][j] = proposalProbFixed[j];
 			}
 		}
 
 	}
 	else{
 		for(int i =0  ; i<chainN; i++){
-			this->proposalFnProb[i] = new float[proposalFnN];	
-			for(int j = 0 ; j<proposalFnN ; j++){
-				this->proposalFnProb[i][j] = 1./proposalFnN;
+			this->proposalProb[i] = new double[proposalN];	
+			for(int j = 0 ; j<proposalN ; j++){
+				this->proposalProb[i][j] = 1./proposalN;
 			}
 		}
 	
 	}
-	if(writeCheckpointFns){
-		this->writeCheckpointFns = new proposalFnWriteCheckpoint[proposalFnN];
-		for(int i = 0 ; i<proposalFnN; i++){
-			this->writeCheckpointFns[i] = writeCheckpointFns[i];
-		}
-	}
-	if(loadCheckpointFns){
-		this->loadCheckpointFns = new proposalFnLoadCheckpoint[proposalFnN];
-		for(int i = 0 ; i<proposalFnN; i++){
-			this->loadCheckpointFns[i] = loadCheckpointFns[i];
-		}
-	}
 
 }
 
-proposalFnData::proposalFnData(
+proposalData::proposalData(
 	int chainN,
 	int maxDim,
+	bayesshipSampler *sampler,
 	bool RJ
 	)
 {
@@ -1315,39 +1299,24 @@ proposalFnData::proposalFnData(
 	internalMemorySet=true;
 	this->chainN = chainN;
 	this->maxDim = maxDim;
-	this->proposalFnProb = new float*[chainN];	
+	this->proposalProb = new double*[chainN];	
 
-	this->proposalFnN = 3;
+	this->proposalN = 3;
 
-	this->proposalFnArray = new proposalFn[3];
-	this->proposalFnVariables = new void *[3];
+	this->proposals = new proposal*[3];
 
-	this->proposalFnArray[0] = gaussianProposal;
-	this->proposalFnArray[1] = differentialEvolutionProposal;
-	this->proposalFnArray[2] = KDEProposal;
+	this->proposals[0] = new gaussianProposal(chainN, maxDim,sampler);
+	this->proposals[1] = new differentialEvolutionProposal(sampler);
+	this->proposals[2] = new KDEProposal(chainN, maxDim, sampler,RJ);
 
 	for(int i =0  ; i<chainN; i++){
-		this->proposalFnProb[i] = new float[3];	
-		this->proposalFnProb[i][0] = .4;
-		this->proposalFnProb[i][1] = .5;
-		this->proposalFnProb[i][2] = .1;
+		this->proposalProb[i] = new double[3];	
+		this->proposalProb[i][0] = .4;
+		this->proposalProb[i][1] = .5;
+		this->proposalProb[i][2] = .1;
 	}
 
-	gaussianProposalVariables *gpv = new gaussianProposalVariables(chainN,maxDim);
-	KDEProposalVariables *kdepv = new KDEProposalVariables(chainN,maxDim);
-	proposalFnVariables[0] = (void *)gpv;
-	proposalFnVariables[1] = (void *)nullptr;
-	proposalFnVariables[2] = (void *)kdepv;
 	
-	this->writeCheckpointFns = new proposalFnWriteCheckpoint[proposalFnN];
-	this->writeCheckpointFns[0] = gaussianProposalWriteCheckpoint;
-	this->writeCheckpointFns[1] = nullptr;
-	this->writeCheckpointFns[2] = nullptr;
-
-	this->loadCheckpointFns = new proposalFnLoadCheckpoint[proposalFnN];
-	this->loadCheckpointFns[0] = gaussianProposalLoadCheckpoint;
-	this->loadCheckpointFns[1] = nullptr;
-	this->loadCheckpointFns[2] = nullptr;
 	
 
 	//#############################################
@@ -1388,35 +1357,24 @@ proposalFnData::proposalFnData(
 
 }
 
-proposalFnData::~proposalFnData()
+proposalData::~proposalData()
 {
-	if(proposalFnArray){
-		delete [] proposalFnArray;
-		proposalFnArray = nullptr;
-	}
-	if(proposalFnProb){
-		for(int i =0 ; i<chainN; i++){
-			delete [] proposalFnProb[i];
-		}
-		delete [] proposalFnProb;
-		proposalFnProb = nullptr;
-	}
-	if(proposalFnVariables){
-		/*NOTE!! the proposalVariables have been cast to 
-		pointers, so they need to be cast back to call the appropriate destructor*/
+	if(proposals){
 		if(internalMemorySet){
-			delete (gaussianProposalVariables *)proposalFnVariables[0];
-			delete (KDEProposalVariables *)proposalFnVariables[2];
+			internalMemorySet = false;
+			for(int i = 0 ; i<proposalN; i++){
+				delete proposals[i];
+			}
 		}
-		delete [] proposalFnVariables;
-		proposalFnVariables = nullptr;
-		internalMemorySet=false;
+		delete [] proposals;
+		proposals = nullptr;
 	}
-	if(writeCheckpointFns){
-		delete [] writeCheckpointFns;
-	}
-	if(loadCheckpointFns){
-		delete [] loadCheckpointFns;
+	if(proposalProb){
+		for(int i =0 ; i<chainN; i++){
+			delete [] proposalProb[i];
+		}
+		delete [] proposalProb;
+		proposalProb = nullptr;
 	}
 }
 
@@ -1465,12 +1423,8 @@ void bayesshipSampler::writeCheckpoint(samplerData *data)
 	std::ofstream fileOut(outputFile);
 	fileOut << j;
 	
-	if(proposalFns->writeCheckpointFns){
-		for(int i = 0 ; i<proposalFns->proposalFnN; i++){
-			if(proposalFns->writeCheckpointFns[i]){
-				proposalFns->writeCheckpointFns[i](proposalFns->proposalFnVariables[i], this);
-			}
-		}
+	for(int i = 0 ; i<proposalFns->proposalN; i++){
+			proposalFns->proposals[i]->writeCheckpoint(outputDir, outputFileMoniker);
 	}
 	
 
@@ -1555,15 +1509,22 @@ void bayesshipSampler::loadCheckpoint()
 			}
 		}
 	}
-	if(proposalFns->loadCheckpointFns){
-		for(int i = 0 ; i<proposalFns->proposalFnN; i++){
-			if(proposalFns->loadCheckpointFns[i]){
-				proposalFns->loadCheckpointFns[i](proposalFns->proposalFnVariables[i], this);
-			}
-		}
+	for(int i = 0 ; i<proposalFns->proposalN; i++){
+			proposalFns->proposals[i]->loadCheckpoint(outputDir, outputFileMoniker);
 	}
 	
 		
+	return;
+}
+
+samplerData * bayesshipSampler::getActiveData()
+{
+	return this->activeData;
+}
+
+void bayesshipSampler::setActiveData(samplerData *newData)
+{
+	this->activeData = newData;
 	return;
 }
 

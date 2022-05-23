@@ -17,7 +17,7 @@ if(GTEST_FOUND)
 	)
 	
 	include(GoogleTest)
-	gtest_discover_tests(ptrjmcmc_test)
+	gtest_discover_tests(bayesship_test)
 	#install(TARGETS ptrjmcmc_test DESTINATION ${CMAKE_BINARY_DIR}/bin)
 else()
 	message("GoogleTests is required to run tests for this project!")
