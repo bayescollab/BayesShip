@@ -187,15 +187,17 @@ int validate_evidence_single(int argc, char *argv[])
 
 
 
-	int proposalFnN = 3;
+	int proposalN = 2;
 	//bayesship::proposalFn proposalFnArray[4] = {bayesship::gaussianProposal, bayesship::differentialEvolutionProposal, bayesship::KDEProposal, transdimensional_RJprop};
-	bayesship::proposalFn proposalFnArray[4] = {bayesship::gaussianProposal, bayesship::differentialEvolutionProposal, bayesship::KDEProposal};
-	float proposalFnProb[3] = {.3,.7,.0};
-	bayesship::gaussianProposalVariables *gpv = new bayesship::gaussianProposalVariables(chainN, sampler->maxDim);
-	bayesship::KDEProposalVariables *kdepv = new bayesship::KDEProposalVariables(chainN, sampler->maxDim);
-	void *proposalFnVariables[3] = { (void *)gpv,(void *)nullptr,(void *)kdepv};
-	//sampler->userParameters = (void**)helpers;
-	sampler->proposalFns = new bayesship::proposalFnData(chain_N,proposalFnN,proposalFnArray, proposalFnVariables,proposalFnProb);
+	
+	bayesship::proposal **proposals = new bayesship::proposal*[2];
+	
+	proposals[0] = 	new bayesship::gaussianProposal(chainN, sampler->maxDim, sampler );
+	proposals[1] = 	new bayesship::differentialEvolutionProposal( sampler );
+		
+	double proposalFnProb[2] = {.3,.7};
+
+	sampler->proposalFns = new bayesship::proposalData(chain_N,proposalN,proposals, proposalFnProb);
 
 	//#############################################################
 	bayesship::positionInfo *paramTest = new bayesship::positionInfo(sampler->maxDim,false);
@@ -220,9 +222,10 @@ int validate_evidence_single(int argc, char *argv[])
 	}
 	
 	delete [] priorRange;
+	delete proposals[0];
+	delete proposals[1];
+	delete [] proposals;
 	delete sampler->proposalFns;
-	delete gpv;
-	delete kdepv;
 	delete likelihood;
 	delete prior;
 	delete sampler;
@@ -384,15 +387,18 @@ int validate_evidence(int argc, char *argv[])
 
 
 
-	int proposalFnN = 4;
+	int proposalN = 3;
 	//bayesship::proposalFn proposalFnArray[4] = {bayesship::gaussianProposal, bayesship::differentialEvolutionProposal, bayesship::KDEProposal, transdimensional_RJprop};
-	bayesship::proposalFn proposalFnArray[4] = {bayesship::gaussianProposal, bayesship::differentialEvolutionProposal, bayesship::KDEProposal, bayesship::sequentialLayerRJProposal};
-	float proposalFnProb[4] = {.5,.0,.0,.5};
-	bayesship::gaussianProposalVariables *gpv = new bayesship::gaussianProposalVariables(chainN, sampler->maxDim);
-	bayesship::KDEProposalVariables *kdepv = new bayesship::KDEProposalVariables(chainN, sampler->maxDim);
-	bayesship::sequentialLayerRJProposalVariables *slpv = new bayesship::sequentialLayerRJProposalVariables(0.5);
-	void *proposalFnVariables[4] = { (void *)gpv,(void *)nullptr,(void *)kdepv,(void *) slpv};
-	sampler->proposalFns = new bayesship::proposalFnData(chain_N,proposalFnN,proposalFnArray, proposalFnVariables,proposalFnProb);
+	
+	bayesship::proposal **proposals = new bayesship::proposal*[3];
+	
+	proposals[0] = 	new bayesship::gaussianProposal(chainN, sampler->maxDim, sampler );
+	proposals[1] = 	new bayesship::differentialEvolutionProposal( sampler );
+	proposals[2] = 	new bayesship::sequentialLayerRJProposal( sampler, .5 );
+		
+	double proposalFnProb[3] = {.3,.4,.3};
+
+	sampler->proposalFns = new bayesship::proposalData(chain_N,proposalN,proposals, proposalFnProb);
 	
 	sampler->sample();
 
@@ -404,8 +410,10 @@ int validate_evidence(int argc, char *argv[])
 	
 	delete [] priorRange;
 	delete sampler->proposalFns;
-	delete gpv;
-	delete kdepv;
+	delete proposals[0];
+	delete proposals[1];
+	delete proposals[2];
+	delete [] proposals;
 	delete likelihood;
 	delete prior;
 	delete sampler;

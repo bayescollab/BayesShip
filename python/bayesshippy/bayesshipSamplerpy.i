@@ -11,6 +11,7 @@
 
 /* turn on director wrapping Callback */
 %feature("director") probabilityFn;
+%feature("director") proposal;
 
 %include "bayesship/dataUtilities.h"
 %include "bayesship/utilities.h"
