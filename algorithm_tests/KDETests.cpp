@@ -81,18 +81,10 @@ int KDEDrawTesting(int argc, char *argv[])
 	sampler->iterations = length+1;
 
 
-	float prob = 1;
-	bayesship::KDEProposalVariables *kdepv = new bayesship::KDEProposalVariables(sampler->ensembleN * sampler->ensembleSize,sampler->maxDim, false, 1000, 1000);
+	double prob = 1;
+	bayesship::proposal *proposal = new bayesship::KDEProposal(sampler->ensembleN * sampler->ensembleSize, sampler->maxDim, sampler, false, 1000, 1000);
 
-	bayesship::proposalFn *proposalFnArray = new bayesship::proposalFn[1];
-
-	proposalFnArray[0] = bayesship::KDEProposal;
-
-	void **varArray = new void *[1];
-
-	varArray[0] = (void *)kdepv;
-	
-	bayesship::proposalFnData *pf = new bayesship::proposalFnData(sampler->ensembleN*sampler->ensembleSize,1,proposalFnArray, varArray,  &prob );
+	bayesship::proposalData *pf = new bayesship::proposalData(sampler->ensembleN*sampler->ensembleSize,1,&proposal,  &prob );
 	//bayesship::proposalFnData *pf = new bayesship::proposalFnData(sampler->ensembleN*sampler->ensembleSize, sampler->maxDim, false);
 
 	sampler->proposalFns = pf;
@@ -100,6 +92,7 @@ int KDEDrawTesting(int argc, char *argv[])
 	sampler->allocateMemory();
 
 	sampler->data = new bayesship::samplerData(sampler->maxDim, sampler->ensembleN, sampler->ensembleSize, sampler->iterations, 1, false, sampler->betas);
+	sampler->setActiveData(sampler->data);
 
 
 	for(int i = 0 ; i<length; i++){
@@ -115,9 +108,10 @@ int KDEDrawTesting(int argc, char *argv[])
 	
 	double start = omp_get_wtime();
 	for(int i = 0 ; i<lengthOut; i++){
-		sampler->proposalFns->proposalFnArray[0](sampler->data, 0, 0, sampler, &MHRatioCorrections);
+		//sampler->proposalFns->proposals[0](sampler->data, 0, 0, sampler, &MHRatioCorrections);
+		sampler->proposalFns->proposals[0]->propose(sampler->data->positions[0][length-2], sampler->data->positions[0][length-1],0, 0,  &MHRatioCorrections);
 		for(int j = 0 ; j<sampler->maxDim; j++){
-			dataOut[i][j] = sampler->data->positions[0][length]->parameters[j];
+			dataOut[i][j] = sampler->data->positions[0][length-1]->parameters[j];
 		}
 	}
 	std::cout<<"TIME: "<<omp_get_wtime() - start<<std::endl;
@@ -125,9 +119,7 @@ int KDEDrawTesting(int argc, char *argv[])
 	bayesship::writeCSVFile("data/KDE_testing_resampled.csv",dataOut, lengthOut, sampler->maxDim);
 
 	//Cleanup
-	delete kdepv;
-	delete [] proposalFnArray;
-	delete [] varArray;
+	delete proposal;
 	delete pf;
 	sampler->~bayesshipSampler();
 	for (int i = 0; i<length; i++){
@@ -140,6 +132,7 @@ int KDEDrawTesting(int argc, char *argv[])
 	delete [] dataOut;
 	delete ll;
 	delete lp;
+	delete sampler;
 
 	
 	
