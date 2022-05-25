@@ -49,6 +49,14 @@ fisherProposal::fisherProposal(int chainN, int maxDim, FisherCalculation fisherC
 			FisherAttemptsSinceLastUpdate[i] = this->updateFreq+1;
 		}
 	}
+	if(!noFisher){ 
+		noFisher = new bool[chainN];
+
+		for(int i = 0 ; i<chainN; i++){
+			noFisher[i] = true;
+		}
+	
+	}
 
 }
 	
@@ -62,6 +70,7 @@ fisherProposal::~fisherProposal()
 			delete [] Fisher[i];
 		}
 		delete [] Fisher;
+		Fisher = nullptr;
 	}
 	if(FisherEigenVecs){
 		for(int i = 0 ; i<chainN; i++){
@@ -71,15 +80,22 @@ fisherProposal::~fisherProposal()
 			delete [] FisherEigenVecs[i];
 		}
 		delete [] FisherEigenVecs;
+		FisherEigenVecs = nullptr;
 	}
 	if(FisherEigenVals){
 		for(int i = 0 ; i<chainN; i++){
 			delete [] FisherEigenVals[i];
 		}
 		delete [] FisherEigenVals;
+		FisherEigenVals = nullptr;
 	}
 	if(FisherAttemptsSinceLastUpdate){
 		delete [] FisherAttemptsSinceLastUpdate;
+		FisherAttemptsSinceLastUpdate = nullptr;
+	}
+	if(noFisher){
+		delete [] noFisher;
+		noFisher=nullptr;
 	}
 }
 
@@ -87,7 +103,12 @@ void fisherProposal::propose(positionInfo *currentPosition, positionInfo *propos
 {
 	proposedPosition->updatePosition(currentPosition);
 
-	if((FisherAttemptsSinceLastUpdate[chainID] >= updateFreq) && (sampler->burnPeriod)){
+	//if((FisherAttemptsSinceLastUpdate[chainID] >= updateFreq) && (sampler->burnPeriod)){
+	if(	
+		((FisherAttemptsSinceLastUpdate[chainID] >= updateFreq) && (sampler->burnPeriod)) 
+		||
+		noFisher[chainID]
+	){
 	//if((FisherAttemptsSinceLastUpdate[chainID] >= updateFreq) ){
 		fisherCalc(currentPosition,  Fisher[chainID], parameters[chainID]);
 		//Update eigenvalues/eigenvectors
@@ -104,9 +125,11 @@ void fisherProposal::propose(positionInfo *currentPosition, positionInfo *propos
 		arma::mat eigenvec;
 		bool success = eig_sym(eigval,eigenvec, f);
 		if(!success){
+			
 			//std::cout<<"Failed Fisher"<<std::endl;
 			return;	
 		}
+		noFisher[chainID]= false;
 		for(int i = 0 ; i<maxDim; i++){
 			for(int j = 0 ; j<maxDim; j++){
 				FisherEigenVecs[chainID][i][j] = eigenvec(i,j);

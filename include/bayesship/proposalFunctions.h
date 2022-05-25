@@ -83,6 +83,7 @@ public:
 	double ***Fisher=nullptr;
 	double **FisherEigenVals = nullptr;
 	double ***FisherEigenVecs = nullptr;
+	bool *noFisher=nullptr;
 	
 	int *FisherAttemptsSinceLastUpdate=nullptr;
 	int updateFreq = 200;
