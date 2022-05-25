@@ -73,7 +73,7 @@ void differentialEvolutionProposal::propose(positionInfo *currentPosition, posit
 	double stepWidth = 2.38/std::sqrt(2.*internalDim);
 	double alpha = gsl_ran_gaussian(sampler->rvec[chainID],stepWidth);
 	for(int i = 0 ; i<internalDim; i++){
-		data->positions[chainID][currentStep+1]->parameters[i] +=
+		proposedPosition->parameters[i] +=
 			alpha*(historyPosition1->parameters[i]-historyPosition2->parameters[i]);
 	}
 
