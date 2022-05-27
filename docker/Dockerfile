@@ -1,8 +1,8 @@
 FROM debian:10.9
 
-WORKDIR /bayesshipBuild
+WORKDIR /opt/build/
 
-ENV PROJSRC /bayesship
+#ENV PROJSRC /bayesship
 
 ENV CPATH $CPATH:/usr/local/include:/ptrjmcmc/build/install/include
 ENV LIBRARY_PATH $LIBRARY_PATH:/usr/local/lib64:/usr/local/lib:/ptrjmcmc/build/install/lib
@@ -69,7 +69,9 @@ RUN make install
 #WORKDIR /usr/local/hdf5/hdf5-1.12.0/
 #RUN ./configure --prefix=/usr/local && make check && make install && make check-install
 
-WORKDIR /bayesshipBuild
+WORKDIR /opt/build
 
 #COPY . /ptrjmcmc
+
+#RUN ["/bin/bash"]
 
