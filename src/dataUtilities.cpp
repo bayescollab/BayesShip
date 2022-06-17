@@ -290,7 +290,6 @@ int positionInfo::countActiveDimensions()
 			activeDims += status[i];	
 		}
 	}
-
 	return activeDims;
 }
 void samplerData::writeStatFile(std::string filename)

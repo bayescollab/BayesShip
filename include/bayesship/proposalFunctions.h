@@ -61,6 +61,50 @@ namespace bayesship{
 //};
 
 
+//###################################################################
+//###################################################################
+
+typedef void(*gibbsFisherCalculation)(
+	positionInfo *pos,
+	double **fisher,
+	std::vector<int> ids,
+	void *parameters
+	);
+
+
+class gibbsFisherProposal: public proposal
+{
+public:
+	/*! Number of chains*/
+	int chainN;
+	/*! Maximum dimension of the space*/
+	int maxDim;
+	/*! Array of step widths (standard deviations) of Gaussian proposals for each dimension for each chain*/
+	double ****Fisher=nullptr;
+	double ***FisherEigenVals = nullptr;
+	double ****FisherEigenVecs = nullptr;
+	bool **noFisher=nullptr;
+	
+	int **FisherAttemptsSinceLastUpdate=nullptr;
+	int updateFreq = 200;
+
+	std::vector<std::vector<int>> blocks;
+	std::vector<int> blockProb;
+
+	void **parameters=nullptr;
+
+	bayesshipSampler *sampler=nullptr;
+	
+	gibbsFisherCalculation fisherCalc;
+
+
+	gibbsFisherProposal(int chainN, int maxDim, gibbsFisherCalculation fisherCalc, void **parameters, int updateFreq,bayesshipSampler *sampler, std::vector<std::vector<int>> blocks,std::vector<int> blockProb);
+	virtual ~gibbsFisherProposal();
+	virtual void propose(positionInfo *current, positionInfo *proposed, int chainID,int stepID,double *MHRatioModifications);
+
+};
+
+
 
 //###################################################################
 //###################################################################
@@ -243,6 +287,20 @@ public:
 	bayesshipSampler *sampler;
 	sequentialLayerRJProposal(bayesshipSampler *sampler,double alpha=.5 );
 	virtual ~sequentialLayerRJProposal(){return;};
+	virtual void propose(positionInfo *current, positionInfo *proposed, int chainID,int stepID,double *MHRatioModifications);
+
+};
+//###################################################################
+//###################################################################
+/*Reversible Jump proposal -- randomly add/subtract modifications with creation probability alpha and destruction probability 1-alpha*/
+
+class randomLayerRJProposal: public proposal
+{
+public:
+	double alpha= .5;
+	bayesshipSampler *sampler;
+	randomLayerRJProposal(bayesshipSampler *sampler,double alpha=.5 );
+	virtual ~randomLayerRJProposal(){return;};
 	virtual void propose(positionInfo *current, positionInfo *proposed, int chainID,int stepID,double *MHRatioModifications);
 
 };

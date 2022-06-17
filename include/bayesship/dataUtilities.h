@@ -42,7 +42,7 @@ public:
 	/*! Array holding the model information for which parameters are ``on''*/
 	int *status=nullptr;
 	/*! Model ID to distinguish between perfectly nested models*/
-	int modelID;
+	int modelID=0;
 	/*! Function to update all the information for the current instance of positionInfo to a new set of values defined by a separate instance of positionInfo*/
 	void updatePosition(positionInfo *newPosition);
 	int countActiveDimensions();

@@ -21,7 +21,7 @@ void differentialEvolutionProposal::propose(positionInfo *currentPosition, posit
 	proposedPosition->updatePosition(currentPosition);
 
 	/*Not doing RJ version yet..*/
-	if(currentStep < 2 || sampler->RJ){
+	if(currentStep < 2 ){
 	//if(true){
 		return;
 	}
@@ -33,6 +33,7 @@ void differentialEvolutionProposal::propose(positionInfo *currentPosition, posit
 	}
 	else if(sampler->RJ){
 		std::cout<<"DIFFERENTIAL EVOLUTION DOESN'T WORK WITH RJ YET"<<std::endl;
+		return;
 	}
 
 	if(sampler->burnPeriod || !sampler->burnData){
