@@ -21,9 +21,9 @@ namespace bayesship{
 
 /*! \file 
  *
- * # PTRJMCMC Source Code
+ * # bayesshipSampler Source Code
  * 
- * Source code for a majority of the bayesShip sampler routines.
+ * Source code for a majority of the bayesShip sampler routines. This file contains all the definitions for the members and routines for bayesshipSampler objects. This file will also house the definitions for the proposalData class.
  * 
  */
 
@@ -142,8 +142,7 @@ void bayesshipSampler::assignInitialPosition(samplerData *data)
 	}
 }
 
-/*! 
- * \brief Routine to initiate sampling
+/*! \brief Routine to initiate sampling
  *
  * All sampling arguments should be set first through the object member variables, before sampling. See the Ptrjmcmc.h file for all options
  */
@@ -174,7 +173,12 @@ void bayesshipSampler::sample()
 		}
 	}
 	else{
-		data = new samplerData(maxDim, ensembleN,ensembleSize, iterations, proposalFns->proposalN, RJ,betas);
+		if( ( iterations < batchSize && batchSize > 0 ) || batchSize == 0  ){
+			data = new samplerData(maxDim, ensembleN,ensembleSize, batchSize, proposalFns->proposalN, RJ,betas);
+		}
+		else{
+			data = new samplerData(maxDim, ensembleN,ensembleSize, iterations, proposalFns->proposalN, RJ,betas);
+		}
 	}
 	
 	if(priorIterations >0 && priorRanges){
@@ -405,16 +409,80 @@ void bayesshipSampler::sample()
 
 	data->updateBetas(betas);	
 	if(independentSamples == 0){
-		sampleLoop(iterations,data);
-		writeCheckpoint(data);
-		if(!RJ){
-			data->updateACs(threads);
-			int independentSamples = data->countIndependentSamples();
-			std::cout<<"Independent samples per chain: "<<independentSamples<<std::endl;
+		if( ( iterations < batchSize && batchSize > 0 ) || batchSize == 0  ){
+			sampleLoop(iterations,data);
+			writeCheckpoint(data);
+			if(!RJ){
+				data->updateACs(threads);
+				int independentSamples = data->countIndependentSamples();
+				std::cout<<"Independent samples per chain: "<<independentSamples<<std::endl;
+			}
+			#ifdef _HDF5
+			data->create_data_dump(coldOnlyStorage, true, outputDir+outputFileMoniker+"_output.hdf5");
+			#endif
+			data->writeStatFile(outputDir+outputFileMoniker+"_stat.txt");
 		}
-		#ifdef _HDF5
-		data->create_data_dump(coldOnlyStorage, true, outputDir+outputFileMoniker+"_output.hdf5");
-		#endif
+		else  {
+			int currentSamples=0;
+			int currentIndependentSamples=0;
+			bool initializedData=false;
+			double AC=0;
+			while(currentSamples < iterations){
+				sampleLoop(batchSize,data);
+				writeCheckpoint(data);
+				currentSamples+=batchSize;
+	
+				if(!RJ){
+					data->updateACs(threads);
+					currentIndependentSamples = data->countIndependentSamples();
+					AC = 0;
+					for(int i = 0 ; i<data->ensembleN; i++){
+						AC += data->maxACs[i];
+					}
+					AC /= data->ensembleN;
+				}
+	
+
+				#ifdef _HDF5
+				if(!initializedData){
+					data->create_data_dump(coldOnlyStorage, true, outputDir+outputFileMoniker+"_output.hdf5");
+					initializedData = true;
+				}
+				else{
+					data->append_to_data_dump(outputDir+outputFileMoniker+"_output.hdf5");
+
+				}
+				#endif
+				data->writeStatFile(outputDir+outputFileMoniker+"_stat.txt");
+
+				double Lmean = 0;
+				double Lmax = data->likelihoodVals[0][0];
+				int samples=0;
+
+				for(int i = 0 ; i<ensembleN; i++){
+					int maxSteps = data->currentStepID[i];
+	
+					for(int j = 0 ; j<maxSteps;j++){
+						Lmean += data->likelihoodVals[i][j];
+						if(data->likelihoodVals[i][j]>Lmax){
+							Lmax = data->likelihoodVals[i][j];
+						}
+						samples++;
+					}
+				}
+				Lmean /= samples;
+
+				if(!RJ){
+					std::cout<<"Current independent samples per chain / Average AC: "<<currentIndependentSamples<<" / "<<AC <<std::endl;
+				}
+				std::cout<<"Mean Log Likelihood / Max Log Likelihood: "<<Lmean<<" / "<<Lmax <<std::endl;
+				printProgress( (double) currentSamples/iterations);
+				std::cout<<std::endl;
+				if(currentSamples<iterations){
+					data->extendSize(batchSize-1);
+				}
+			}
+		}
 	}
 	else{
 		int currentIndependentSamples=0;
@@ -442,6 +510,7 @@ void bayesshipSampler::sample()
 			#ifdef _HDF5
 			if(!initializedData){
 				data->create_data_dump(coldOnlyStorage, true, outputDir+outputFileMoniker+"_output.hdf5");
+				initializedData = true;
 			}
 			else{
 				data->append_to_data_dump(outputDir+outputFileMoniker+"_output.hdf5");

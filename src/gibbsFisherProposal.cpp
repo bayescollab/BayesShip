@@ -5,7 +5,10 @@
 
 /*! \file
  *
- * # Source file for the Fisher proposal template
+ * # Source file for the Gibbs block Fisher proposal template
+ *
+ * This version of the Fisher proposal only focuses on a block of parameter space. This can be more manageable for larger parameters spaces. It accepts multiple chunks of parameters, and randomly picks a block according to the probability vector blockProb.
+ *
  */
 namespace bayesship{
 

@@ -1223,6 +1223,9 @@ int samplerData::append_to_data_dump( std::string filename)
 
 			hsize_t base_dims[RANK];
 			hsize_t base_dims_ll_lp[RANK_ll_lp];
+			herr_t statusH5 = dataspace->getSimpleExtentDims(base_dims);
+			statusH5 = dataspace_ll_lp->getSimpleExtentDims(base_dims_ll_lp);
+
 			int RANK_chunked;
 			int RANK_chunked_ll_lp;
 			hsize_t base_chunk_dims[RANK];
@@ -1310,7 +1313,13 @@ int samplerData::append_to_data_dump( std::string filename)
 				plist_status= new H5::DSetCreatPropList(dataset_status->getCreatePlist());
 				int RANK_status = dataspace_status->getSimpleExtentNdims();
 				hsize_t base_dims_status[RANK_status];
+				herr_t statusH5 = dataspace_status->getSimpleExtentDims(base_dims_status);
 				hsize_t base_chunk_dims_status[RANK_status];
+
+				int RANK_chunked_status;
+				if(H5D_CHUNKED == plist_status->getLayout()){
+                                	RANK_chunked_status= plist_status->getChunk(RANK_status,base_chunk_dims_status);
+                                }
 				
 				hsize_t new_size_status[RANK];
 				if(dump_files[file_id]->trimmed){
@@ -1355,61 +1364,63 @@ int samplerData::append_to_data_dump( std::string filename)
 				delete [] temp_buffer_status;
 				temp_buffer_status = NULL;
 
+				{
 				//TODO -- this section can't be right.. 
-				if(RJ ){
-					dataset_model_status = new H5::DataSet(model_status_group.openDataSet("CHAIN "+std::to_string(ids[i])));
+				dataset_model_status = new H5::DataSet(model_status_group.openDataSet("CHAIN "+std::to_string(ids[i])));
 
-					dataspace_model_status = new H5::DataSpace(dataset_model_status->getSpace());
-					plist_model_status= new H5::DSetCreatPropList(dataset_model_status->getCreatePlist());
-					int RANK_model_status = dataspace_model_status->getSimpleExtentNdims();
-					hsize_t base_dims_model_status[RANK_model_status];
-					int RANK_chunked_model_status;
-					hsize_t base_chunk_dims_model_status[RANK_model_status];
-					if(H5D_CHUNKED == plist_model_status->getLayout()){
-						RANK_chunked_model_status= plist_model_status->getChunk(RANK_model_status,base_chunk_dims_model_status);
-					}
-					
-					hsize_t new_size_model_status[RANK];
-					if(dump_files[file_id]->trimmed){
-						new_size_model_status[0]= currentStepID[ids[i]]-dump_files[file_id]->fileTrimLengths[ids[i]];
-					}
-					else{
-						new_size_model_status[0]= currentStepID[ids[i]];
-					}
-					new_size_model_status[1]= 1;
-					dataset_model_status->extend(new_size_model_status);
-
-					delete dataspace_model_status;
-					dataspace_model_status = new H5::DataSpace(dataset_model_status->getSpace());
-					
-					hsize_t dimext_model_status[RANK];	
-					dimext_model_status[0]=new_size_model_status[0]-base_dims_model_status[0];
-					dimext_model_status[1]=1;
-					
-					hsize_t offset_model_status[RANK];
-					offset_model_status[0]=base_dims_model_status[0];	
-					offset_model_status[1]=0;	
-
-					dataspace_model_status->selectHyperslab(H5S_SELECT_SET,dimext_model_status,offset_model_status);
-
-					dataspace_ext_model_status = new H5::DataSpace(RANK_model_status, dimext_model_status,NULL);
-
-					temp_buffer_model_status = new int[ dimext_model_status[0]*dimext_model_status[1] ];
-					int beginning_id = 0 ; 
-					if(dump_files[file_id]->trimmed){beginning_id = dump_files[file_id]->fileTrimLengths[ids[i]];}
-					for(int j = base_dims_model_status[0] ; j<currentStepID[ids[i]]-beginning_id; j++){
-						temp_buffer_model_status[(j-base_dims_model_status[0]) ] = positions[ids[i]][j+beginning_id]->modelID;	
-					}
-					
-					dataset_model_status->write(temp_buffer_model_status,H5::PredType::NATIVE_INT,*dataspace_ext_model_status, *dataspace_model_status);
-					//Cleanup
-					delete dataset_model_status;
-					delete dataspace_model_status;
-					delete dataspace_ext_model_status;
-					delete plist_model_status;
-					delete [] temp_buffer_model_status;
-					temp_buffer_model_status = NULL;
+				dataspace_model_status = new H5::DataSpace(dataset_model_status->getSpace());
+				plist_model_status= new H5::DSetCreatPropList(dataset_model_status->getCreatePlist());
+				int RANK_model_status = dataspace_model_status->getSimpleExtentNdims();
+				hsize_t base_dims_model_status[RANK_model_status];
+				herr_t modelStatusH5 = dataspace_model_status->getSimpleExtentDims(base_dims_model_status);
+				int RANK_chunked_model_status;
+				hsize_t base_chunk_dims_model_status[RANK_model_status];
+				if(H5D_CHUNKED == plist_model_status->getLayout()){
+					RANK_chunked_model_status= plist_model_status->getChunk(RANK_model_status,base_chunk_dims_model_status);
 				}
+				
+				hsize_t new_size_model_status[RANK];
+				if(dump_files[file_id]->trimmed){
+					new_size_model_status[0]= currentStepID[ids[i]]-dump_files[file_id]->fileTrimLengths[ids[i]];
+				}
+				else{
+					new_size_model_status[0]= currentStepID[ids[i]];
+				}
+				new_size_model_status[1]= 1;
+				dataset_model_status->extend(new_size_model_status);
+
+				delete dataspace_model_status;
+				dataspace_model_status = new H5::DataSpace(dataset_model_status->getSpace());
+				
+				hsize_t dimext_model_status[RANK];	
+				dimext_model_status[0]=new_size_model_status[0]-base_dims_model_status[0];
+				dimext_model_status[1]=1;
+				
+				hsize_t offset_model_status[RANK];
+				offset_model_status[0]=base_dims_model_status[0];	
+				offset_model_status[1]=0;	
+
+				dataspace_model_status->selectHyperslab(H5S_SELECT_SET,dimext_model_status,offset_model_status);
+
+				dataspace_ext_model_status = new H5::DataSpace(RANK_model_status, dimext_model_status,NULL);
+
+				temp_buffer_model_status = new int[ dimext_model_status[0]*dimext_model_status[1] ];
+				int beginning_id = 0 ; 
+				if(dump_files[file_id]->trimmed){beginning_id = dump_files[file_id]->fileTrimLengths[ids[i]];}
+				for(int j = base_dims_model_status[0] ; j<currentStepID[ids[i]]-beginning_id; j++){
+					temp_buffer_model_status[(j-base_dims_model_status[0]) ] = positions[ids[i]][j+beginning_id]->modelID;	
+				}
+				
+				dataset_model_status->write(temp_buffer_model_status,H5::PredType::NATIVE_INT,*dataspace_ext_model_status, *dataspace_model_status);
+				//Cleanup
+				delete dataset_model_status;
+				delete dataspace_model_status;
+				delete dataspace_ext_model_status;
+				delete plist_model_status;
+				delete [] temp_buffer_model_status;
+				temp_buffer_model_status = NULL;
+				}
+				
 			}
 		}
 
@@ -1467,7 +1478,7 @@ int samplerData::append_to_data_dump( std::string filename)
 			model_status_group.close();
 		}
 		meta_group.close();
-		if(!dump_files[file_id]->coldOnly){
+		if(ids){
 			delete [] ids;
 			ids = NULL;
 		}
