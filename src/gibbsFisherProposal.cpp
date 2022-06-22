@@ -12,7 +12,7 @@
  */
 namespace bayesship{
 
-gibbsFisherProposal::gibbsFisherProposal(int chainN, int maxDim, gibbsFisherCalculation fisherCalc, void **parameters, int updateFreq, bayesshipSampler *sampler, std::vector<std::vector<int>> blocks, std::vector<int> blockProb)
+gibbsFisherProposal::gibbsFisherProposal(int chainN, int maxDim, gibbsFisherCalculation fisherCalc, void **parameters, int updateFreq, bayesshipSampler *sampler, std::vector<std::vector<int>> blocks, std::vector<double> blockProb)
 {
 	this->parameters = parameters;
 	this->chainN = chainN;
@@ -21,13 +21,21 @@ gibbsFisherProposal::gibbsFisherProposal(int chainN, int maxDim, gibbsFisherCalc
 	this->updateFreq = updateFreq;
 	this->sampler = sampler;
 	this->blocks = std::vector<std::vector<int>>(blocks.size());
-	this->blockProb = std::vector<int>(blocks.size());
+	this->blockProb = std::vector<double>(blocks.size());
+	this->blockProbBoundaries = std::vector<double>(blocks.size());
 	for(int i = 0 ; i<blocks.size(); i++){
 		this->blockProb[i] = blockProb[i];
 		this->blocks[i] = std::vector<int>(blocks[i].size());
 		for(int j =0 ; j<blocks[i].size(); j++){
 			this->blocks[i][j] = blocks[i][j];
 		}
+		
+	}
+	//Need the boundaries to do the random number generation easier. Storing for convenience and speed
+	//For prob array {.3,.4,.3}, boundaries should be {.3,.7,1.}
+	this->blockProbBoundaries[0] = blockProb[0];
+	for(int i = 1 ; i<blocks.size(); i++){
+		this->blockProbBoundaries[i] = 	this->blockProbBoundaries[i-1]+ this->blockProb[i];
 	}
 
 	if(!Fisher){
@@ -148,7 +156,15 @@ void gibbsFisherProposal::propose(positionInfo *currentPosition, positionInfo *p
 	proposedPosition->updatePosition(currentPosition);
 	
 	//Pick random block
-	int alpha = (int)(gsl_rng_uniform(sampler->rvec[chainID])*blocks.size());
+	//int alpha = (int)(gsl_rng_uniform(sampler->rvec[chainID])*blocks.size());
+	double beta = gsl_rng_uniform(sampler->rvec[chainID]);
+	int alpha = 0 ;
+	for(int i = 0 ; i<blocks.size(); i++){
+		if (beta < blockProbBoundaries[i]){
+			alpha = i;
+			break;
+		}
+	}
 
 	if(	
 		((FisherAttemptsSinceLastUpdate[chainID][alpha] >= updateFreq) && (sampler->burnPeriod)) 
@@ -193,7 +209,9 @@ void gibbsFisherProposal::propose(positionInfo *currentPosition, positionInfo *p
 	scaling *=(sampler->betas[chainID]+1e-5);
 	double randGauss = gsl_ran_gaussian(sampler->rvec[chainID], 1./std::sqrt(scaling));	
 	for(int i = 0 ; i<blocks[alpha].size(); i++){
-		proposedPosition->parameters[blocks[alpha][i]] += randGauss * (FisherEigenVecs[chainID][alpha][randDim][i]);
+		if(proposedPosition->status[blocks[alpha][i]]){
+			proposedPosition->parameters[blocks[alpha][i]] += randGauss * (FisherEigenVecs[chainID][alpha][randDim][i]);
+		}
 	}
 	FisherAttemptsSinceLastUpdate[chainID][alpha] ++;
 	

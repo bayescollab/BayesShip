@@ -89,7 +89,8 @@ public:
 	int updateFreq = 200;
 
 	std::vector<std::vector<int>> blocks;
-	std::vector<int> blockProb;
+	std::vector<double> blockProb;
+	std::vector<double> blockProbBoundaries;
 
 	void **parameters=nullptr;
 
@@ -98,7 +99,7 @@ public:
 	gibbsFisherCalculation fisherCalc;
 
 
-	gibbsFisherProposal(int chainN, int maxDim, gibbsFisherCalculation fisherCalc, void **parameters, int updateFreq,bayesshipSampler *sampler, std::vector<std::vector<int>> blocks,std::vector<int> blockProb);
+	gibbsFisherProposal(int chainN, int maxDim, gibbsFisherCalculation fisherCalc, void **parameters, int updateFreq,bayesshipSampler *sampler, std::vector<std::vector<int>> blocks,std::vector<double> blockProb);
 	virtual ~gibbsFisherProposal();
 	virtual void propose(positionInfo *current, positionInfo *proposed, int chainID,int stepID,double *MHRatioModifications);
 

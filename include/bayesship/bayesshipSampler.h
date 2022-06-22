@@ -216,7 +216,10 @@ public:
 	/* Meta Data -- read in from Checkpoint File*/
 	/*! Run variable dimension RJMCMC (true) or regular, fixed dimension MCMC (false)*/
 	bool RJ=false;
-	/*! Whether to use a pool of threads (true) or OpenMP (false)*/
+	/*! Whether to use a pool of threads (true) or OpenMP (false)
+ * TODO This should be renamed. The sampler currently DOES use a thread pool no matter what, but only uses it for *swapping* if
+ * this is true. Otherwise, it swaps in order.
+ * */
 	bool threadPool=false;
 	/*! Maximum dimension of the parameter space*/
 	int maxDim=1;
