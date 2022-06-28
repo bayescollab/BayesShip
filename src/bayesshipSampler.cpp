@@ -251,6 +251,8 @@ void bayesshipSampler::sample()
 		}
 
 		sampleLoop(priorIterations,priorData);
+
+		priorData->updateACs(threads);
 		priorData->writeStatFile(outputDir+outputFileMoniker+"Prior_stat.txt");
 
 		delete tempprior;

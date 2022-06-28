@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from bayesshippy.mcmcRoutines import MCMC_unpack_file
 
 #dataSets = [np.loadtxt("data/gaussianLikelihoodTestData.csv"),np.loadtxt("data/gaussianLikelihoodTestDataHot.csv")]
 #names = ["plots/gaussianLikelihoodTestPlot.pdf","plots/gaussianLikelihoodTestPlotHot.pdf"]
@@ -29,17 +30,7 @@ import matplotlib.pyplot as plt
 #    ct+=1
 
 
-import h5py
-dataFile = h5py.File("data/gaussianLikelihoodTest_output.hdf5",'r')
-first=True
-data = None
-for chain in dataFile["MCMC_OUTPUT"].keys():
-    if "CHAIN" in chain:
-        if first:
-            data = np.array(dataFile["MCMC_OUTPUT"][chain])
-            first = False
-        else:
-            data = np.insert(data,len(data), np.array(dataFile["MCMC_OUTPUT"][chain]),axis=0)
+data = MCMC_unpack_file("data/gaussianLikelihoodTest_output.hdf5")
 plt.hist(data,bins=50,histtype='stepfilled',density=True,alpha=.8)
 
 x = np.linspace(np.amin(data),np.amax(data),500)
@@ -49,17 +40,7 @@ plt.axvline(-np.std(data),color='red')
 plt.savefig("plots/gaussian_HDF5_data.pdf")
 plt.close()
 
-
-dataFile = h5py.File("data/gaussianLikelihoodTestPrior_output.hdf5",'r')
-first=True
-data = None
-for chain in dataFile["MCMC_OUTPUT"].keys():
-    if "CHAIN" in chain:
-        if first:
-            data = np.array(dataFile["MCMC_OUTPUT"][chain])
-            first = False
-        else:
-            data = np.insert(data,len(data), np.array(dataFile["MCMC_OUTPUT"][chain]),axis=0)
+data = MCMC_unpack_file("data/gaussianLikelihoodTestPrior_output.hdf5")
 plt.hist(data,bins=50,histtype='stepfilled')
 plt.savefig("plots/gaussian_HDF5_data_prior.pdf")
 plt.close()

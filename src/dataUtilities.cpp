@@ -385,7 +385,14 @@ void samplerData::writeStatFile(std::string filename)
 		swapAveDown[i] = 0;
 	}
 	bool skipAve = false;
+
+	outFile<<"Beta_i/beta_j, ";
+	for(int j = 0 ; j<chainN; j++){
+		outFile<<betas[j]<<", ";
+	}
+	outFile<<std::endl;
 	for(int i = 0 ; i<chainN; i++){
+		outFile<<betas[i]<<", ";
 		for(int j = 0 ; j<chainN; j++){
 			double rate = 0;
 			if(swapAccepts[i][j] +swapRejects[i][j] >0){
@@ -413,31 +420,49 @@ void samplerData::writeStatFile(std::string filename)
 	}
 	outFile<<std::endl;
 
-	outFile<<"Swap Averages"<<std::endl;
-	for(int i = 0 ; i<chainN; i++){
-		outFile<<swapAve[i]/aveCounts[i]<<", ";
-	}
-	outFile<<std::endl;
-
-	outFile<<"Swap Averages Down"<<std::endl;
-	for(int i = 0 ; i<chainN; i++){
-		outFile<<swapAveDown[i]/aveCountsDown[i]<<", ";
-	}
-	outFile<<std::endl;
-	outFile<<"Swap Averages Up"<<std::endl;
-	for(int i = 0 ; i<chainN; i++){
-		outFile<<swapAveUp[i]/aveCountsUp[i]<<", ";
-	}
-	outFile<<std::endl;
-	outFile<<"Swap Attempts"<<std::endl;
+	int swapAttemptsVec[chainN];
 	for(int i = 0 ; i<chainN; i++){
 		int swapAttempts = 0;
 		for(int j = 0 ; j<chainN; j++){
 			swapAttempts += swapAccepts[i][j]+swapRejects[i][j];
 		}
-		outFile<<swapAttempts<<", ";
+		swapAttemptsVec[i] = swapAttempts;
+	}
+ 
+	outFile<<"Beta ||| Swap Average ||| Swap Average (Down) ||| Swap Average (Up) ||| Swap Attempts"<<std::endl;
+	for(int i = 0 ; i<chainN; i++){
+		outFile<<this->betas[i]<<" ||| "<<swapAve[i]/aveCounts[i]<<" ||| "<<swapAveDown[i]/aveCountsDown[i]<<" ||| "<<swapAveUp[i]/aveCountsUp[i]<<" ||| "<< swapAttemptsVec[i]<<std::endl;;
 	}
 	outFile<<std::endl;
+
+	//outFile<<"Swap Averages"<<std::endl;
+	//for(int i = 0 ; i<chainN; i++){
+	//	outFile<<swapAve[i]/aveCounts[i]<<", ";
+	//}
+	//outFile<<std::endl;
+
+
+	//outFile<<"Swap Averages Down"<<std::endl;
+	//for(int i = 0 ; i<chainN; i++){
+	//	outFile<<swapAveDown[i]/aveCountsDown[i]<<", ";
+	//}
+	//outFile<<std::endl;
+
+	//outFile<<"Swap Averages Up"<<std::endl;
+	//for(int i = 0 ; i<chainN; i++){
+	//	outFile<<swapAveUp[i]/aveCountsUp[i]<<", ";
+	//}
+	//outFile<<std::endl;
+
+	//outFile<<"Swap Attempts"<<std::endl;
+	//for(int i = 0 ; i<chainN; i++){
+	//	int swapAttempts = 0;
+	//	for(int j = 0 ; j<chainN; j++){
+	//		swapAttempts += swapAccepts[i][j]+swapRejects[i][j];
+	//	}
+	//	outFile<<swapAttempts<<", ";
+	//}
+	//outFile<<std::endl;
 
 	outFile.close();
 }

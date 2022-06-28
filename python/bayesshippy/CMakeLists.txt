@@ -34,6 +34,14 @@ set_property(TARGET utilitiespy PROPERTY SWIG_INCLUDE_DIRECTORIES "${INCLUDE_DIR
 
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/__init__.py" "${CMAKE_CURRENT_BINARY_DIR}/__init__.py" COPYONLY)
 
+list(APPEND purePythonModules
+	"mcmcRoutines.py"
+) 
+foreach(filename ${purePythonModules})
+	configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${filename}" "${CMAKE_CURRENT_BINARY_DIR}/${filename}" COPYONLY)
+endforeach(filename)
+
+
 #execute_process(COMMAND ${Python_EXECUTABLE} ${SETUP_PY_OUT} install)
 #install(CODE "execute_process(COMMAND ${Python_EXECUTABLE} -m pip install ${CMAKE_CURRENT_BINARY_DIR} )" )
 #add_custom_target(install-python  COMMAND python3 ${SETUP_PY_OUT} install)
