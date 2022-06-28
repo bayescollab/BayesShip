@@ -174,10 +174,10 @@ void bayesshipSampler::sample()
 	}
 	else{
 		if( ( iterations < batchSize && batchSize > 0 ) || batchSize == 0  ){
-			data = new samplerData(maxDim, ensembleN,ensembleSize, batchSize, proposalFns->proposalN, RJ,betas);
+			data = new samplerData(maxDim, ensembleN,ensembleSize, iterations, proposalFns->proposalN, RJ,betas);
 		}
 		else{
-			data = new samplerData(maxDim, ensembleN,ensembleSize, iterations, proposalFns->proposalN, RJ,betas);
+			data = new samplerData(maxDim, ensembleN,ensembleSize, batchSize, proposalFns->proposalN, RJ,betas);
 		}
 	}
 	
