@@ -1,5 +1,9 @@
 import numpy as np
+import matplotlib.pyplot as plt
 import h5py 
+
+def chainIndex(ensemble, betaN, ensembleN):
+    return ensemble+betaN*ensembleN
 
 def RJMCMC_unpack_file(filename,betaID=0):
     f = h5py.File(filename,'r')
@@ -8,11 +12,12 @@ def RJMCMC_unpack_file(filename,betaID=0):
     ensembleSize = int(len(betaSchedule))
     ensembleN = int(len(betas)/ensembleSize)
     
-    if betaID > ensembleN:
+    if betaID > ensembleSize:
         print("Supplied a betaID larger than the number of ensembles!")
         return None, None, None
     
-    chainIDs = np.arange(ensembleSize*betaID , ensembleSize*betaID + ensembleN)
+    #chainIDs = np.arange(ensembleSize*betaID , ensembleSize*betaID + ensembleN)
+    chainIDs = np.arange(chainIndex(0,betaID,ensembleN) , chainIndex(ensembleN,betaID,ensembleN))
     
     chains = list(f["MCMC_OUTPUT"].keys())
     # if len(chains) and betaID !=0:

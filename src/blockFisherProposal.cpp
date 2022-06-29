@@ -12,7 +12,7 @@
  */
 namespace bayesship{
 
-gibbsFisherProposal::gibbsFisherProposal(int chainN, int maxDim, gibbsFisherCalculation fisherCalc, void **parameters, int updateFreq, bayesshipSampler *sampler, std::vector<std::vector<int>> blocks, std::vector<double> blockProb)
+blockFisherProposal::blockFisherProposal(int chainN, int maxDim, blockFisherCalculation fisherCalc, void **parameters, int updateFreq, bayesshipSampler *sampler, std::vector<std::vector<int>> blocks, std::vector<double> blockProb)
 {
 	this->parameters = parameters;
 	this->chainN = chainN;
@@ -97,7 +97,7 @@ gibbsFisherProposal::gibbsFisherProposal(int chainN, int maxDim, gibbsFisherCalc
 
 }
 	
-gibbsFisherProposal::~gibbsFisherProposal()
+blockFisherProposal::~blockFisherProposal()
 {
 	if(Fisher){
 		for(int i = 0 ; i<chainN; i++){
@@ -151,7 +151,7 @@ gibbsFisherProposal::~gibbsFisherProposal()
 	}
 }
 
-void gibbsFisherProposal::propose(positionInfo *currentPosition, positionInfo *proposedPosition,int chainID,int stepID,  double *MHRatioModification)
+void blockFisherProposal::propose(positionInfo *currentPosition, positionInfo *proposedPosition,int chainID,int stepID,  double *MHRatioModification)
 {
 	proposedPosition->updatePosition(currentPosition);
 	
@@ -208,11 +208,20 @@ void gibbsFisherProposal::propose(positionInfo *currentPosition, positionInfo *p
 	if(scaling <10. ){scaling = 10.;}
 	scaling *=(sampler->betas[chainID]+1e-5);
 	double randGauss = gsl_ran_gaussian(sampler->rvec[chainID], 1./std::sqrt(scaling));	
-	for(int i = 0 ; i<blocks[alpha].size(); i++){
-		if(proposedPosition->status[blocks[alpha][i]]){
+	if(proposedPosition->RJ){
+		for(int i = 0 ; i<blocks[alpha].size(); i++){
+			if(proposedPosition->status[blocks[alpha][i]]){
+				proposedPosition->parameters[blocks[alpha][i]] += randGauss * (FisherEigenVecs[chainID][alpha][randDim][i]);
+				//std::cout<<blocks[alpha][i]<<"|"<<randGauss * (FisherEigenVecs[chainID][alpha][randDim][i])<<", ";
+			}
+		}
+	}
+	else{
+		for(int i = 0 ; i<blocks[alpha].size(); i++){
 			proposedPosition->parameters[blocks[alpha][i]] += randGauss * (FisherEigenVecs[chainID][alpha][randDim][i]);
 		}
 	}
+	//std::cout<<std::endl;
 	FisherAttemptsSinceLastUpdate[chainID][alpha] ++;
 	
 	return;

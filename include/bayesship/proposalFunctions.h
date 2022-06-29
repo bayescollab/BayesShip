@@ -64,7 +64,7 @@ namespace bayesship{
 //###################################################################
 //###################################################################
 
-typedef void(*gibbsFisherCalculation)(
+typedef void(*blockFisherCalculation)(
 	positionInfo *pos,
 	double **fisher,
 	std::vector<int> ids,
@@ -72,7 +72,7 @@ typedef void(*gibbsFisherCalculation)(
 	);
 
 
-class gibbsFisherProposal: public proposal
+class blockFisherProposal: public proposal
 {
 public:
 	/*! Number of chains*/
@@ -96,11 +96,11 @@ public:
 
 	bayesshipSampler *sampler=nullptr;
 	
-	gibbsFisherCalculation fisherCalc;
+	blockFisherCalculation fisherCalc;
 
 
-	gibbsFisherProposal(int chainN, int maxDim, gibbsFisherCalculation fisherCalc, void **parameters, int updateFreq,bayesshipSampler *sampler, std::vector<std::vector<int>> blocks,std::vector<double> blockProb);
-	virtual ~gibbsFisherProposal();
+	blockFisherProposal(int chainN, int maxDim, blockFisherCalculation fisherCalc, void **parameters, int updateFreq,bayesshipSampler *sampler, std::vector<std::vector<int>> blocks,std::vector<double> blockProb);
+	virtual ~blockFisherProposal();
 	virtual void propose(positionInfo *current, positionInfo *proposed, int chainID,int stepID,double *MHRatioModifications);
 
 };

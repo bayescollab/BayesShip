@@ -147,8 +147,15 @@ void fisherProposal::propose(positionInfo *currentPosition, positionInfo *propos
 	if(scaling <10. ){scaling = 10.;}
 	scaling *=(sampler->betas[chainID]+1e-5);
 	double randGauss = gsl_ran_gaussian(sampler->rvec[chainID], 1./std::sqrt(scaling));	
-	for(int i = 0 ; i<maxDim; i++){
-		if(proposedPosition->status[i] == 1){
+	if(proposedPosition->RJ){
+		for(int i = 0 ; i<maxDim; i++){
+			if(proposedPosition->status[i] == 1){
+				proposedPosition->parameters[i] += randGauss * (FisherEigenVecs[chainID][randDim][i]);
+			}
+		}
+	}
+	else{
+		for(int i = 0 ; i<maxDim; i++){
 			proposedPosition->parameters[i] += randGauss * (FisherEigenVecs[chainID][randDim][i]);
 		}
 	}
