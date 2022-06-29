@@ -402,7 +402,7 @@ void bayesshipSampler::sample()
 		randomizeSwapping = saveRandomizeSwappingFlag;
 		threadPool=savePool;
 	
-		burnData->create_data_dump(coldOnlyStorage, true, outputDir+outputFileMoniker+"Burn_output.hdf5");
+		//burnData->create_data_dump(coldOnlyStorage, true, outputDir+outputFileMoniker+"Burn_output.hdf5");
 	}
 	else{
 		std::cout<<"Using initial position and skipping burn in"<<std::endl;
