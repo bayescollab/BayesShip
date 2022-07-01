@@ -1,6 +1,134 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import h5py 
+import pandas as pd
+
+
+class MCMCOutput:
+    filename = ""
+    outputFile = None
+    betas = None
+    betaSchedule = None
+    temps = None
+    ACVals = None
+    trimLengths = None
+    dataSets = None
+    ensembleSize = 0
+    ensembleN = 0
+    RJ = False
+    def __init__(self, MCMCOutputFile):
+        self.filename = MCMCOutputFile     
+        self.outputFile = h5py.File(self.filename)
+        self.betas = np.array(self.outputFile["MCMC_METADATA"]["CHAIN BETAS"])
+        with np.errstate(divide='ignore'):  
+            self.temps = 1./self.betas
+        if "STATUS" in self.outputFile["MCMC_OUTPUT"].keys():
+            self.RJ=True 
+        if not self.RJ:
+            self.ACVals = np.array(self.outputFile["MCMC_METADATA"]["AC VALUES"])
+        self.trimLengths = np.array(self.outputFile["MCMC_METADATA"]["SUGGESTED TRIM LENGTHS"])
+
+
+        self.betaSchedule = np.flip(np.unique(np.array(self.outputFile["MCMC_METADATA"]["CHAIN BETAS"])))
+        self.ensembleSize = int(len(self.betaSchedule))
+        self.ensembleN = int(len(self.betas)/self.ensembleSize)
+        return
+        
+    #def unpackMCMCData(self,betaID=0, trim=None, thin=None):
+    #    
+    #    if betaID > self.ensembleN:
+    #        print("Supplied a betaID larger than the number of ensembles!")
+    #        return None, None, None
+    #    
+    #    chainIDs = np.arange(self.chainIndex(0,betaID) , self.chainIndex(self.ensembleN,betaID))
+    #    
+    #    
+    #    trim_local=0 
+    #    thin_local=1 
+
+    #    if trim is None  and betaID ==0:
+    #        trim_local = self.trimLengths[chainIDs[0]]
+    #    if thin is None and betaID ==0:
+    #        thin_local = np.amax(self.ACVals[chainIDs[0]][:])
+    #    if thin_local == 0 :
+    #        thin_local=1
+    #    data = self.outputFile["MCMC_OUTPUT"]["CHAIN {}".format(chainIDs[0])][trim_local::thin_local]
+    #    for x in chainIDs[1:]:
+    #        if trim is None and betaID ==0:
+    #            trim_local = self.trimLengths[x]
+    #        if thin is None and betaID ==0:
+    #            thin_local = np.amax(self.ACVals[x][:])
+    #        if thin_local == 0:
+    #            thin_local=1
+    #        data = np.insert(data,-1, self.outputFile["MCMC_OUTPUT"]["CHAIN {}".format(x)][trim_local::thin_local],axis=0)
+    #    return data
+    def unpackMCMCData(self,betaID=0, trim=None, thin=None,sizeCap=None):
+        if betaID > self.ensembleN:
+            print("Supplied a betaID larger than the number of ensembles!")
+            return None, None, None
+        
+        #chainIDs = np.arange(ensembleSize*betaID , ensembleSize*betaID + ensembleN)
+        chainIDs = np.arange(self.chainIndex(0,betaID) , self.chainIndex(self.ensembleN,betaID))
+    
+        trim_local = 0
+        thin_local = 1
+        if trim is not None:
+            trim_local = trim
+        elif betaID ==0 and not self.RJ:
+            trim_local = self.trimLengths[chainIDs[0]]
+            
+        if thin is not None:
+            thin_local = thin
+        elif betaID ==0 and not self.RJ:
+            thin_local = np.amax(self.ACVals[chainIDs[0]][:])
+
+        self.selectedData = None
+        data = self.outputFile["MCMC_OUTPUT"]["CHAIN {}".format(chainIDs[0])][trim::thin]
+        logl = self.outputFile["MCMC_OUTPUT/LOGL_LOGP"]["CHAIN {}".format(chainIDs[0])][trim::thin,0]
+        logp = self.outputFile["MCMC_OUTPUT/LOGL_LOGP"]["CHAIN {}".format(chainIDs[0])][trim::thin,1]
+        status = None
+        model_status = None
+        if self.RJ:
+            status = self.outputFile["MCMC_OUTPUT/STATUS"]["CHAIN {}".format(chainIDs[0])][trim::thin]
+            if "MCMC_OUTPUT/MODEL_STATUS" in self.outputFile.keys():
+                model_status = self.outputFile["MCMC_OUTPUT/MODEL_STATUS"]["CHAIN {}".format(chainIDs[0])][trim::thin]
+        for x in chainIDs[1:]:
+            if trim is None and betaID ==0 and not self.RJ:
+                trim_local = self.trimLengths[x]
+            if thin is None and betaID ==0 and not self.RJ:
+                thin_local = np.amax(self.ACVals[x][:])
+            if thin_local == 0:
+                thin_local=1
+            data = np.insert(data,-1, self.outputFile["MCMC_OUTPUT"]["CHAIN {}".format(x)][trim::thin],axis=0)
+            logl = np.insert(logl,-1, self.outputFile["MCMC_OUTPUT/LOGL_LOGP"]["CHAIN {}".format(x)][trim::thin,0],axis=0)
+            logp = np.insert(logp,-1, self.outputFile["MCMC_OUTPUT/LOGL_LOGP"]["CHAIN {}".format(x)][trim::thin,1],axis=0)
+            if self.RJ:
+                status = np.insert(status,-1, self.outputFile["MCMC_OUTPUT/STATUS"]["CHAIN {}".format(x)][trim::thin],axis=0)
+                if "MCMC_OUTPUT/MODEL_STATUS" in self.outputFile.keys():
+                    model_status = np.insert(model_status,-1, self.outputFile["MCMC_OUTPUT/MODEL_STATUS"]["CHAIN {}".format(x)][trim::thin],axis=0)
+
+        if data.shape[0] > sizeCap:
+            local_trim = int( data.shape[0]/sizeCap)
+            data =  data[::local_trim ]
+            logl =  logl[::local_trim ]
+            logp =  logp[::local_trim ]
+            if status is not None:
+                status =  status[::local_trim ]
+            if model_status is not None:
+                model_status =  model_status[::local_trim ]
+        d = {"logL":logl,"logP":logp}
+            
+        labels = list(["Parameter {}".format(x) for x in np.arange(data.shape[1])])
+        d["data"] = pd.DataFrame(data,columns=labels)
+        if status is not None:
+            d["status"] = pd.DataFrame(status,columns=labels)
+        if model_status is not None:
+            d["model_status"] = model_status
+        d["beta"] =self.betaSchedule[betaID]
+        return d 
+
+    def chainIndex(self,ensemble, betaN):
+        return ensemble+betaN*self.ensembleN
 
 def chainIndex(ensemble, betaN, ensembleN):
     return ensemble+betaN*ensembleN
@@ -48,11 +176,12 @@ def MCMC_unpack_file(filename,betaID=0, trim=None, thin=None):
         print("Supplied a betaID larger than the number of ensembles!")
         return None, None, None
     
-    chainIDs = np.arange(ensembleSize*betaID , ensembleSize*betaID + ensembleN)
+    chainIDs = np.arange(chainIndex(0,betaID,ensembleN) , chainIndex(ensembleN,betaID,ensembleN))
     
     chains = list(f["MCMC_OUTPUT"].keys())
-    trim_local=trim 
-    thin_local=thin 
+    
+    trim_local=0 
+    thin_local=1 
     #if trim is None :
     #    trim_local = f["MCMC_METADATA"]["SUGGESTED TRIM LENGTHS"][chainIDs[0]]
     #if ac is None:
@@ -66,17 +195,17 @@ def MCMC_unpack_file(filename,betaID=0, trim=None, thin=None):
     #     print("This file doesn't have chains hotter than Beta=1!")
     #     return None, None, None
     chains_N = len(chains)
-    if trim is None :
+    if trim is None  and betaID ==0:
         trim_local = f["MCMC_METADATA"]["SUGGESTED TRIM LENGTHS"][chainIDs[0]]
-    if thin is None:
+    if thin is None and betaID ==0:
         thin_local = np.amax(f["MCMC_METADATA"]["AC VALUES"][chainIDs[0]][:])
-    if thin_local == 0:
+    if thin_local == 0 :
         thin_local=1
     data = f["MCMC_OUTPUT"]["CHAIN {}".format(chainIDs[0])][trim_local::thin_local]
     for x in chainIDs[1:]:
-        if trim is None :
+        if trim is None and betaID ==0:
             trim_local = f["MCMC_METADATA"]["SUGGESTED TRIM LENGTHS"][x]
-        if thin is None:
+        if thin is None and betaID ==0:
             thin_local = np.amax(f["MCMC_METADATA"]["AC VALUES"][x][:])
         if thin_local == 0:
             thin_local=1
