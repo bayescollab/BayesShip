@@ -107,15 +107,16 @@ class MCMCOutput:
                 if "MCMC_OUTPUT/MODEL_STATUS" in self.outputFile.keys():
                     model_status = np.insert(model_status,-1, self.outputFile["MCMC_OUTPUT/MODEL_STATUS"]["CHAIN {}".format(x)][trim::thin],axis=0)
 
-        if data.shape[0] > sizeCap:
-            local_trim = int( data.shape[0]/sizeCap)
-            data =  data[::local_trim ]
-            logl =  logl[::local_trim ]
-            logp =  logp[::local_trim ]
-            if status is not None:
-                status =  status[::local_trim ]
-            if model_status is not None:
-                model_status =  model_status[::local_trim ]
+        if sizeCap is not None:
+            if data.shape[0] > sizeCap:
+                local_trim = int( data.shape[0]/sizeCap)
+                data =  data[::local_trim ]
+                logl =  logl[::local_trim ]
+                logp =  logp[::local_trim ]
+                if status is not None:
+                    status =  status[::local_trim ]
+                if model_status is not None:
+                    model_status =  model_status[::local_trim ]
         d = {"logL":logl,"logP":logp}
             
         labels = list(["Parameter {}".format(x) for x in np.arange(data.shape[1])])
