@@ -63,7 +63,7 @@ class MCMCOutput:
     #        data = np.insert(data,-1, self.outputFile["MCMC_OUTPUT"]["CHAIN {}".format(x)][trim_local::thin_local],axis=0)
     #    return data
     def unpackMCMCData(self,betaID=0, trim=None, thin=None,sizeCap=None):
-        if betaID > self.ensembleN:
+        if betaID > self.ensembleSize:
             print("Supplied a betaID larger than the number of ensembles!")
             return None, None, None
         
