@@ -204,6 +204,8 @@ void bayesshipSampler::sample()
 
 			burnData = new samplerData(maxDim, ensembleN,ensembleSize, burnPriorIterations, proposalFns->proposalN, RJ,betas);
 			assignInitialPosition(burnData);
+			
+			isolateEnsemblesInternal = isolateEnsemblesBurn;
 
 			//swapProb=saveSwapProb;
 			sampleLoop(burnPriorIterations,burnData);
@@ -250,6 +252,7 @@ void bayesshipSampler::sample()
 			assignInitialPosition(priorData);
 		}
 
+		isolateEnsemblesInternal = isolateEnsembles;
 		sampleLoop(priorIterations,priorData);
 
 		priorData->updateACs(threads);
@@ -288,6 +291,8 @@ void bayesshipSampler::sample()
 		else{
 			assignInitialPosition(burnData);
 		}
+	
+		isolateEnsemblesInternal = isolateEnsemblesBurn;
 
 		for( int i = 0 ;i<2;i++){
 			burnPeriod=true;
@@ -409,6 +414,7 @@ void bayesshipSampler::sample()
 		assignInitialPosition(data);
 	}
 
+	isolateEnsemblesInternal = isolateEnsembles;
 	data->updateBetas(betas);	
 	if(independentSamples == 0){
 		if( ( iterations < batchSize && batchSize > 0 ) || batchSize == 0  ){
@@ -1003,11 +1009,26 @@ bool swapPairFunction( swapJob job1, swapJob job2)
 {
 	int i =  job1.sampler->betaN(job1.chainID);
 	int j =  job2.sampler->betaN(job2.chainID);
-	int diff = fabs(i-j);
-	if( diff < 3 && diff >0){return true;}
+	int k =  job1.sampler->ensembleID(job1.chainID);
+	int l =  job2.sampler->ensembleID(job2.chainID);
+	int diffRung = fabs(i-j);
+	int diffLadder = fabs(k-l);
+	if( diffRung < 3 && diffRung >0){
+		if(!job1.sampler->getCurrentIsolateEnsemblesInternal()){
+			return true;
+		}
+		else if(diffLadder ==0){
+			return true;
+		}
+	}
 	return false;
 }
 
+bool bayesshipSampler::getCurrentIsolateEnsemblesInternal()
+{
+	return this->isolateEnsemblesInternal;
+
+}
 
 /*! \brief Swaps two chains in the ensemble identified by chainID1 and chainID2
  */
@@ -1254,11 +1275,24 @@ void bayesshipSampler::stepMH(
  * 	chainID =7 -> betaN == 2 and beta == 0.2
  *
  */
-
 int bayesshipSampler::betaN(int chainID){
 	return (int)(chainID/ensembleN);
 }
 
+
+/*! \brief Helper routine to reverse engineer which ladder the index for the chain belongs to
+ *
+ * For example, say the beta ladder for a sampler is {1,.5,.2,0} with 3 ensembles:
+ * 	chainID = 2 -> betaN == 0 and beta == 1 and ensembleN = 2
+ *
+ * 	chainID =4 -> betaN == 1 and beta == 0.5 and ensembleN = 1
+ *
+ * 	chainID =8 -> betaN == 2 and beta == 0.2 and ensembleN = 2
+ *
+ */
+int bayesshipSampler::ensembleID(int chainID){
+	return (int)(chainID%ensembleN);
+}
 
 /*! \brief Helper routine to calculate the index for the chain in ensemble ``ensemble'' and with beta ID ''betaN''
  *

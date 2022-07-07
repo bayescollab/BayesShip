@@ -212,6 +212,11 @@ public:
 	/*! If a checkpoint file exists in the output directory, ignore it (true) or load it (false)*/
 	bool ignoreExistingCheckpoint=false;
 
+	/*! Whether to allow for swapping between ensembles in burn perior*/
+	bool isolateEnsembles=true;
+	/*! Whether to allow for swapping between ensembles in collection*/
+	bool isolateEnsemblesBurn=false;
+
 
 	/* Meta Data -- read in from Checkpoint File*/
 	/*! Run variable dimension RJMCMC (true) or regular, fixed dimension MCMC (false)*/
@@ -314,6 +319,7 @@ public:
 	void adjustTemperatures(int t);
 	int chainIndex(int ensemble, int betaN);
 	int betaN(int chainID);
+	int ensembleID(int chainID);
 	samplerData *getActiveData();
 	void setActiveData( samplerData *newData);
 
@@ -331,7 +337,10 @@ public:
  * 		*/
 	void loadCheckpoint();
 	//NLOHMANN_DEFINE_TYPE_INTRUSIVE(bayesshipSampler,chainN)
+	bool getCurrentIsolateEnsemblesInternal();
 private:
+	/*! Whether to allow for swapping between ensembles INTERNAL USE ONLY*/
+	bool isolateEnsemblesInternal=false;
 	/*! Number of chains total = ensembleSize*ensembleN*/
 	int chainN;
 	/*! Temperature parameters beta_i = 1/T_i*/

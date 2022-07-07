@@ -71,11 +71,14 @@ void differentialEvolutionProposal::propose(positionInfo *currentPosition, posit
 	}
 
 	//double stepWidth = 1;
-	double stepWidth = 2.38/std::sqrt(2.*internalDim);
-	double alpha = gsl_ran_gaussian(sampler->rvec[chainID],stepWidth);
+	double  alpha = gsl_rng_uniform(sampler->rvec[chainID]);
+	double gamma = 1;
+	if( alpha < .9){
+		gamma = gsl_ran_gaussian(sampler->rvec[chainID],2.38/std::sqrt(2.*internalDim));
+	}
 	for(int i = 0 ; i<internalDim; i++){
 		proposedPosition->parameters[i] +=
-			alpha*(historyPosition1->parameters[i]-historyPosition2->parameters[i]);
+			gamma*(historyPosition1->parameters[i]-historyPosition2->parameters[i]);
 	}
 
 }

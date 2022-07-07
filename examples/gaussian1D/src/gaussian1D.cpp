@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
 	sampler->priorIterations = 10000;
 	sampler->burnPriorIterations = 1000;
 	sampler->writePriorData = true;
-	sampler->ignoreExistingCheckpoint=true;
+	sampler->ignoreExistingCheckpoint=false;
 	//sampler->priorIterations = 0;
 
 
