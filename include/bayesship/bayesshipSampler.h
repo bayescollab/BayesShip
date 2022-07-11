@@ -213,7 +213,7 @@ public:
 	bool ignoreExistingCheckpoint=false;
 
 	/*! Whether to allow for swapping between ensembles in burn perior*/
-	bool isolateEnsembles=true;
+	bool isolateEnsembles=false;
 	/*! Whether to allow for swapping between ensembles in collection*/
 	bool isolateEnsemblesBurn=false;
 

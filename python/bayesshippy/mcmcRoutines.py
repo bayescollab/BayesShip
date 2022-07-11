@@ -83,29 +83,30 @@ class MCMCOutput:
             thin_local = np.amax(self.ACVals[chainIDs[0]][:])
 
         self.selectedData = None
-        data = self.outputFile["MCMC_OUTPUT"]["CHAIN {}".format(chainIDs[0])][trim::thin]
-        logl = self.outputFile["MCMC_OUTPUT/LOGL_LOGP"]["CHAIN {}".format(chainIDs[0])][trim::thin,0]
-        logp = self.outputFile["MCMC_OUTPUT/LOGL_LOGP"]["CHAIN {}".format(chainIDs[0])][trim::thin,1]
+        data = self.outputFile["MCMC_OUTPUT"]["CHAIN {}".format(chainIDs[0])][trim_local::thin_local]
+        logl = self.outputFile["MCMC_OUTPUT/LOGL_LOGP"]["CHAIN {}".format(chainIDs[0])][trim_local::thin_local,0]
+        logp = self.outputFile["MCMC_OUTPUT/LOGL_LOGP"]["CHAIN {}".format(chainIDs[0])][trim_local::thin_local,1]
         status = None
         model_status = None
         if self.RJ:
-            status = self.outputFile["MCMC_OUTPUT/STATUS"]["CHAIN {}".format(chainIDs[0])][trim::thin]
+            status = self.outputFile["MCMC_OUTPUT/STATUS"]["CHAIN {}".format(chainIDs[0])][trim_local::thin_local]
             if "MCMC_OUTPUT/MODEL_STATUS" in self.outputFile.keys():
-                model_status = self.outputFile["MCMC_OUTPUT/MODEL_STATUS"]["CHAIN {}".format(chainIDs[0])][trim::thin]
+                model_status = self.outputFile["MCMC_OUTPUT/MODEL_STATUS"]["CHAIN {}".format(chainIDs[0])][trim_local::thin_local]
         for x in chainIDs[1:]:
             if trim is None and betaID ==0 and not self.RJ:
                 trim_local = self.trimLengths[x]
             if thin is None and betaID ==0 and not self.RJ:
                 thin_local = np.amax(self.ACVals[x][:])
+                print(thin_local)
             if thin_local == 0:
                 thin_local=1
-            data = np.insert(data,-1, self.outputFile["MCMC_OUTPUT"]["CHAIN {}".format(x)][trim::thin],axis=0)
-            logl = np.insert(logl,-1, self.outputFile["MCMC_OUTPUT/LOGL_LOGP"]["CHAIN {}".format(x)][trim::thin,0],axis=0)
-            logp = np.insert(logp,-1, self.outputFile["MCMC_OUTPUT/LOGL_LOGP"]["CHAIN {}".format(x)][trim::thin,1],axis=0)
+            data = np.insert(data,-1, self.outputFile["MCMC_OUTPUT"]["CHAIN {}".format(x)][trim_local::thin_local],axis=0)
+            logl = np.insert(logl,-1, self.outputFile["MCMC_OUTPUT/LOGL_LOGP"]["CHAIN {}".format(x)][trim_local::thin_local,0],axis=0)
+            logp = np.insert(logp,-1, self.outputFile["MCMC_OUTPUT/LOGL_LOGP"]["CHAIN {}".format(x)][trim_local::thin_local,1],axis=0)
             if self.RJ:
-                status = np.insert(status,-1, self.outputFile["MCMC_OUTPUT/STATUS"]["CHAIN {}".format(x)][trim::thin],axis=0)
+                status = np.insert(status,-1, self.outputFile["MCMC_OUTPUT/STATUS"]["CHAIN {}".format(x)][trim_local::thin_local],axis=0)
                 if "MCMC_OUTPUT/MODEL_STATUS" in self.outputFile.keys():
-                    model_status = np.insert(model_status,-1, self.outputFile["MCMC_OUTPUT/MODEL_STATUS"]["CHAIN {}".format(x)][trim::thin],axis=0)
+                    model_status = np.insert(model_status,-1, self.outputFile["MCMC_OUTPUT/MODEL_STATUS"]["CHAIN {}".format(x)][trim_local::thin_local],axis=0)
 
         if sizeCap is not None:
             if data.shape[0] > sizeCap:

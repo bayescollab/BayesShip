@@ -275,6 +275,21 @@ public:
 	virtual void propose(positionInfo *current, positionInfo *proposed, int chainID,int stepID,double *MHRatioModifications);
 
 };
+//###################################################################
+//###################################################################
+
+class blockDifferentialEvolutionProposal: public proposal
+{
+public:
+	std::vector<std::vector<int>> blocks;
+	std::vector<double> blockProb;
+	std::vector<double> blockProbBoundaries;
+	bayesshipSampler *sampler=nullptr;
+	blockDifferentialEvolutionProposal(bayesshipSampler *sampler, std::vector<std::vector<int>> blocks, std::vector<double> blockProb);
+	virtual ~blockDifferentialEvolutionProposal(){return;};
+	virtual void propose(positionInfo *current, positionInfo *proposed, int chainID,int stepID,double *MHRatioModifications);
+
+};
 
 
 //###################################################################

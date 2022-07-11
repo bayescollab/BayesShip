@@ -1390,6 +1390,17 @@ proposalData::proposalData(
 		}
 	
 	}
+	
+	//Regardless of option employed, make sure its normalized
+	for(int i = 0 ; i<chainN;i++){
+		double sum = 0 ;
+		for(int j = 0 ; j<proposalN; j++){
+			sum +=this->proposalProb[i][j];
+		}
+		for(int j = 0 ; j<proposalN; j++){
+			this->proposalProb[i][j]/=sum ;
+		}
+	}
 
 }
 
