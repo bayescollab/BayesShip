@@ -1422,14 +1422,21 @@ proposalData::proposalData(
 	this->proposals = new proposal*[3];
 
 	this->proposals[0] = new gaussianProposal(chainN, maxDim,sampler);
-	this->proposals[1] = new differentialEvolutionProposal(sampler);
+	//this->proposals[1] = new differentialEvolutionProposal(sampler);
+	std::vector<std::vector<int>> blocks = std::vector<std::vector<int>>(1);
+	for(int i = 0 ; i< maxDim;i++){
+		blocks[0].push_back(i);
+	}
+	std::vector<double> blockProb={1};
+	//this->proposals[1] = new differentialEvolutionProposal(sampler);
+	this->proposals[1] = new blockDifferentialEvolutionProposal(sampler,blocks,blockProb);
 	this->proposals[2] = new KDEProposal(chainN, maxDim, sampler,RJ);
 
 	for(int i =0  ; i<chainN; i++){
 		this->proposalProb[i] = new double[3];	
-		this->proposalProb[i][0] = .4;
-		this->proposalProb[i][1] = .5;
-		this->proposalProb[i][2] = .1;
+		this->proposalProb[i][0] = .3;
+		this->proposalProb[i][1] = .7;
+		this->proposalProb[i][2] = .0;
 	}
 
 	

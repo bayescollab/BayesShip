@@ -11,7 +11,7 @@ if __name__ == '__main__':
         package_dir={'bayesshippy':'bayesshippy'},
         package_data={'bayesshippy':'_bayesshipSamplerpy.*'},
         author='Scott Perkins',
-        author_email='seperkins94@gmail.com',
+        author_email='scott.ellis.perkins@gmail.com',
         description="Python wrapping of the BayesShip package.",
         long_description=open('README.md').read(),
     )

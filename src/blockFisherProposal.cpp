@@ -166,6 +166,12 @@ void blockFisherProposal::propose(positionInfo *currentPosition, positionInfo *p
 		}
 	}
 
+	//std::cout<<"Updating: ";
+	//for(int i = 0 ; i<blocks[alpha].size();i++){
+	//	std::cout<<blocks[alpha][i]<<", ";
+	//}
+	//std::cout<<std::endl;
+
 	if(	
 		((FisherAttemptsSinceLastUpdate[chainID][alpha] >= updateFreq) && (sampler->burnPeriod)) 
 		||
@@ -217,8 +223,10 @@ void blockFisherProposal::propose(positionInfo *currentPosition, positionInfo *p
 		}
 	}
 	else{
+		//std::cout<<"Fisher:"<<std::endl;
 		for(int i = 0 ; i<blocks[alpha].size(); i++){
 			proposedPosition->parameters[blocks[alpha][i]] += randGauss * (FisherEigenVecs[chainID][alpha][randDim][i]);
+			//std::cout<<blocks[alpha][i]<<"|"<<1./std::sqrt(scaling) * (FisherEigenVecs[chainID][alpha][randDim][i])<<"\n";
 		}
 	}
 	//std::cout<<std::endl;
