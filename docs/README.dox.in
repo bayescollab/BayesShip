@@ -17,7 +17,19 @@ The software is written in c++, with a swig wrapped version also available in Py
 
 \subsection Instructions
 
-Install dependencies.
+Install dependencies:
+
+1. gcc/g++
+2. CMake
+3. OpenmMP
+4. Armadillo
+5. GSL
+6. FFTW3
+7. HDF5
+8. nlhomann_json
+9. Doxygen (for documentation)
+10. SWIG (if compiling python bindings)
+11. Python header files (if compiling python bindings)
 
 Download the package from github (https://github.com/scottperkins/bayesship). 
 
@@ -35,10 +47,6 @@ Run "make install"
 
 Include the library in other c++ programs by incorporating the statement "#include <bayesship/*>" where "*" represents the particular file you are interested in. Then link the new program with the library with "-lbayesship".
 
-
-\subsection Dependencies
-
-gcc, CMake, HDF5, OpenMP, posix threads, nlhomann_json, GSL, Armadillo, FFTW3, SWIG, Doxygen
 
 
 
