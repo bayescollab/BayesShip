@@ -99,7 +99,11 @@ void blockDifferentialEvolutionProposal::propose(positionInfo *currentPosition, 
 	for(int i = 0 ; i<blocks[blockID].size(); i++){
 		proposedPosition->parameters[blocks[blockID][i]] +=
 			gamma*(historyPosition1->parameters[blocks[blockID][i]]-historyPosition2->parameters[blocks[blockID][i]]);
+		//std::cout<<blocks[blockID][i]<<" "<<proposedPosition->parameters[blocks[blockID][i]] -currentPosition->parameters[blocks[blockID][i]] <<std::endl;
 	}
+	//if(sampler->betas[chainID] == 1){
+	//std::cout<<chainID<<" "<<blockID<<" "<<gamma<<" "<<std::endl;
+	//}
 
 }
 
