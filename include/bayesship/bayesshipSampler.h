@@ -68,6 +68,16 @@ public:
 	{
 		return ;
 	};
+	/*! \brief proposalFn write stat file 
+	 *
+	 * Writes out statistics about the proposal functions, if needed. This goes beyond what's already reported in the general stat file
+	 * 
+	 * */
+	virtual void writeStatFile( std::string inputDirectory, std::string runMoniker)
+	{
+		return ;
+	};
+
 
 };
 

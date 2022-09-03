@@ -231,6 +231,12 @@ void blockFisherProposal::propose(positionInfo *currentPosition, positionInfo *p
 	}
 	//std::cout<<std::endl;
 	FisherAttemptsSinceLastUpdate[chainID][alpha] ++;
+
+
+	//Testing 
+	//####################################################
+		
+	//####################################################
 	
 	return;
 }

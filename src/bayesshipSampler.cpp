@@ -257,6 +257,9 @@ void bayesshipSampler::sample()
 
 		priorData->updateACs(threads);
 		priorData->writeStatFile(outputDir+outputFileMoniker+"Prior_stat.txt");
+		for(int i = 0 ; i<proposalFns->proposalN; i++){
+				proposalFns->proposals[i]->writeStatFile(outputDir, outputFileMoniker);
+		}
 
 		delete tempprior;
 		prior = likelihood;
@@ -429,6 +432,9 @@ void bayesshipSampler::sample()
 			data->create_data_dump(coldOnlyStorage, true, outputDir+outputFileMoniker+"_output.hdf5");
 			#endif
 			data->writeStatFile(outputDir+outputFileMoniker+"_stat.txt");
+			for(int i = 0 ; i<proposalFns->proposalN; i++){
+					proposalFns->proposals[i]->writeStatFile(outputDir, outputFileMoniker);
+			}
 		}
 		else  {
 			int currentSamples=0;
@@ -462,6 +468,9 @@ void bayesshipSampler::sample()
 				}
 				#endif
 				data->writeStatFile(outputDir+outputFileMoniker+"_stat.txt");
+				for(int i = 0 ; i<proposalFns->proposalN; i++){
+						proposalFns->proposals[i]->writeStatFile(outputDir, outputFileMoniker);
+				}
 
 				double Lmean = 0;
 				double Lmax = data->likelihoodVals[0][0];
@@ -526,6 +535,9 @@ void bayesshipSampler::sample()
 			}
 			#endif
 			data->writeStatFile(outputDir+outputFileMoniker+"_stat.txt");
+			for(int i = 0 ; i<proposalFns->proposalN; i++){
+					proposalFns->proposals[i]->writeStatFile(outputDir, outputFileMoniker);
+			}
 
 			double Lmean = 0;
 			double Lmax = data->likelihoodVals[0][0];
