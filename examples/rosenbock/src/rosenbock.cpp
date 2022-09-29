@@ -63,20 +63,16 @@ int main(int argc, char *argv[])
 	double a = 1./20.;
 	//int n1 = 3;
 	//int n2 = 2;
-	int n1 = 5;
-	int n2 = 3;
+	//int n1 = 5;
+	//int n2 = 3;
+	int n1 = 3;
+	int n2 = 2;
 	int n = (n1-1)*n2 + 1;
 	double b[n];
 	for(int i = 0 ; i<n ; i++){
 		b[i]=100./20.;
 	}
 	double mu = 1.;
-	double bounds_high[n];
-	double bounds_low[n];
-	for(int i=0 ; i<n; i++){
-		bounds_high[i]=10000;
-		bounds_low[i]=-10000;
-	}
 	double out_param[5+n];
 	out_param[0]=a;
 	out_param[1]=mu;
@@ -106,8 +102,8 @@ int main(int argc, char *argv[])
 	double **priorRange = new double*[sampler->maxDim];
 	for(int i = 0 ; i<n; i++){
 		priorRange[i] = new double[2];
-		priorRange[i][0] = -1e4;
-		priorRange[i][1] = 1e4;
+		priorRange[i][0] = -1e3;
+		priorRange[i][1] = 1e3;
 	}
 	sampler->priorRanges = priorRange;
 	up->maxDim=n;
@@ -127,9 +123,13 @@ int main(int argc, char *argv[])
 	sampler->outputFileMoniker = "rosenbock";
 	sampler->independentSamples = 500;
 	sampler->burnIterations = 50000;
-	sampler->ensembleN = 10;
+	//sampler->ensembleN = 1;
+	sampler->ensembleN = 5;
 	sampler->ensembleSize=50;
-	sampler->threads = 4;
+	//sampler->swapProb=.05;
+	sampler->swapProb=.1;
+	sampler->isolateEnsembles=false;
+	sampler->threads = 14;
 	int chainN = sampler->ensembleSize*sampler->ensembleN;
 	sampler->initialPosition = new bayesship::positionInfo(sampler->maxDim,false);
 	for(int i = 0 ; i<sampler->maxDim; i++){
