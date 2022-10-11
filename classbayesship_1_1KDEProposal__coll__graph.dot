@@ -1,0 +1,25 @@
+digraph "bayesship::KDEProposal"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
+  node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
+  rankdir="LR";
+  Node1 [label="bayesship::KDEProposal",height=0.2,width=0.4,color="gray40", fillcolor="grey60", style="filled", fontcolor="black",tooltip=" "];
+  Node2 -> Node1 [dir="back",color="steelblue1",style="solid"];
+  Node2 [label="bayesship::proposal",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$classbayesship_1_1proposal.html",tooltip=" "];
+  Node3 -> Node1 [dir="back",color="darkorchid3",style="dashed",label=" currentData" ];
+  Node3 [label="bayesship::samplerData",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$classbayesship_1_1samplerData.html",tooltip=" "];
+  Node4 -> Node3 [dir="back",color="darkorchid3",style="dashed",label=" positions" ];
+  Node4 [label="bayesship::positionInfo",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$classbayesship_1_1positionInfo.html",tooltip="Class to hold information about a position in parameter/model space."];
+  Node5 -> Node1 [dir="back",color="darkorchid3",style="dashed",label=" sampler" ];
+  Node5 [label="bayesship::bayesshipSampler",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$classbayesship_1_1bayesshipSampler.html",tooltip=" "];
+  Node6 -> Node5 [dir="back",color="darkorchid3",style="dashed",label=" proposalFns" ];
+  Node6 [label="bayesship::proposalData",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$classbayesship_1_1proposalData.html",tooltip="Likelihood function typedef."];
+  Node2 -> Node6 [dir="back",color="darkorchid3",style="dashed",label=" proposals" ];
+  Node7 -> Node5 [dir="back",color="darkorchid3",style="dashed",label=" likelihood\nprior" ];
+  Node7 [label="bayesship::probabilityFn",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$classbayesship_1_1probabilityFn.html",tooltip=" "];
+  Node4 -> Node5 [dir="back",color="darkorchid3",style="dashed",label=" initialPosition\ninitialPositionEnsemble" ];
+  Node3 -> Node5 [dir="back",color="darkorchid3",style="dashed",label=" activeData\nburnData\ndata\npriorData" ];
+  Node4 -> Node1 [dir="back",color="darkorchid3",style="dashed",label=" storedSamples" ];
+}

@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ThreadPool &mdash; BayesShip  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="autocorrelationUtilities" href="autocorrelationUtilities.html" />
+    <link rel="prev" title="API" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> BayesShip
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Welcome to BayesShip’s documentation!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/installation.html">Installation Methods</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">ThreadPool</a></li>
+<li class="toctree-l2"><a class="reference internal" href="autocorrelationUtilities.html">autocorrelationUtilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bayesshipSampler.html">bayesshipSampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataUtilities.html">dataUtilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="proposalFunctions.html">proposalFunctions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="standardPriors.html">standardPriors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utilities.html">utilities</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">BayesShip</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">API</a> &raquo;</li>
+      <li>ThreadPool</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/ThreadPool.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="threadpool">
+<span id="api-threadpool"></span><h1>ThreadPool<a class="headerlink" href="#threadpool" title="Permalink to this heading"></a></h1>
+<p>Header file (declarations and definitions because of template functions) for the implementation of a generic thread pool </p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv49bayesship">
+<span id="_CPPv39bayesship"></span><span id="_CPPv29bayesship"></span><span id="bayesship"></span><span class="target" id="namespacebayesship"></span><span class="k"><span class="pre">namespace</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">bayesship</span></span></span><a class="headerlink" href="#_CPPv49bayesship" title="Permalink to this definition"></a><br /></dt>
+<dd><dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN9bayesship11DefaultCompE">
+<span id="_CPPv3I0EN9bayesship11DefaultCompE"></span><span id="_CPPv2I0EN9bayesship11DefaultCompE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">jobtype</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="classbayesship_1_1DefaultComp"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">DefaultComp</span></span></span><a class="headerlink" href="#_CPPv4I0EN9bayesship11DefaultCompE" title="Permalink to this definition"></a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;ThreadPool.h&gt;</em></div>
+<p>Default comparator for priority_queue in <a class="reference internal" href="#classbayesship_1_1ThreadPool"><span class="std std-ref">ThreadPool</span></a> &amp;#8212; no comparison. </p>
+<p>First in first out, not sorting </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship11DefaultCompclE7jobtype7jobtype">
+<span id="_CPPv3N9bayesship11DefaultCompclE7jobtype7jobtype"></span><span id="_CPPv2N9bayesship11DefaultCompclE7jobtype7jobtype"></span><span id="bayesship::DefaultComp::call-operator__jobtype.jobtype"></span><span class="target" id="classbayesship_1_1DefaultComp_1aa14666aa34fbf835b03f104112a799c9"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">()</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0EN9bayesship11DefaultCompE" title="bayesship::DefaultComp::jobtype"><span class="n"><span class="pre">jobtype</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">j</span></span>, <a class="reference internal" href="#_CPPv4I0EN9bayesship11DefaultCompE" title="bayesship::DefaultComp::jobtype"><span class="n"><span class="pre">jobtype</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">k</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship11DefaultCompclE7jobtype7jobtype" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4I00EN9bayesship10ThreadPoolE">
+<span id="_CPPv3I00EN9bayesship10ThreadPoolE"></span><span id="_CPPv2I00EN9bayesship10ThreadPoolE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">jobtype</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">comparator</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN9bayesship11DefaultCompE" title="bayesship::DefaultComp"><span class="n"><span class="pre">DefaultComp</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I00EN9bayesship10ThreadPoolE" title="bayesship::ThreadPool::jobtype"><span class="n"><span class="pre">jobtype</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="classbayesship_1_1ThreadPool"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ThreadPool</span></span></span><a class="headerlink" href="#_CPPv4I00EN9bayesship10ThreadPoolE" title="Permalink to this definition"></a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;ThreadPool.h&gt;</em></div>
+<p>Class for creating a pool of threads to asynchronously distribute work. </p>
+<p>Template parameters:</p>
+<p>jobtype defines a structure or class that represents a job or task</p>
+<p>comparator defines how to compare jobs for sorting the list</p>
+<p>Default options correspond to jobs being defined by an integer job_id, and no sorting of the list (first in first out) </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship10ThreadPool10ThreadPoolENSt6size_tENSt8functionIFvi7jobtypeEEEb">
+<span id="_CPPv3N9bayesship10ThreadPool10ThreadPoolENSt6size_tENSt8functionIFvi7jobtypeEEEb"></span><span id="_CPPv2N9bayesship10ThreadPool10ThreadPoolENSt6size_tENSt8functionIFvi7jobtypeEEEb"></span><span class="target" id="classbayesship_1_1ThreadPool_1a8543bc4e8057be2a19bdae883a16edbd"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ThreadPool</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">numThreads</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">void</span></span><span class="p"><span class="pre">(</span></span><span class="kt"><span class="pre">int</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I00EN9bayesship10ThreadPoolE" title="bayesship::ThreadPool::jobtype"><span class="n"><span class="pre">jobtype</span></span></a><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">work_fn</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">initiatePool</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship10ThreadPool10ThreadPoolENSt6size_tENSt8functionIFvi7jobtypeEEEb" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Constructor &amp;#8212; starts thread pool running. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>numThreads</strong> – Number of threads to launch </p></li>
+<li><p><strong>work_fn</strong> – Function to call for each threads </p></li>
+<li><p><strong>initiatePool</strong> – Automatically begin the thread pool &amp;#8212; if false, the user must start the thread pool manually </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship10ThreadPoolD0Ev">
+<span id="_CPPv3N9bayesship10ThreadPoolD0Ev"></span><span id="_CPPv2N9bayesship10ThreadPoolD0Ev"></span><span id="bayesship::ThreadPool::~ThreadPool"></span><span class="target" id="classbayesship_1_1ThreadPool_1a53d6519fb749159649355a35919732d9"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">~ThreadPool</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship10ThreadPoolD0Ev" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Destructor &amp;#8212; stops threads. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship10ThreadPool7enqueueE7jobtype">
+<span id="_CPPv3N9bayesship10ThreadPool7enqueueE7jobtype"></span><span id="_CPPv2N9bayesship10ThreadPool7enqueueE7jobtype"></span><span id="bayesship::ThreadPool::enqueue__jobtype"></span><span class="target" id="classbayesship_1_1ThreadPool_1aca723792205c7ed1259c903541c6b1d5"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">enqueue</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I00EN9bayesship10ThreadPoolE" title="bayesship::ThreadPool::jobtype"><span class="n"><span class="pre">jobtype</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">job_id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship10ThreadPool7enqueueE7jobtype" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Places jobs in queue to wait for scheduling. </p>
+<p>job_id is sorted if a comparator is provided </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>job_id</strong> – Job ID to put in the workk queue </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship10ThreadPool15get_num_threadsEv">
+<span id="_CPPv3N9bayesship10ThreadPool15get_num_threadsEv"></span><span id="_CPPv2N9bayesship10ThreadPool15get_num_threadsEv"></span><span id="bayesship::ThreadPool::get_num_threads"></span><span class="target" id="classbayesship_1_1ThreadPool_1a15ef2237db8976631158515ebcc03042"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_num_threads</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship10ThreadPool15get_num_threadsEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get the number of threads being used by the thread pool. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship10ThreadPool10activePoolEv">
+<span id="_CPPv3N9bayesship10ThreadPool10activePoolEv"></span><span id="_CPPv2N9bayesship10ThreadPool10activePoolEv"></span><span id="bayesship::ThreadPool::activePool"></span><span class="target" id="classbayesship_1_1ThreadPool_1a2a00c55b32c9d179473ea3dda95cac6d"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">activePool</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship10ThreadPool10activePoolEv" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship10ThreadPool16get_queue_lengthEv">
+<span id="_CPPv3N9bayesship10ThreadPool16get_queue_lengthEv"></span><span id="_CPPv2N9bayesship10ThreadPool16get_queue_lengthEv"></span><span id="bayesship::ThreadPool::get_queue_length"></span><span class="target" id="classbayesship_1_1ThreadPool_1aa11a3172a84a6af06fd1661a1de636ff"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_queue_length</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship10ThreadPool16get_queue_lengthEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get the current length of the job queue. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship10ThreadPool13randomizeJobsEv">
+<span id="_CPPv3N9bayesship10ThreadPool13randomizeJobsEv"></span><span id="_CPPv2N9bayesship10ThreadPool13randomizeJobsEv"></span><span id="bayesship::ThreadPool::randomizeJobs"></span><span class="target" id="classbayesship_1_1ThreadPool_1af917d209b5e8a9ecc0740100ab3b6c1d"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">randomizeJobs</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship10ThreadPool13randomizeJobsEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Sets internal flag to fully randomize jobs. </p>
+<p>Overrides the FIFO model to randomly select a job from the queue </p>
+<p>This can be useful because queueing jobs is not always as random as one may think </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship10ThreadPool9startPoolEv">
+<span id="_CPPv3N9bayesship10ThreadPool9startPoolEv"></span><span id="_CPPv2N9bayesship10ThreadPool9startPoolEv"></span><span id="bayesship::ThreadPool::startPool"></span><span class="target" id="classbayesship_1_1ThreadPool_1a286833ecb72a4da42d30ac255be5f03e"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">startPool</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship10ThreadPool9startPoolEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>initiates the thread pool &amp;#8212; only necessary if initiatePool was set to false in constructor </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship10ThreadPool8stopPoolEv">
+<span id="_CPPv3N9bayesship10ThreadPool8stopPoolEv"></span><span id="_CPPv2N9bayesship10ThreadPool8stopPoolEv"></span><span id="bayesship::ThreadPool::stopPool"></span><span class="target" id="classbayesship_1_1ThreadPool_1aad458d7d4c773b6c13085c747247ce35"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">stopPool</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship10ThreadPool8stopPoolEv" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship10ThreadPool9taskFetchEi">
+<span id="_CPPv3N9bayesship10ThreadPool9taskFetchEi"></span><span id="_CPPv2N9bayesship10ThreadPool9taskFetchEi"></span><span id="bayesship::ThreadPool::taskFetch__i"></span><span class="target" id="classbayesship_1_1ThreadPool_1a2430634b2f9ee9d58065e2f3a5eb8bab"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I00EN9bayesship10ThreadPoolE" title="bayesship::ThreadPool::jobtype"><span class="n"><span class="pre">jobtype</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">taskFetch</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">i</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship10ThreadPool9taskFetchEi" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns the job at index ‘’i’’ in the tasks array. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-private-functions">Private Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship10ThreadPool5startENSt6size_tE">
+<span id="_CPPv3N9bayesship10ThreadPool5startENSt6size_tE"></span><span id="_CPPv2N9bayesship10ThreadPool5startENSt6size_tE"></span><span id="bayesship::ThreadPool::start__std::s"></span><span class="target" id="classbayesship_1_1ThreadPool_1a8ce24f431f97ecd7cee4f38aa4f7eba6"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">start</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">numThreads</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship10ThreadPool5startENSt6size_tE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Starts thread pool &amp;#8212; launches each thread, which continually check for work. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship10ThreadPool4stopEv">
+<span id="_CPPv3N9bayesship10ThreadPool4stopEv"></span><span id="_CPPv2N9bayesship10ThreadPool4stopEv"></span><span id="bayesship::ThreadPool::stop"></span><span class="target" id="classbayesship_1_1ThreadPool_1ad64b76c0fca47019f8dd885913cc4818"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">stop</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N9bayesship10ThreadPool4stopEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Stops thread pool. </p>
+<p>Waits for all threads to end and joins them</p>
+<p>Finishes the thread pool before ending </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-private-members">Private Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship10ThreadPool17randomizeJobsFlagE">
+<span id="_CPPv3N9bayesship10ThreadPool17randomizeJobsFlagE"></span><span id="_CPPv2N9bayesship10ThreadPool17randomizeJobsFlagE"></span><span id="bayesship::ThreadPool::randomizeJobsFlag__b"></span><span class="target" id="classbayesship_1_1ThreadPool_1acbcdf08d9c157cc471d1a971aa739f4b"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">randomizeJobsFlag</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N9bayesship10ThreadPool17randomizeJobsFlagE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Internal flag to randomize the selection of the jobs from the queue </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship10ThreadPool7ThreadsE">
+<span id="_CPPv3N9bayesship10ThreadPool7ThreadsE"></span><span id="_CPPv2N9bayesship10ThreadPool7ThreadsE"></span><span id="bayesship::ThreadPool::Threads__std::vector:std::thread:"></span><span class="target" id="classbayesship_1_1ThreadPool_1afbbe700313a5cb1d3c7beb05c4279c8b"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">thread</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Threads</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship10ThreadPool7ThreadsE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Vector for thread ids </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship10ThreadPool8EventVarE">
+<span id="_CPPv3N9bayesship10ThreadPool8EventVarE"></span><span id="_CPPv2N9bayesship10ThreadPool8EventVarE"></span><span id="bayesship::ThreadPool::EventVar__std::condition_variable"></span><span class="target" id="classbayesship_1_1ThreadPool_1a16332bde73e06b3ca3f5aa24d58e45a4"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">condition_variable</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">EventVar</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship10ThreadPool8EventVarE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Condition Variable </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship10ThreadPool10EventMutexE">
+<span id="_CPPv3N9bayesship10ThreadPool10EventMutexE"></span><span id="_CPPv2N9bayesship10ThreadPool10EventMutexE"></span><span id="bayesship::ThreadPool::EventMutex__std::mutex"></span><span class="target" id="classbayesship_1_1ThreadPool_1a313dcf963e5ffddaa88d45191c029caa"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">mutex</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">EventMutex</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship10ThreadPool10EventMutexE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Lock to prevent memory races </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship10ThreadPool8stoppingE">
+<span id="_CPPv3N9bayesship10ThreadPool8stoppingE"></span><span id="_CPPv2N9bayesship10ThreadPool8stoppingE"></span><span id="bayesship::ThreadPool::stopping__b"></span><span class="target" id="classbayesship_1_1ThreadPool_1ace658732e6c9fd629698a34da8691908"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">stopping</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N9bayesship10ThreadPool8stoppingE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Boolean stop condition </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship10ThreadPool19numThreads_internalE">
+<span id="_CPPv3N9bayesship10ThreadPool19numThreads_internalE"></span><span id="_CPPv2N9bayesship10ThreadPool19numThreads_internalE"></span><span id="bayesship::ThreadPool::numThreads_internal__i"></span><span class="target" id="classbayesship_1_1ThreadPool_1ac1e14b55b13dbb2fe2812b32111ffb20"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">numThreads_internal</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship10ThreadPool19numThreads_internalE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Number of threads in pool </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship10ThreadPool16work_fn_internalE">
+<span id="_CPPv3N9bayesship10ThreadPool16work_fn_internalE"></span><span id="_CPPv2N9bayesship10ThreadPool16work_fn_internalE"></span><span class="target" id="classbayesship_1_1ThreadPool_1a40c62700c4f02884410be4106befb55e"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">void</span></span><span class="p"><span class="pre">(</span></span><span class="kt"><span class="pre">int</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I00EN9bayesship10ThreadPoolE" title="bayesship::ThreadPool::jobtype"><span class="n"><span class="pre">jobtype</span></span></a><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">work_fn_internal</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship10ThreadPool16work_fn_internalE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Function for each thread to perform &amp;#8212; Takes arguments thread_id and jobtype job </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship10ThreadPool5tasksE">
+<span id="_CPPv3N9bayesship10ThreadPool5tasksE"></span><span id="_CPPv2N9bayesship10ThreadPool5tasksE"></span><span id="bayesship::ThreadPool::tasks__std::vector:jobtype:"></span><span class="target" id="classbayesship_1_1ThreadPool_1a3b56d527e1df9df4782a318d22f9dcd9"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I00EN9bayesship10ThreadPoolE" title="bayesship::ThreadPool::jobtype"><span class="n"><span class="pre">jobtype</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">tasks</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship10ThreadPool5tasksE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Queue of jobs </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship10ThreadPool1TE">
+<span id="_CPPv3N9bayesship10ThreadPool1TE"></span><span id="_CPPv2N9bayesship10ThreadPool1TE"></span><span id="bayesship::ThreadPool::T__gsl_rng_typeCP"></span><span class="target" id="classbayesship_1_1ThreadPool_1af51729191772ca80257662d302ed26f0"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gsl_rng_type</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship10ThreadPool1TE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship10ThreadPool1rE">
+<span id="_CPPv3N9bayesship10ThreadPool1rE"></span><span id="_CPPv2N9bayesship10ThreadPool1rE"></span><span id="bayesship::ThreadPool::r__gsl_rngP"></span><span class="target" id="classbayesship_1_1ThreadPool_1a3d2115c92d61d917676ef76a3a842078"></span><span class="n"><span class="pre">gsl_rng</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">r</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">NULL</span></span><a class="headerlink" href="#_CPPv4N9bayesship10ThreadPool1rE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4I00EN9bayesship14ThreadPoolPairE">
+<span id="_CPPv3I00EN9bayesship14ThreadPoolPairE"></span><span id="_CPPv2I00EN9bayesship14ThreadPoolPairE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">jobtype</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">comparator</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN9bayesship11DefaultCompE" title="bayesship::DefaultComp"><span class="n"><span class="pre">DefaultComp</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I00EN9bayesship14ThreadPoolPairE" title="bayesship::ThreadPoolPair::jobtype"><span class="n"><span class="pre">jobtype</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="classbayesship_1_1ThreadPoolPair"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ThreadPoolPair</span></span></span><a class="headerlink" href="#_CPPv4I00EN9bayesship14ThreadPoolPairE" title="Permalink to this definition"></a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;ThreadPool.h&gt;</em></div>
+<p>Class for creating a pool of threads to asynchronously distribute work in groups of variable size. </p>
+<p>Template parameters:</p>
+<p>jobtype defines a structure or class that represents a job or task</p>
+<p>comparator defines how to compare jobs for sorting the list</p>
+<p>Default options correspond to jobs being defined by an integer job_id, and no sorting of the list (first in first out) </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship14ThreadPoolPair14ThreadPoolPairENSt6size_tENSt8functionIFvi7jobtype7jobtypeEEENSt8functionIFb7jobtype7jobtypeEEEb">
+<span id="_CPPv3N9bayesship14ThreadPoolPair14ThreadPoolPairENSt6size_tENSt8functionIFvi7jobtype7jobtypeEEENSt8functionIFb7jobtype7jobtypeEEEb"></span><span id="_CPPv2N9bayesship14ThreadPoolPair14ThreadPoolPairENSt6size_tENSt8functionIFvi7jobtype7jobtypeEEENSt8functionIFb7jobtype7jobtypeEEEb"></span><span class="target" id="classbayesship_1_1ThreadPoolPair_1a077d8863c97491cdcc3a6dc44940f6d0"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ThreadPoolPair</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">numThreads</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">void</span></span><span class="p"><span class="pre">(</span></span><span class="kt"><span class="pre">int</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I00EN9bayesship14ThreadPoolPairE" title="bayesship::ThreadPoolPair::jobtype"><span class="n"><span class="pre">jobtype</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I00EN9bayesship14ThreadPoolPairE" title="bayesship::ThreadPoolPair::jobtype"><span class="n"><span class="pre">jobtype</span></span></a><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">work_fn</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">bool</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#_CPPv4I00EN9bayesship14ThreadPoolPairE" title="bayesship::ThreadPoolPair::jobtype"><span class="n"><span class="pre">jobtype</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I00EN9bayesship14ThreadPoolPairE" title="bayesship::ThreadPoolPair::jobtype"><span class="n"><span class="pre">jobtype</span></span></a><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">pair_match</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">initiatePool</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship14ThreadPoolPair14ThreadPoolPairENSt6size_tENSt8functionIFvi7jobtype7jobtypeEEENSt8functionIFb7jobtype7jobtypeEEEb" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship14ThreadPoolPairD0Ev">
+<span id="_CPPv3N9bayesship14ThreadPoolPairD0Ev"></span><span id="_CPPv2N9bayesship14ThreadPoolPairD0Ev"></span><span id="bayesship::ThreadPoolPair::~ThreadPoolPair"></span><span class="target" id="classbayesship_1_1ThreadPoolPair_1adc8fdf2378dade1644510057aad168e9"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">~ThreadPoolPair</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship14ThreadPoolPairD0Ev" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Destructor &amp;#8212; stops threads. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship14ThreadPoolPair7enqueueE7jobtype">
+<span id="_CPPv3N9bayesship14ThreadPoolPair7enqueueE7jobtype"></span><span id="_CPPv2N9bayesship14ThreadPoolPair7enqueueE7jobtype"></span><span id="bayesship::ThreadPoolPair::enqueue__jobtype"></span><span class="target" id="classbayesship_1_1ThreadPoolPair_1a35515dda1b01ba4649849d624269c7d2"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">enqueue</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I00EN9bayesship14ThreadPoolPairE" title="bayesship::ThreadPoolPair::jobtype"><span class="n"><span class="pre">jobtype</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">job_id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship14ThreadPoolPair7enqueueE7jobtype" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Places jobs in queue to wait for scheduling. </p>
+<p>job_id is sorted if a comparator is provided </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>job_id</strong> – Job ID to put in the workk queue </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship14ThreadPoolPair14flushPairQueueEv">
+<span id="_CPPv3N9bayesship14ThreadPoolPair14flushPairQueueEv"></span><span id="_CPPv2N9bayesship14ThreadPoolPair14flushPairQueueEv"></span><span id="bayesship::ThreadPoolPair::flushPairQueue"></span><span class="target" id="classbayesship_1_1ThreadPoolPair_1a355820ab710018cfb17198c8f9493dc5"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">flushPairQueue</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship14ThreadPoolPair14flushPairQueueEv" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship14ThreadPoolPair15get_num_threadsEv">
+<span id="_CPPv3N9bayesship14ThreadPoolPair15get_num_threadsEv"></span><span id="_CPPv2N9bayesship14ThreadPoolPair15get_num_threadsEv"></span><span id="bayesship::ThreadPoolPair::get_num_threads"></span><span class="target" id="classbayesship_1_1ThreadPoolPair_1a2d56d5bb5278ea3299fe256f85f0b8c1"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_num_threads</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship14ThreadPoolPair15get_num_threadsEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get the number of threads being used by the thread pool. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship14ThreadPoolPair10activePoolEv">
+<span id="_CPPv3N9bayesship14ThreadPoolPair10activePoolEv"></span><span id="_CPPv2N9bayesship14ThreadPoolPair10activePoolEv"></span><span id="bayesship::ThreadPoolPair::activePool"></span><span class="target" id="classbayesship_1_1ThreadPoolPair_1a6c8388a3920f31cdab9514804649a1b3"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">activePool</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship14ThreadPoolPair10activePoolEv" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship14ThreadPoolPair16get_queue_lengthEv">
+<span id="_CPPv3N9bayesship14ThreadPoolPair16get_queue_lengthEv"></span><span id="_CPPv2N9bayesship14ThreadPoolPair16get_queue_lengthEv"></span><span id="bayesship::ThreadPoolPair::get_queue_length"></span><span class="target" id="classbayesship_1_1ThreadPoolPair_1aa806c5849bfcd22cd5c6f94f2a24214d"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_queue_length</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship14ThreadPoolPair16get_queue_lengthEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get the current length of the job queue. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship14ThreadPoolPair13randomizeJobsEv">
+<span id="_CPPv3N9bayesship14ThreadPoolPair13randomizeJobsEv"></span><span id="_CPPv2N9bayesship14ThreadPoolPair13randomizeJobsEv"></span><span id="bayesship::ThreadPoolPair::randomizeJobs"></span><span class="target" id="classbayesship_1_1ThreadPoolPair_1a26539ef3399b68cdefbaa606761ee078"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">randomizeJobs</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship14ThreadPoolPair13randomizeJobsEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Sets internal flag to fully randomize jobs. </p>
+<p>Overrides the FIFO model to randomly select a job from the queue </p>
+<p>This can be useful because queueing jobs is not always as random as one may think </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship14ThreadPoolPair9startPoolEv">
+<span id="_CPPv3N9bayesship14ThreadPoolPair9startPoolEv"></span><span id="_CPPv2N9bayesship14ThreadPoolPair9startPoolEv"></span><span id="bayesship::ThreadPoolPair::startPool"></span><span class="target" id="classbayesship_1_1ThreadPoolPair_1a20d99100d374284943cfac74df85f01f"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">startPool</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship14ThreadPoolPair9startPoolEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>initiates the thread pool &amp;#8212; only necessary if initiatePool was set to false in constructor </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship14ThreadPoolPair8stopPoolEv">
+<span id="_CPPv3N9bayesship14ThreadPoolPair8stopPoolEv"></span><span id="_CPPv2N9bayesship14ThreadPoolPair8stopPoolEv"></span><span id="bayesship::ThreadPoolPair::stopPool"></span><span class="target" id="classbayesship_1_1ThreadPoolPair_1a59970a916d822ce4949144340a24e193"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">stopPool</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship14ThreadPoolPair8stopPoolEv" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship14ThreadPoolPair9taskFetchEi">
+<span id="_CPPv3N9bayesship14ThreadPoolPair9taskFetchEi"></span><span id="_CPPv2N9bayesship14ThreadPoolPair9taskFetchEi"></span><span id="bayesship::ThreadPoolPair::taskFetch__i"></span><span class="target" id="classbayesship_1_1ThreadPoolPair_1a28927d3f92f3b1f718ee7bdc0aa2b054"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I00EN9bayesship14ThreadPoolPairE" title="bayesship::ThreadPoolPair::jobtype"><span class="n"><span class="pre">jobtype</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">taskFetch</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">i</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship14ThreadPoolPair9taskFetchEi" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns the job at index ‘’i’’ in the tasks array. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-private-functions">Private Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship14ThreadPoolPair5startENSt6size_tE">
+<span id="_CPPv3N9bayesship14ThreadPoolPair5startENSt6size_tE"></span><span id="_CPPv2N9bayesship14ThreadPoolPair5startENSt6size_tE"></span><span id="bayesship::ThreadPoolPair::start__std::s"></span><span class="target" id="classbayesship_1_1ThreadPoolPair_1a274811500768ef9d0685284516cc20ed"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">start</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">numThreads</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship14ThreadPoolPair5startENSt6size_tE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Starts thread pool &amp;#8212; launches each thread, which continually check for work. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship14ThreadPoolPair4stopEv">
+<span id="_CPPv3N9bayesship14ThreadPoolPair4stopEv"></span><span id="_CPPv2N9bayesship14ThreadPoolPair4stopEv"></span><span id="bayesship::ThreadPoolPair::stop"></span><span class="target" id="classbayesship_1_1ThreadPoolPair_1a04759f23d310bbda074c8c7aa0f40c40"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">stop</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">noexcept</span></span><a class="headerlink" href="#_CPPv4N9bayesship14ThreadPoolPair4stopEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Stops thread pool. </p>
+<p>Waits for all threads to end and joins them</p>
+<p>Finishes the thread pool before ending </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-private-members">Private Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship14ThreadPoolPair10pair_matchE">
+<span id="_CPPv3N9bayesship14ThreadPoolPair10pair_matchE"></span><span id="_CPPv2N9bayesship14ThreadPoolPair10pair_matchE"></span><span class="target" id="classbayesship_1_1ThreadPoolPair_1ace9e0291a992652a3dc899fffa3bd28e"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">bool</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#_CPPv4I00EN9bayesship14ThreadPoolPairE" title="bayesship::ThreadPoolPair::jobtype"><span class="n"><span class="pre">jobtype</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I00EN9bayesship14ThreadPoolPairE" title="bayesship::ThreadPoolPair::jobtype"><span class="n"><span class="pre">jobtype</span></span></a><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pair_match</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship14ThreadPoolPair10pair_matchE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship14ThreadPoolPair16work_fn_internalE">
+<span id="_CPPv3N9bayesship14ThreadPoolPair16work_fn_internalE"></span><span id="_CPPv2N9bayesship14ThreadPoolPair16work_fn_internalE"></span><span class="target" id="classbayesship_1_1ThreadPoolPair_1ae0feabac0fd456d68b60977b2e2fc9b9"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">void</span></span><span class="p"><span class="pre">(</span></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">i</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I00EN9bayesship14ThreadPoolPairE" title="bayesship::ThreadPoolPair::jobtype"><span class="n"><span class="pre">jobtype</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I00EN9bayesship14ThreadPoolPairE" title="bayesship::ThreadPoolPair::jobtype"><span class="n"><span class="pre">jobtype</span></span></a><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">work_fn_internal</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship14ThreadPoolPair16work_fn_internalE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship14ThreadPoolPair5tasksE">
+<span id="_CPPv3N9bayesship14ThreadPoolPair5tasksE"></span><span id="_CPPv2N9bayesship14ThreadPoolPair5tasksE"></span><span id="bayesship::ThreadPoolPair::tasks__std::vector:jobPair:"></span><span class="target" id="classbayesship_1_1ThreadPoolPair_1a71b39099372759661c7fc36bcd41463d"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4N9bayesship14ThreadPoolPair7jobPairE" title="bayesship::ThreadPoolPair::jobPair"><span class="n"><span class="pre">jobPair</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">tasks</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship14ThreadPoolPair5tasksE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship14ThreadPoolPair9prePairedE">
+<span id="_CPPv3N9bayesship14ThreadPoolPair9prePairedE"></span><span id="_CPPv2N9bayesship14ThreadPoolPair9prePairedE"></span><span id="bayesship::ThreadPoolPair::prePaired__std::vector:jobtype:"></span><span class="target" id="classbayesship_1_1ThreadPoolPair_1a742a3fb017b1e7ee77e1f58bb3e05183"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I00EN9bayesship14ThreadPoolPairE" title="bayesship::ThreadPoolPair::jobtype"><span class="n"><span class="pre">jobtype</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">prePaired</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship14ThreadPoolPair9prePairedE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship14ThreadPoolPair9pairMutexE">
+<span id="_CPPv3N9bayesship14ThreadPoolPair9pairMutexE"></span><span id="_CPPv2N9bayesship14ThreadPoolPair9pairMutexE"></span><span id="bayesship::ThreadPoolPair::pairMutex__std::mutex"></span><span class="target" id="classbayesship_1_1ThreadPoolPair_1acd41f8a8f73935a86913cf9026c4682b"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">mutex</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pairMutex</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship14ThreadPoolPair9pairMutexE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Lock to prevent memory races </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship14ThreadPoolPair17randomizeJobsFlagE">
+<span id="_CPPv3N9bayesship14ThreadPoolPair17randomizeJobsFlagE"></span><span id="_CPPv2N9bayesship14ThreadPoolPair17randomizeJobsFlagE"></span><span id="bayesship::ThreadPoolPair::randomizeJobsFlag__b"></span><span class="target" id="classbayesship_1_1ThreadPoolPair_1a1c419271ddb776c96a0ebd18bd4d6b86"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">randomizeJobsFlag</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N9bayesship14ThreadPoolPair17randomizeJobsFlagE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Internal flag to randomize the selection of the jobs from the queue </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship14ThreadPoolPair7ThreadsE">
+<span id="_CPPv3N9bayesship14ThreadPoolPair7ThreadsE"></span><span id="_CPPv2N9bayesship14ThreadPoolPair7ThreadsE"></span><span id="bayesship::ThreadPoolPair::Threads__std::vector:std::thread:"></span><span class="target" id="classbayesship_1_1ThreadPoolPair_1ab75bdc581444dadc03c3e466ffe0380c"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">thread</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Threads</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship14ThreadPoolPair7ThreadsE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Vector for thread ids </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship14ThreadPoolPair8EventVarE">
+<span id="_CPPv3N9bayesship14ThreadPoolPair8EventVarE"></span><span id="_CPPv2N9bayesship14ThreadPoolPair8EventVarE"></span><span id="bayesship::ThreadPoolPair::EventVar__std::condition_variable"></span><span class="target" id="classbayesship_1_1ThreadPoolPair_1afdd04ca8e1b2f25da7f6a213606df93a"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">condition_variable</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">EventVar</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship14ThreadPoolPair8EventVarE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Condition Variable </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship14ThreadPoolPair10EventMutexE">
+<span id="_CPPv3N9bayesship14ThreadPoolPair10EventMutexE"></span><span id="_CPPv2N9bayesship14ThreadPoolPair10EventMutexE"></span><span id="bayesship::ThreadPoolPair::EventMutex__std::mutex"></span><span class="target" id="classbayesship_1_1ThreadPoolPair_1a15f2656ecbfd2c9cdff7d0e18f0ebc2e"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">mutex</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">EventMutex</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship14ThreadPoolPair10EventMutexE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Lock to prevent memory races </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship14ThreadPoolPair8stoppingE">
+<span id="_CPPv3N9bayesship14ThreadPoolPair8stoppingE"></span><span id="_CPPv2N9bayesship14ThreadPoolPair8stoppingE"></span><span id="bayesship::ThreadPoolPair::stopping__b"></span><span class="target" id="classbayesship_1_1ThreadPoolPair_1a872c94bfa69e502e635a7e248907e574"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">stopping</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N9bayesship14ThreadPoolPair8stoppingE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Boolean stop condition </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship14ThreadPoolPair19numThreads_internalE">
+<span id="_CPPv3N9bayesship14ThreadPoolPair19numThreads_internalE"></span><span id="_CPPv2N9bayesship14ThreadPoolPair19numThreads_internalE"></span><span id="bayesship::ThreadPoolPair::numThreads_internal__i"></span><span class="target" id="classbayesship_1_1ThreadPoolPair_1a084fe1e552efd06e80dba58170a35bab"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">numThreads_internal</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship14ThreadPoolPair19numThreads_internalE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Number of threads in pool </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship14ThreadPoolPair1TE">
+<span id="_CPPv3N9bayesship14ThreadPoolPair1TE"></span><span id="_CPPv2N9bayesship14ThreadPoolPair1TE"></span><span id="bayesship::ThreadPoolPair::T__gsl_rng_typeCP"></span><span class="target" id="classbayesship_1_1ThreadPoolPair_1ac493b9fe37d83abdb0fc004beef4f77f"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">gsl_rng_type</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship14ThreadPoolPair1TE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship14ThreadPoolPair1rE">
+<span id="_CPPv3N9bayesship14ThreadPoolPair1rE"></span><span id="_CPPv2N9bayesship14ThreadPoolPair1rE"></span><span id="bayesship::ThreadPoolPair::r__gsl_rngP"></span><span class="target" id="classbayesship_1_1ThreadPoolPair_1ad0af6906f85456d32b4defdd0aae3c50"></span><span class="n"><span class="pre">gsl_rng</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">r</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">NULL</span></span><a class="headerlink" href="#_CPPv4N9bayesship14ThreadPoolPair1rE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship14ThreadPoolPair7jobPairE">
+<span id="_CPPv3N9bayesship14ThreadPoolPair7jobPairE"></span><span id="_CPPv2N9bayesship14ThreadPoolPair7jobPairE"></span><span id="bayesship::ThreadPoolPair::jobPair"></span><span class="target" id="structbayesship_1_1ThreadPoolPair_1_1jobPair"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">jobPair</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship14ThreadPoolPair7jobPairE" title="Permalink to this definition"></a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship14ThreadPoolPair7jobPair4job1E">
+<span id="_CPPv3N9bayesship14ThreadPoolPair7jobPair4job1E"></span><span id="_CPPv2N9bayesship14ThreadPoolPair7jobPair4job1E"></span><span id="bayesship::ThreadPoolPair::jobPair::job1__jobtype"></span><span class="target" id="structbayesship_1_1ThreadPoolPair_1_1jobPair_1af958c74ddc23f6048137f0fa27127a73"></span><a class="reference internal" href="#_CPPv4I00EN9bayesship14ThreadPoolPairE" title="bayesship::ThreadPoolPair::jobtype"><span class="n"><span class="pre">jobtype</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">job1</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship14ThreadPoolPair7jobPair4job1E" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship14ThreadPoolPair7jobPair4job2E">
+<span id="_CPPv3N9bayesship14ThreadPoolPair7jobPair4job2E"></span><span id="_CPPv2N9bayesship14ThreadPoolPair7jobPair4job2E"></span><span id="bayesship::ThreadPoolPair::jobPair::job2__jobtype"></span><span class="target" id="structbayesship_1_1ThreadPoolPair_1_1jobPair_1a64755039bd50c62cee2b4068f3e98d16"></span><a class="reference internal" href="#_CPPv4I00EN9bayesship14ThreadPoolPairE" title="bayesship::ThreadPoolPair::jobtype"><span class="n"><span class="pre">jobtype</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">job2</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship14ThreadPoolPair7jobPair4job2E" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="autocorrelationUtilities.html" class="btn btn-neutral float-right" title="autocorrelationUtilities" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Scott Ellis Perkins.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

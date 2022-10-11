@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bayesshipSampler &mdash; BayesShip  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="dataUtilities" href="dataUtilities.html" />
+    <link rel="prev" title="autocorrelationUtilities" href="autocorrelationUtilities.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> BayesShip
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Welcome to BayesShip’s documentation!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/installation.html">Installation Methods</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="ThreadPool.html">ThreadPool</a></li>
+<li class="toctree-l2"><a class="reference internal" href="autocorrelationUtilities.html">autocorrelationUtilities</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">bayesshipSampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataUtilities.html">dataUtilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="proposalFunctions.html">proposalFunctions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="standardPriors.html">standardPriors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utilities.html">utilities</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">BayesShip</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">API</a> &raquo;</li>
+      <li>bayesshipSampler</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/bayesshipSampler.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="bayesshipsampler">
+<span id="api-bayesshipsampler"></span><h1>bayesshipSampler<a class="headerlink" href="#bayesshipsampler" title="Permalink to this heading"></a></h1>
+<p><em>bayesshipSampler Header File</em></p>
+<p>Header file for a majority of the BayesShip sampler routines. </p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv49bayesship">
+<span id="_CPPv39bayesship"></span><span id="_CPPv29bayesship"></span><span id="bayesship"></span><span class="target" id="namespacebayesship"></span><span class="k"><span class="pre">namespace</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">bayesship</span></span></span><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-variables">Variables</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship8limitInfE">
+<span id="_CPPv3N9bayesship8limitInfE"></span><span id="_CPPv2N9bayesship8limitInfE"></span><span id="bayesship::limitInf__doubleC"></span><span class="target" id="namespacebayesship_1a70b8623aa9d4f41385d4fd3df76d44de"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">limitInf</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="o"><span class="pre">-</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">numeric_limits</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">infinity</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#_CPPv4N9bayesship8limitInfE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSamplerE">
+<span id="_CPPv3N9bayesship16bayesshipSamplerE"></span><span id="_CPPv2N9bayesship16bayesshipSamplerE"></span><span id="bayesship::bayesshipSampler"></span><span class="target" id="classbayesship_1_1bayesshipSampler"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">bayesshipSampler</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSamplerE" title="Permalink to this definition"></a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;bayesshipSampler.h&gt;</em></div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler15writeCheckpointEP11samplerData">
+<span id="_CPPv3N9bayesship16bayesshipSampler15writeCheckpointEP11samplerData"></span><span id="_CPPv2N9bayesship16bayesshipSampler15writeCheckpointEP11samplerData"></span><span id="bayesship::bayesshipSampler::writeCheckpoint__samplerDataP"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1ab91705e3178277f41f17537ea109f893"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">writeCheckpoint</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="dataUtilities.html#_CPPv4N9bayesship11samplerDataE" title="bayesship::samplerData"><span class="n"><span class="pre">samplerData</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">data</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler15writeCheckpointEP11samplerData" title="Permalink to this definition"></a><br /></dt>
+<dd><p>All positions for sampler (ptrs) &amp;#8212; shape [chainN][iterations]*/ <a class="reference internal" href="dataUtilities.html#classbayesship_1_1positionInfo"><span class="std std-ref">positionInfo</span></a> ***positions=nullptr; /*! Array storing the current position for each sampler in the positions array &amp;#8212; shape [chainN]*/ int <em>currentStepID =nullptr; /</em>! Array containing all the likelihood values for each position in positions &amp;#8212; shape [chainN][iterations]*/ double **likelihoodVals=nullptr; /*! Array containing all the prior values for each position in positions &amp;#8212; shape [chainN][iterations]*/ double **priorVals=nullptr; /*! Array counting the rejected number of steps for each proposal type for each chain &amp;#8212; shape [chainN][proposalFnN]*/ int **rejectN=nullptr; /*! Array counting the successful number of steps for each proposal type for each chain &amp;#8212; shape [chainN][proposalFnN]*/ int **successN=nullptr;</p>
+<p>int **swapRejects=nullptr;</p>
+<p>int **swapAccepts=nullptr;</p>
+<p><em></em></p>
+<p><a class="reference internal" href="#classbayesship_1_1bayesshipSampler"><span class="std std-ref">bayesshipSampler</span></a>(int chainN=10, double <em>betas=(double</em>)nullptr, int maxDim=1, int proposalFnN=0,proposalFn *proposalFnArray=nullptr,float *proposalFnProb=nullptr, void **proposalVariables=nullptr); bool checkStatus(); void allocateMemory(); void deallocateMemory(); bayesshipSampler(likelihoodFn likelihood, priorFn prior); bayesshipSampler(probabilityFn *likelihood, probabilityFn *prior); ~bayesshipSampler(); void sample(); void sampleLoop(int iterations,samplerData *data); void stepMH(int chainID,samplerData *data); int getChainN(); double getBeta(int chainID);</p>
+<p>void setInitialPositionIdentical(positionInfo *position); <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">assignInitialPosition</span><span class="p">(</span><span class="n">samplerData</span><span class="w"> </span><span class="o">*</span><span class="n">data</span><span class="p">);</span><span class="w"></span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">chainSwap</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">chainID1</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">chainID2</span><span class="p">,</span><span class="n">samplerData</span><span class="w"> </span><span class="o">*</span><span class="n">data</span><span class="p">);</span><span class="w"></span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">adjustTemperatures</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">t</span><span class="p">);</span><span class="w"></span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">chainIndex</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">ensemble</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">betaN</span><span class="p">);</span><span class="w"></span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">betaN</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">chainID</span><span class="p">);</span><span class="w"></span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">ensembleID</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">chainID</span><span class="p">);</span><span class="w"></span>
+<span class="n">samplerData</span><span class="w"> </span><span class="o">*</span><span class="nf">getActiveData</span><span class="p">();</span><span class="w"></span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">setActiveData</span><span class="p">(</span><span class="w"> </span><span class="n">samplerData</span><span class="w"> </span><span class="o">*</span><span class="n">newData</span><span class="p">);</span><span class="w"></span>
+
+
+<span class="cm">/*! Write checkpoint file for sampler -- stores data in json to completely reconstruct Sampler object</span>
+</pre></div>
+</div>
+ </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler14loadCheckpointEv">
+<span id="_CPPv3N9bayesship16bayesshipSampler14loadCheckpointEv"></span><span id="_CPPv2N9bayesship16bayesshipSampler14loadCheckpointEv"></span><span id="bayesship::bayesshipSampler::loadCheckpoint"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1ab5cbb893b0205cdc6ad6bf4c53cf055c"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">loadCheckpoint</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler14loadCheckpointEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Load checkpoint file for sampler &amp;#8212; Loads data and allocates memory for sampler A sampler object with the following must be first declared, then this function can be called: Likelihood function Prior function ProposalFns Outdir and outdir moniker (identical to previous run) new number of steps (burn,prior, independent, etc) All else will be initialized </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler34getCurrentIsolateEnsemblesInternalEv">
+<span id="_CPPv3N9bayesship16bayesshipSampler34getCurrentIsolateEnsemblesInternalEv"></span><span id="_CPPv2N9bayesship16bayesshipSampler34getCurrentIsolateEnsemblesInternalEv"></span><span id="bayesship::bayesshipSampler::getCurrentIsolateEnsemblesInternal"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1af1214d893193246455dd9a67b108c555"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getCurrentIsolateEnsemblesInternal</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler34getCurrentIsolateEnsemblesInternalEv" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler10iterationsE">
+<span id="_CPPv3N9bayesship16bayesshipSampler10iterationsE"></span><span id="_CPPv2N9bayesship16bayesshipSampler10iterationsE"></span><span id="bayesship::bayesshipSampler::iterations__i"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1ab4b354f25e7f7ec0694505b29f64852c"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">iterations</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">100</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler10iterationsE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The raw number of steps to take &amp;#8212; Either this parameter or independentSamples is used </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler18independentSamplesE">
+<span id="_CPPv3N9bayesship16bayesshipSampler18independentSamplesE"></span><span id="_CPPv2N9bayesship16bayesshipSampler18independentSamplesE"></span><span id="bayesship::bayesshipSampler::independentSamples__i"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1a62722085bdc5defb8a99f546f36e7a7b"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">independentSamples</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler18independentSamplesE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Estimates the number of independent samples to draw and continues until independentSamples is reached &amp;#8212; Either this parameter or iterations is used </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler9batchSizeE">
+<span id="_CPPv3N9bayesship16bayesshipSampler9batchSizeE"></span><span id="_CPPv2N9bayesship16bayesshipSampler9batchSizeE"></span><span id="bayesship::bayesshipSampler::batchSize__i"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1aadb8ab49bf7ef3b66ce86c88b7e6d5aa"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">batchSize</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler9batchSizeE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Number of raw samples to draw before calculating autocorrelation and writing checkpoint for independentSamples </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler14burnIterationsE">
+<span id="_CPPv3N9bayesship16bayesshipSampler14burnIterationsE"></span><span id="_CPPv2N9bayesship16bayesshipSampler14burnIterationsE"></span><span id="bayesship::bayesshipSampler::burnIterations__i"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1aab1036c18b77f7d587fe0a91453b14c2"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">burnIterations</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler14burnIterationsE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Samples to burn in with &amp;#8212; first burnIterations for each chain will not obey strict MCMC requirements </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler15priorIterationsE">
+<span id="_CPPv3N9bayesship16bayesshipSampler15priorIterationsE"></span><span id="_CPPv2N9bayesship16bayesshipSampler15priorIterationsE"></span><span id="bayesship::bayesshipSampler::priorIterations__i"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1a7a98cb3ab94ec9c9dc36e627ac189651"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">priorIterations</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler15priorIterationsE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Samples to take from prior </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler19burnPriorIterationsE">
+<span id="_CPPv3N9bayesship16bayesshipSampler19burnPriorIterationsE"></span><span id="_CPPv2N9bayesship16bayesshipSampler19burnPriorIterationsE"></span><span id="bayesship::bayesshipSampler::burnPriorIterations__i"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1a98e4826f8595d6fa0e4653e0f4e1662e"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">burnPriorIterations</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler19burnPriorIterationsE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Samples to burn in with for the prior&amp;#8212; first burnPriorIterations for each chain will not obey strict MCMC requirements </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler14writePriorDataE">
+<span id="_CPPv3N9bayesship16bayesshipSampler14writePriorDataE"></span><span id="_CPPv2N9bayesship16bayesshipSampler14writePriorDataE"></span><span id="bayesship::bayesshipSampler::writePriorData__b"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1a24e920fa394122c66069e2598da50c75"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">writePriorData</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler14writePriorDataE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Boolean flag to write out prior data </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler15coldOnlyStorageE">
+<span id="_CPPv3N9bayesship16bayesshipSampler15coldOnlyStorageE"></span><span id="_CPPv2N9bayesship16bayesshipSampler15coldOnlyStorageE"></span><span id="bayesship::bayesshipSampler::coldOnlyStorage__b"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1a2ca8619e7777fa97aa354ea311fb177c"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">coldOnlyStorage</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler15coldOnlyStorageE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Whether to store only the cold chains or the full ensemble &amp;#8212; Full ensemble produces much larger files </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler7threadsE">
+<span id="_CPPv3N9bayesship16bayesshipSampler7threadsE"></span><span id="_CPPv2N9bayesship16bayesshipSampler7threadsE"></span><span id="bayesship::bayesshipSampler::threads__i"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1ac5156452bab2a0271e35d0bcf813df5f"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">threads</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler7threadsE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Number of threads to launch </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler11proposalFnsE">
+<span id="_CPPv3N9bayesship16bayesshipSampler11proposalFnsE"></span><span id="_CPPv2N9bayesship16bayesshipSampler11proposalFnsE"></span><span id="bayesship::bayesshipSampler::proposalFns__proposalDataP"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1a7283f286eaa1d1274e20300677b77adf"></span><a class="reference internal" href="#_CPPv4N9bayesship12proposalDataE" title="bayesship::proposalData"><span class="n"><span class="pre">proposalData</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">proposalFns</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler11proposalFnsE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Class containing all the information about the proposal functions used in the sampling </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler9outputDirE">
+<span id="_CPPv3N9bayesship16bayesshipSampler9outputDirE"></span><span id="_CPPv2N9bayesship16bayesshipSampler9outputDirE"></span><span id="bayesship::bayesshipSampler::outputDir__ss"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1adfb5d886a90c75bf1940357d7c17d661"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">outputDir</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler9outputDirE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Output Destinations </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler17outputFileMonikerE">
+<span id="_CPPv3N9bayesship16bayesshipSampler17outputFileMonikerE"></span><span id="_CPPv2N9bayesship16bayesshipSampler17outputFileMonikerE"></span><span id="bayesship::bayesshipSampler::outputFileMoniker__ss"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1a8cbad2545daeca0b5ebcab9a9bcd195f"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">outputFileMoniker</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;BayesShip&quot;</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler17outputFileMonikerE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Output files base name </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler10likelihoodE">
+<span id="_CPPv3N9bayesship16bayesshipSampler10likelihoodE"></span><span id="_CPPv2N9bayesship16bayesshipSampler10likelihoodE"></span><span id="bayesship::bayesshipSampler::likelihood__probabilityFnP"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1a221bb9386fd638984b5b57a327f47d7c"></span><a class="reference internal" href="#_CPPv4N9bayesship13probabilityFnE" title="bayesship::probabilityFn"><span class="n"><span class="pre">probabilityFn</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">likelihood</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler10likelihoodE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Likelihood function </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler5priorE">
+<span id="_CPPv3N9bayesship16bayesshipSampler5priorE"></span><span id="_CPPv2N9bayesship16bayesshipSampler5priorE"></span><span id="bayesship::bayesshipSampler::prior__probabilityFnP"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1aa61ca495df898494b4e9e5c5eed1672a"></span><a class="reference internal" href="#_CPPv4N9bayesship13probabilityFnE" title="bayesship::probabilityFn"><span class="n"><span class="pre">probabilityFn</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">prior</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler5priorE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Prior function </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler14userParametersE">
+<span id="_CPPv3N9bayesship16bayesshipSampler14userParametersE"></span><span id="_CPPv2N9bayesship16bayesshipSampler14userParametersE"></span><span id="bayesship::bayesshipSampler::userParameters__voidPP"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1a30d82fa5cd3465ca70f210ad745284f6"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">userParameters</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler14userParametersE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>User Parameters &amp;#8212; These parameters are passed into the likelihood function and the prior function &amp;#8212; shape should be (void *)[chainN] </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler24ignoreExistingCheckpointE">
+<span id="_CPPv3N9bayesship16bayesshipSampler24ignoreExistingCheckpointE"></span><span id="_CPPv2N9bayesship16bayesshipSampler24ignoreExistingCheckpointE"></span><span id="bayesship::bayesshipSampler::ignoreExistingCheckpoint__b"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1a762d13f5a76fc2c07ddea5a3be606b32"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ignoreExistingCheckpoint</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler24ignoreExistingCheckpointE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>If a checkpoint file exists in the output directory, ignore it (true) or load it (false) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler16isolateEnsemblesE">
+<span id="_CPPv3N9bayesship16bayesshipSampler16isolateEnsemblesE"></span><span id="_CPPv2N9bayesship16bayesshipSampler16isolateEnsemblesE"></span><span id="bayesship::bayesshipSampler::isolateEnsembles__b"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1a983fc9e430b90bdd158892e90ae9ad39"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">isolateEnsembles</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler16isolateEnsemblesE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Whether to allow for swapping between ensembles in burn perior </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler20isolateEnsemblesBurnE">
+<span id="_CPPv3N9bayesship16bayesshipSampler20isolateEnsemblesBurnE"></span><span id="_CPPv2N9bayesship16bayesshipSampler20isolateEnsemblesBurnE"></span><span id="bayesship::bayesshipSampler::isolateEnsemblesBurn__b"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1a5fab79f1fc6e834fd1adf15b07fd9d88"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">isolateEnsemblesBurn</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler20isolateEnsemblesBurnE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Whether to allow for swapping between ensembles in collection </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler2RJE">
+<span id="_CPPv3N9bayesship16bayesshipSampler2RJE"></span><span id="_CPPv2N9bayesship16bayesshipSampler2RJE"></span><span id="bayesship::bayesshipSampler::RJ__b"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1abb59dd3114296309b16c55e45bf35408"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">RJ</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler2RJE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Run variable dimension RJMCMC (true) or regular, fixed dimension MCMC (false) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler10threadPoolE">
+<span id="_CPPv3N9bayesship16bayesshipSampler10threadPoolE"></span><span id="_CPPv2N9bayesship16bayesshipSampler10threadPoolE"></span><span id="bayesship::bayesshipSampler::threadPool__b"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1a178c53fe2a3bc5c3bfd74270ea35906c"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">threadPool</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler10threadPoolE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Whether to use a pool of threads (true) or OpenMP (false) TODO This should be renamed. The sampler currently DOES use a thread pool no matter what, but only uses it for <em>swapping</em> if this is true. Otherwise, it swaps in order. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler6maxDimE">
+<span id="_CPPv3N9bayesship16bayesshipSampler6maxDimE"></span><span id="_CPPv2N9bayesship16bayesshipSampler6maxDimE"></span><span id="bayesship::bayesshipSampler::maxDim__i"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1aed2d8be78a4c3229130c7160f4ba39b1"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">maxDim</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler6maxDimE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Maximum dimension of the parameter space </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler6minDimE">
+<span id="_CPPv3N9bayesship16bayesshipSampler6minDimE"></span><span id="_CPPv2N9bayesship16bayesshipSampler6minDimE"></span><span id="bayesship::bayesshipSampler::minDim__i"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1ae78ac3cd51fadcfe8b203e17758f5733"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">minDim</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler6minDimE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Minimum dimension of the parameter space &amp;#8212; useful to increase efficiency for RJ with nested models &amp;#8212; leave at 0 as default (not nested models) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler12ensembleSizeE">
+<span id="_CPPv3N9bayesship16bayesshipSampler12ensembleSizeE"></span><span id="_CPPv2N9bayesship16bayesshipSampler12ensembleSizeE"></span><span id="bayesship::bayesshipSampler::ensembleSize__i"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1a1636bb8fe172d4b5ffde022e10d2e7f9"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ensembleSize</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">5</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler12ensembleSizeE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Number of chains in each Ensemble of temperatures </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler9ensembleNE">
+<span id="_CPPv3N9bayesship16bayesshipSampler9ensembleNE"></span><span id="_CPPv2N9bayesship16bayesshipSampler9ensembleNE"></span><span id="bayesship::bayesshipSampler::ensembleN__i"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1af909d12b1437f32c97bd2feda080b588"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ensembleN</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">2</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler9ensembleNE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Number of ensembles to run in parallel </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler12betaScheduleE">
+<span id="_CPPv3N9bayesship16bayesshipSampler12betaScheduleE"></span><span id="_CPPv2N9bayesship16bayesshipSampler12betaScheduleE"></span><span id="bayesship::bayesshipSampler::betaSchedule__doubleP"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1a183e8cc55e01d9d5200b45c9d235d924"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">betaSchedule</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler12betaScheduleE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Beta schedule for a single ensemble (beta_i = 1/temp_i) starting with 1 and moving to 0 (ie, from temperature 1 to temperature infinity) &amp;#8212; shape [ensembleSize] </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler11priorRangesE">
+<span id="_CPPv3N9bayesship16bayesshipSampler11priorRangesE"></span><span id="_CPPv2N9bayesship16bayesshipSampler11priorRangesE"></span><span id="bayesship::bayesshipSampler::priorRanges__doublePP"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1abcb768d45185c2ba49bd7f479dafc26d"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">priorRanges</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler11priorRangesE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>prior ranges for sampling the prior &amp;#8212; size = [maxDim][2] &amp;#8212; [min,max] </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler4seedE">
+<span id="_CPPv3N9bayesship16bayesshipSampler4seedE"></span><span id="_CPPv2N9bayesship16bayesshipSampler4seedE"></span><span id="bayesship::bayesshipSampler::seed__double"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1a86a0b0abb5164536b6887a0363cf9950"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">seed</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler4seedE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Seed for random number generation </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler5betasE">
+<span id="_CPPv3N9bayesship16bayesshipSampler5betasE"></span><span id="_CPPv2N9bayesship16bayesshipSampler5betasE"></span><span id="bayesship::bayesshipSampler::betas__doubleP"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1ac80ae89eb2e8fafe94f1f25fd4764b5e"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">betas</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler5betasE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Beta parameters for each chain = 1/T &amp;#8212; shape [chainN] </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler8swapProbE">
+<span id="_CPPv3N9bayesship16bayesshipSampler8swapProbE"></span><span id="_CPPv2N9bayesship16bayesshipSampler8swapProbE"></span><span id="bayesship::bayesshipSampler::swapProb__double"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1ad841926c8ce41425baf1a1eed7563ea8"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">swapProb</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">.2</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler8swapProbE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler15averageDynamicsE">
+<span id="_CPPv3N9bayesship16bayesshipSampler15averageDynamicsE"></span><span id="_CPPv2N9bayesship16bayesshipSampler15averageDynamicsE"></span><span id="bayesship::bayesshipSampler::averageDynamics__b"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1a9c2143da28d65160180be1989315418d"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">averageDynamics</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler15averageDynamicsE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Whether to average the temperature dynamics during evolution (true), or after (false) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler17randomizeSwappingE">
+<span id="_CPPv3N9bayesship16bayesshipSampler17randomizeSwappingE"></span><span id="_CPPv2N9bayesship16bayesshipSampler17randomizeSwappingE"></span><span id="bayesship::bayesshipSampler::randomizeSwapping__b"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1ac48f1861ec4724d2e66b51958943ab70"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">randomizeSwapping</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler17randomizeSwappingE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler23initialPositionEnsembleE">
+<span id="_CPPv3N9bayesship16bayesshipSampler23initialPositionEnsembleE"></span><span id="_CPPv2N9bayesship16bayesshipSampler23initialPositionEnsembleE"></span><span id="bayesship::bayesshipSampler::initialPositionEnsemble__positionInfoPP"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1ad4daf3db704b6ccaa4f8b8a15997ae8e"></span><a class="reference internal" href="dataUtilities.html#_CPPv4N9bayesship12positionInfoE" title="bayesship::positionInfo"><span class="n"><span class="pre">positionInfo</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">initialPositionEnsemble</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler23initialPositionEnsembleE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>If specified, the initial position for each chain will be assigned in order &amp;#8212; shape [chainN] </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler15initialPositionE">
+<span id="_CPPv3N9bayesship16bayesshipSampler15initialPositionE"></span><span id="_CPPv2N9bayesship16bayesshipSampler15initialPositionE"></span><span id="bayesship::bayesshipSampler::initialPosition__positionInfoP"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1a26b761770fc449f58fe0b13f2e772d83"></span><a class="reference internal" href="dataUtilities.html#_CPPv4N9bayesship12positionInfoE" title="bayesship::positionInfo"><span class="n"><span class="pre">positionInfo</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">initialPosition</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler15initialPositionE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>If the ensemble position is not specified, and the single position is specified, the initial position is assigned to every chain in the ensemble </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler10activeDataE">
+<span id="_CPPv3N9bayesship16bayesshipSampler10activeDataE"></span><span id="_CPPv2N9bayesship16bayesshipSampler10activeDataE"></span><span id="bayesship::bayesshipSampler::activeData__samplerDataP"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1ae63b11adc66bbe175f490e8aa274331f"></span><a class="reference internal" href="dataUtilities.html#_CPPv4N9bayesship11samplerDataE" title="bayesship::samplerData"><span class="n"><span class="pre">samplerData</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">activeData</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler10activeDataE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler4dataE">
+<span id="_CPPv3N9bayesship16bayesshipSampler4dataE"></span><span id="_CPPv2N9bayesship16bayesshipSampler4dataE"></span><span id="bayesship::bayesshipSampler::data__samplerDataP"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1acec799af2d5ba45da868d5bd848b0dd4"></span><a class="reference internal" href="dataUtilities.html#_CPPv4N9bayesship11samplerDataE" title="bayesship::samplerData"><span class="n"><span class="pre">samplerData</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">data</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler4dataE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler9priorDataE">
+<span id="_CPPv3N9bayesship16bayesshipSampler9priorDataE"></span><span id="_CPPv2N9bayesship16bayesshipSampler9priorDataE"></span><span id="bayesship::bayesshipSampler::priorData__samplerDataP"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1a5c61b21c5eca22eabf40842f7d5e6d87"></span><a class="reference internal" href="dataUtilities.html#_CPPv4N9bayesship11samplerDataE" title="bayesship::samplerData"><span class="n"><span class="pre">samplerData</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">priorData</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler9priorDataE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler8burnDataE">
+<span id="_CPPv3N9bayesship16bayesshipSampler8burnDataE"></span><span id="_CPPv2N9bayesship16bayesshipSampler8burnDataE"></span><span id="bayesship::bayesshipSampler::burnData__samplerDataP"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1a9e6c2b69afa4ea23f7f170e8bdcd091e"></span><a class="reference internal" href="dataUtilities.html#_CPPv4N9bayesship11samplerDataE" title="bayesship::samplerData"><span class="n"><span class="pre">samplerData</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">burnData</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler8burnDataE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler13waitingSampleE">
+<span id="_CPPv3N9bayesship16bayesshipSampler13waitingSampleE"></span><span id="_CPPv2N9bayesship16bayesshipSampler13waitingSampleE"></span><span id="bayesship::bayesshipSampler::waitingSample__bP"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1a4976c3f8a901a24b249394598d769ffd"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">waitingSample</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler13waitingSampleE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler15referenceStatusE">
+<span id="_CPPv3N9bayesship16bayesshipSampler15referenceStatusE"></span><span id="_CPPv2N9bayesship16bayesshipSampler15referenceStatusE"></span><span id="bayesship::bayesshipSampler::referenceStatus__bP"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1a92fe1ce6074107bcc843086f3c1cf820"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">referenceStatus</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler15referenceStatusE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler14waitingMutexesE">
+<span id="_CPPv3N9bayesship16bayesshipSampler14waitingMutexesE"></span><span id="_CPPv2N9bayesship16bayesshipSampler14waitingMutexesE"></span><span id="bayesship::bayesshipSampler::waitingMutexes__std::mutexP"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1a72e90ee00b574f46577e37e1e504d4d3"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">mutex</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">waitingMutexes</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler14waitingMutexesE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler11statusMutexE">
+<span id="_CPPv3N9bayesship16bayesshipSampler11statusMutexE"></span><span id="_CPPv2N9bayesship16bayesshipSampler11statusMutexE"></span><span id="bayesship::bayesshipSampler::statusMutex__std::mutexP"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1ae4866cce3648d41cbe0fb8958dacbdf0"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">mutex</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">statusMutex</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler11statusMutexE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler10burnPeriodE">
+<span id="_CPPv3N9bayesship16bayesshipSampler10burnPeriodE"></span><span id="_CPPv2N9bayesship16bayesshipSampler10burnPeriodE"></span><span id="bayesship::bayesshipSampler::burnPeriod__b"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1a5d34d8faf3a5fb06aa03b2c714e08a32"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">burnPeriod</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler10burnPeriodE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler11adjustTempsE">
+<span id="_CPPv3N9bayesship16bayesshipSampler11adjustTempsE"></span><span id="_CPPv2N9bayesship16bayesshipSampler11adjustTempsE"></span><span id="bayesship::bayesshipSampler::adjustTemps__b"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1a08955c1f98a8f9834ed7fa2a2f6178db"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">adjustTemps</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler11adjustTempsE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler2t0E">
+<span id="_CPPv3N9bayesship16bayesshipSampler2t0E"></span><span id="_CPPv2N9bayesship16bayesshipSampler2t0E"></span><span id="bayesship::bayesshipSampler::t0__double"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1a8896a2c8f1f1b97a624667ceade98a90"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">t0</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler2t0E" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler2nuE">
+<span id="_CPPv3N9bayesship16bayesshipSampler2nuE"></span><span id="_CPPv2N9bayesship16bayesshipSampler2nuE"></span><span id="bayesship::bayesshipSampler::nu__double"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1a0424bc93f4eb658fd1df9094d55f0454"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">nu</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">100</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler2nuE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler1AE">
+<span id="_CPPv3N9bayesship16bayesshipSampler1AE"></span><span id="_CPPv2N9bayesship16bayesshipSampler1AE"></span><span id="bayesship::bayesshipSampler::A__doubleP"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1ad5f5948eabf65e64a1a930f885205ec7"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">A</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler1AE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler4rvecE">
+<span id="_CPPv3N9bayesship16bayesshipSampler4rvecE"></span><span id="_CPPv2N9bayesship16bayesshipSampler4rvecE"></span><span id="bayesship::bayesshipSampler::rvec__gsl_rngPP"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1a601004eb507eb584ba072e3b79e3fb21"></span><span class="n"><span class="pre">gsl_rng</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">rvec</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler4rvecE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-private-members">Private Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler24isolateEnsemblesInternalE">
+<span id="_CPPv3N9bayesship16bayesshipSampler24isolateEnsemblesInternalE"></span><span id="_CPPv2N9bayesship16bayesshipSampler24isolateEnsemblesInternalE"></span><span id="bayesship::bayesshipSampler::isolateEnsemblesInternal__b"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1a44d9454d4792662470457b9c467bdf3b"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">isolateEnsemblesInternal</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler24isolateEnsemblesInternalE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Whether to allow for swapping between ensembles INTERNAL USE ONLY </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler6chainNE">
+<span id="_CPPv3N9bayesship16bayesshipSampler6chainNE"></span><span id="_CPPv2N9bayesship16bayesshipSampler6chainNE"></span><span id="bayesship::bayesshipSampler::chainN__i"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1a94cb0adca59e885e7b11ee9d134ea53b"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">chainN</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler6chainNE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Number of chains total = ensembleSize*ensembleN </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler24internalBetaScheduleFlagE">
+<span id="_CPPv3N9bayesship16bayesshipSampler24internalBetaScheduleFlagE"></span><span id="_CPPv2N9bayesship16bayesshipSampler24internalBetaScheduleFlagE"></span><span id="bayesship::bayesshipSampler::internalBetaScheduleFlag__b"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1a5f866f95baa437040c399f550961f57e"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">internalBetaScheduleFlag</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler24internalBetaScheduleFlagE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Temperature parameters beta_i = 1/T_i </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler23internalProposalFnsFlagE">
+<span id="_CPPv3N9bayesship16bayesshipSampler23internalProposalFnsFlagE"></span><span id="_CPPv2N9bayesship16bayesshipSampler23internalProposalFnsFlagE"></span><span id="bayesship::bayesshipSampler::internalProposalFnsFlag__b"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1a1f8e1a9a93e5ccce080128becc292dc0"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">internalProposalFnsFlag</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler23internalProposalFnsFlagE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler22internalUserParametersE">
+<span id="_CPPv3N9bayesship16bayesshipSampler22internalUserParametersE"></span><span id="_CPPv2N9bayesship16bayesshipSampler22internalUserParametersE"></span><span id="bayesship::bayesshipSampler::internalUserParameters__b"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1ae55fe354215955b358a569c4cfb84c94"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">internalUserParameters</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler22internalUserParametersE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler19internalPriorRangesE">
+<span id="_CPPv3N9bayesship16bayesshipSampler19internalPriorRangesE"></span><span id="_CPPv2N9bayesship16bayesshipSampler19internalPriorRangesE"></span><span id="bayesship::bayesshipSampler::internalPriorRanges__b"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1ab64cd510e27ae0a05688177cfd17b0b2"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">internalPriorRanges</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler19internalPriorRangesE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>iterations + burnSamples </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler31internalInitialPositionEnsembleE">
+<span id="_CPPv3N9bayesship16bayesshipSampler31internalInitialPositionEnsembleE"></span><span id="_CPPv2N9bayesship16bayesshipSampler31internalInitialPositionEnsembleE"></span><span id="bayesship::bayesshipSampler::internalInitialPositionEnsemble__b"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1a1223dd8de95ec69390fb72a76c90659c"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">internalInitialPositionEnsemble</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler31internalInitialPositionEnsembleE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship13probabilityFnE">
+<span id="_CPPv3N9bayesship13probabilityFnE"></span><span id="_CPPv2N9bayesship13probabilityFnE"></span><span id="bayesship::probabilityFn"></span><span class="target" id="classbayesship_1_1probabilityFn"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">probabilityFn</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship13probabilityFnE" title="Permalink to this definition"></a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;bayesshipSampler.h&gt;</em></div>
+<p>Subclassed by <a class="reference internal" href="standardPriors.html#classbayesship_1_1uniformPrior"><span class="std std-ref">bayesship::uniformPrior</span></a></p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship13probabilityFn13probabilityFnEv">
+<span id="_CPPv3N9bayesship13probabilityFn13probabilityFnEv"></span><span id="_CPPv2N9bayesship13probabilityFn13probabilityFnEv"></span><span id="bayesship::probabilityFn::probabilityFn"></span><span class="target" id="classbayesship_1_1probabilityFn_1abb5b78c36b534503d65cf9b10c3a9835"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">probabilityFn</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship13probabilityFn13probabilityFnEv" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship13probabilityFnD0Ev">
+<span id="_CPPv3N9bayesship13probabilityFnD0Ev"></span><span id="_CPPv2N9bayesship13probabilityFnD0Ev"></span><span id="bayesship::probabilityFn::~probabilityFn"></span><span class="target" id="classbayesship_1_1probabilityFn_1acb585a700b86d1fb1183676bd134b346"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">~probabilityFn</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship13probabilityFnD0Ev" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship13probabilityFn4evalEP12positionInfoi">
+<span id="_CPPv3N9bayesship13probabilityFn4evalEP12positionInfoi"></span><span id="_CPPv2N9bayesship13probabilityFn4evalEP12positionInfoi"></span><span id="bayesship::probabilityFn::eval__positionInfoP.i"></span><span class="target" id="classbayesship_1_1probabilityFn_1a72e4a757379e5747e5f4e20c37943e78"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">eval</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="dataUtilities.html#_CPPv4N9bayesship12positionInfoE" title="bayesship::positionInfo"><span class="n"><span class="pre">positionInfo</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">position</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">chainID</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship13probabilityFn4evalEP12positionInfoi" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship8proposalE">
+<span id="_CPPv3N9bayesship8proposalE"></span><span id="_CPPv2N9bayesship8proposalE"></span><span id="bayesship::proposal"></span><span class="target" id="classbayesship_1_1proposal"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">proposal</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship8proposalE" title="Permalink to this definition"></a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;bayesshipSampler.h&gt;</em></div>
+<p>Subclassed by <a class="reference internal" href="proposalFunctions.html#classbayesship_1_1KDEProposal"><span class="std std-ref">bayesship::KDEProposal</span></a>, <a class="reference internal" href="proposalFunctions.html#classbayesship_1_1blockDifferentialEvolutionProposal"><span class="std std-ref">bayesship::blockDifferentialEvolutionProposal</span></a>, <a class="reference internal" href="proposalFunctions.html#classbayesship_1_1differentialEvolutionProposal"><span class="std std-ref">bayesship::differentialEvolutionProposal</span></a>, <a class="reference internal" href="proposalFunctions.html#classbayesship_1_1fisherProposal"><span class="std std-ref">bayesship::fisherProposal</span></a>, <a class="reference internal" href="proposalFunctions.html#classbayesship_1_1gaussianProposal"><span class="std std-ref">bayesship::gaussianProposal</span></a>, <a class="reference internal" href="proposalFunctions.html#classbayesship_1_1randomLayerRJProposal"><span class="std std-ref">bayesship::randomLayerRJProposal</span></a>, <a class="reference internal" href="proposalFunctions.html#classbayesship_1_1sequentialLayerRJProposal"><span class="std std-ref">bayesship::sequentialLayerRJProposal</span></a></p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship8proposal8proposalEv">
+<span id="_CPPv3N9bayesship8proposal8proposalEv"></span><span id="_CPPv2N9bayesship8proposal8proposalEv"></span><span id="bayesship::proposal::proposal"></span><span class="target" id="classbayesship_1_1proposal_1ad480691a367f7d5e590f11c7098956a9"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">proposal</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship8proposal8proposalEv" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship8proposalD0Ev">
+<span id="_CPPv3N9bayesship8proposalD0Ev"></span><span id="_CPPv2N9bayesship8proposalD0Ev"></span><span id="bayesship::proposal::~proposal"></span><span class="target" id="classbayesship_1_1proposal_1a37581683507ed7af32c1701876d9dbf4"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">~proposal</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship8proposalD0Ev" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship8proposal7proposeEP12positionInfoP12positionInfoiiPd">
+<span id="_CPPv3N9bayesship8proposal7proposeEP12positionInfoP12positionInfoiiPd"></span><span id="_CPPv2N9bayesship8proposal7proposeEP12positionInfoP12positionInfoiiPd"></span><span id="bayesship::proposal::propose__positionInfoP.positionInfoP.i.i.doubleP"></span><span class="target" id="classbayesship_1_1proposal_1a1adddf0a219ee861d30a8c6483110177"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">propose</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="dataUtilities.html#_CPPv4N9bayesship12positionInfoE" title="bayesship::positionInfo"><span class="n"><span class="pre">positionInfo</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">current</span></span>, <a class="reference internal" href="dataUtilities.html#_CPPv4N9bayesship12positionInfoE" title="bayesship::positionInfo"><span class="n"><span class="pre">positionInfo</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">proposed</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">chainID</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">stepID</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">MHRatioModifications</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship8proposal7proposeEP12positionInfoP12positionInfoiiPd" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship8proposal15writeCheckpointENSt6stringENSt6stringE">
+<span id="_CPPv3N9bayesship8proposal15writeCheckpointENSt6stringENSt6stringE"></span><span id="_CPPv2N9bayesship8proposal15writeCheckpointENSt6stringENSt6stringE"></span><span id="bayesship::proposal::writeCheckpoint__ss.ss"></span><span class="target" id="classbayesship_1_1proposal_1a5a3ece1ef77d7ee8b6f85229ef947749"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">writeCheckpoint</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">outputDirectory</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">runMoniker</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship8proposal15writeCheckpointENSt6stringENSt6stringE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>proposalFn write checkpoint function typedef </p>
+<p>Specifies the form of proposal function write checkpoint functions.</p>
+<p>These functions are called when writing out checkpoint files. It’s up to the user whether and how these files should be written.</p>
+<p>These functions are only necessary if the proposal saves data or optimizes itself in some way. If not necessary, (void *) can be passed instead.</p>
+<p>The write and read checkpoint functions <em>should be compatible</em>. That is, the file naming should be consistent between the two, in such a way the files being written out can be read in without external information. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship8proposal14loadCheckpointENSt6stringENSt6stringE">
+<span id="_CPPv3N9bayesship8proposal14loadCheckpointENSt6stringENSt6stringE"></span><span id="_CPPv2N9bayesship8proposal14loadCheckpointENSt6stringENSt6stringE"></span><span id="bayesship::proposal::loadCheckpoint__ss.ss"></span><span class="target" id="classbayesship_1_1proposal_1a5498955ad6feb8069906c51468f6ecd3"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">loadCheckpoint</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">inputDirectory</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">runMoniker</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship8proposal14loadCheckpointENSt6stringENSt6stringE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>proposalFn read checkpoint function typedef </p>
+<p>Specifies the form of proposal function read checkpoint functions.</p>
+<p>These functions are called when reading in checkpoint files. It’s up to the user whether and how these files should be written.</p>
+<p>These functions are only necessary if the proposal saves data or optimizes itself in some way. If not necessary, (void *) can be passed instead.</p>
+<p>The write and read checkpoint functions <em>should be compatible</em>. That is, the file naming should be consistent between the two, in such a way the files being written out can be read in without external information. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship8proposal13writeStatFileENSt6stringENSt6stringE">
+<span id="_CPPv3N9bayesship8proposal13writeStatFileENSt6stringENSt6stringE"></span><span id="_CPPv2N9bayesship8proposal13writeStatFileENSt6stringENSt6stringE"></span><span id="bayesship::proposal::writeStatFile__ss.ss"></span><span class="target" id="classbayesship_1_1proposal_1a4bf2942d537315ec9473ce618ffbee36"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">writeStatFile</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">inputDirectory</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">runMoniker</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship8proposal13writeStatFileENSt6stringENSt6stringE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>proposalFn write stat file </p>
+<p>Writes out statistics about the proposal functions, if needed. This goes beyond what’s already reported in the general stat file </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship12proposalDataE">
+<span id="_CPPv3N9bayesship12proposalDataE"></span><span id="_CPPv2N9bayesship12proposalDataE"></span><span id="bayesship::proposalData"></span><span class="target" id="classbayesship_1_1proposalData"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">proposalData</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship12proposalDataE" title="Permalink to this definition"></a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;bayesshipSampler.h&gt;</em></div>
+<p>Likelihood function typedef. </p>
+<p>Specifies the form of likelihood functions</p>
+<p>All user defined likelihood functions must be caste-able to this type</p>
+<p>Prior function typedef</p>
+<p>Specifies the form of prior functions</p>
+<p>All user defined likelihood functions must be caste-able to this type</p>
+<p>Class containing all the information about proposal functions for the <a class="reference internal" href="#classbayesship_1_1bayesshipSampler"><span class="std std-ref">bayesshipSampler</span></a> object</p>
+<p>Used internally to keep the information tidy inside the sampler object</p>
+<p>Copies everything by value</p>
+<p>Implementations that want to use custom proposals will need to declare and populate one of these structures, then pass it to the <a class="reference internal" href="#classbayesship_1_1bayesshipSampler"><span class="std std-ref">bayesshipSampler</span></a> object </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship12proposalData12proposalDataEiiPP8proposalPdPPd">
+<span id="_CPPv3N9bayesship12proposalData12proposalDataEiiPP8proposalPdPPd"></span><span id="_CPPv2N9bayesship12proposalData12proposalDataEiiPP8proposalPdPPd"></span><span id="bayesship::proposalData::proposalData__i.i.proposalPP.doubleP.doublePP"></span><span class="target" id="classbayesship_1_1proposalData_1a596685c4a53b186b079219023114e6cf"></span><span class="sig-name descname"><span class="n"><span class="pre">proposalData</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">chainN</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">proposalN</span></span>, <a class="reference internal" href="#_CPPv4N9bayesship8proposalE" title="bayesship::proposal"><span class="n"><span class="pre">proposal</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">proposals</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">proposalProbFixed</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">proposalProb</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship12proposalData12proposalDataEiiPP8proposalPdPPd" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Constructor for the class. </p>
+<p>Manual assignment. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chainN</strong> – Number of chains being used </p></li>
+<li><p><strong>proposalN</strong> – Number of proposal functions </p></li>
+<li><p><strong>proposals</strong> – array of proposalFn objects of length proposalFnN </p></li>
+<li><p><strong>proposalProbFixed</strong> – Probabilities of each step, float length proposalFnN &amp;#8212; if populated, all chains (regardless of temperature) have the same probabilities </p></li>
+<li><p><strong>proposalProb</strong> – Probabilities of each step for each chain, 2d float shape [chainN][proposalFnN] &amp;#8212; if populated, chains <em>do not</em> have the same probabilities necessarily </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship12proposalData12proposalDataEiiP16bayesshipSamplerb">
+<span id="_CPPv3N9bayesship12proposalData12proposalDataEiiP16bayesshipSamplerb"></span><span id="_CPPv2N9bayesship12proposalData12proposalDataEiiP16bayesshipSamplerb"></span><span id="bayesship::proposalData::proposalData__i.i.bayesshipSamplerP.b"></span><span class="target" id="classbayesship_1_1proposalData_1a676d5cf767c5b07cf575641fe59471ef"></span><span class="sig-name descname"><span class="n"><span class="pre">proposalData</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">chainN</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">maxDim</span></span>, <a class="reference internal" href="#_CPPv4N9bayesship16bayesshipSamplerE" title="bayesship::bayesshipSampler"><span class="n"><span class="pre">bayesshipSampler</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">sampler</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">RJ</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship12proposalData12proposalDataEiiP16bayesshipSamplerb" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Constructor for the class. </p>
+<p>Default values will use the standard proposals </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chainN</strong> – number of chains being used </p></li>
+<li><p><strong>maxDim</strong> – Maximum number of dimensions </p></li>
+<li><p><strong>sampler</strong> – Sampler associated with this data </p></li>
+<li><p><strong>RJ</strong> – Bool for RJ or regular MCMC </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship12proposalDataD0Ev">
+<span id="_CPPv3N9bayesship12proposalDataD0Ev"></span><span id="_CPPv2N9bayesship12proposalDataD0Ev"></span><span id="bayesship::proposalData::~proposalData"></span><span class="target" id="classbayesship_1_1proposalData_1a66c810dd4c549347cfe2ed41cd3866c0"></span><span class="sig-name descname"><span class="n"><span class="pre">~proposalData</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship12proposalDataD0Ev" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Destructor to free data. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship12proposalData9proposalNE">
+<span id="_CPPv3N9bayesship12proposalData9proposalNE"></span><span id="_CPPv2N9bayesship12proposalData9proposalNE"></span><span id="bayesship::proposalData::proposalN__i"></span><span class="target" id="classbayesship_1_1proposalData_1acd445112e675661fd154f3e1248ece57"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">proposalN</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship12proposalData9proposalNE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Number of proposal functions </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship12proposalData9proposalsE">
+<span id="_CPPv3N9bayesship12proposalData9proposalsE"></span><span id="_CPPv2N9bayesship12proposalData9proposalsE"></span><span id="bayesship::proposalData::proposals__proposalPP"></span><span class="target" id="classbayesship_1_1proposalData_1ac6651c225b8664425fd635cb16339e34"></span><a class="reference internal" href="#_CPPv4N9bayesship8proposalE" title="bayesship::proposal"><span class="n"><span class="pre">proposal</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">proposals</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N9bayesship12proposalData9proposalsE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Array of proposal function pointers </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship12proposalData12proposalProbE">
+<span id="_CPPv3N9bayesship12proposalData12proposalProbE"></span><span id="_CPPv2N9bayesship12proposalData12proposalProbE"></span><span id="bayesship::proposalData::proposalProb__doublePP"></span><span class="target" id="classbayesship_1_1proposalData_1a6ac359657092af8b6a4fa6474fe7fb33"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">proposalProb</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N9bayesship12proposalData12proposalProbE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Probability of each proposal </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-private-members">Private Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship12proposalData6chainNE">
+<span id="_CPPv3N9bayesship12proposalData6chainNE"></span><span id="_CPPv2N9bayesship12proposalData6chainNE"></span><span id="bayesship::proposalData::chainN__i"></span><span class="target" id="classbayesship_1_1proposalData_1a99bbafab2629174a642da02ef867cf70"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">chainN</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship12proposalData6chainNE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Number of chains in the ensemble </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship12proposalData6maxDimE">
+<span id="_CPPv3N9bayesship12proposalData6maxDimE"></span><span id="_CPPv2N9bayesship12proposalData6maxDimE"></span><span id="bayesship::proposalData::maxDim__i"></span><span class="target" id="classbayesship_1_1proposalData_1a404c349aca0ecb72e20fe2f9032ce9b2"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">maxDim</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship12proposalData6maxDimE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Maximum dimension of the parameter space </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship12proposalData17internalMemorySetE">
+<span id="_CPPv3N9bayesship12proposalData17internalMemorySetE"></span><span id="_CPPv2N9bayesship12proposalData17internalMemorySetE"></span><span id="bayesship::proposalData::internalMemorySet__b"></span><span class="target" id="classbayesship_1_1proposalData_1ad160918927b295fc1accad6252eb8180"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">internalMemorySet</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N9bayesship12proposalData17internalMemorySetE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Memory flag for internal memory allocation (so memory can be appropriately freed) </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="autocorrelationUtilities.html" class="btn btn-neutral float-left" title="autocorrelationUtilities" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="dataUtilities.html" class="btn btn-neutral float-right" title="dataUtilities" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Scott Ellis Perkins.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

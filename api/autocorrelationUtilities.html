@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>autocorrelationUtilities &mdash; BayesShip  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="bayesshipSampler" href="bayesshipSampler.html" />
+    <link rel="prev" title="ThreadPool" href="ThreadPool.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> BayesShip
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Welcome to BayesShip’s documentation!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/installation.html">Installation Methods</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="ThreadPool.html">ThreadPool</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">autocorrelationUtilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bayesshipSampler.html">bayesshipSampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataUtilities.html">dataUtilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="proposalFunctions.html">proposalFunctions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="standardPriors.html">standardPriors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utilities.html">utilities</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">BayesShip</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">API</a> &raquo;</li>
+      <li>autocorrelationUtilities</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/autocorrelationUtilities.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="autocorrelationutilities">
+<span id="api-autocorrelationutilities"></span><h1>autocorrelationUtilities<a class="headerlink" href="#autocorrelationutilities" title="Permalink to this heading"></a></h1>
+<p>Autocorrelation header file </p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv49bayesship">
+<span id="_CPPv39bayesship"></span><span id="_CPPv29bayesship"></span><span id="bayesship"></span><span class="target" id="namespacebayesship"></span><span class="k"><span class="pre">namespace</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">bayesship</span></span></span><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship28auto_corr_intervals_outdatedEPdiPdid">
+<span id="_CPPv3N9bayesship28auto_corr_intervals_outdatedEPdiPdid"></span><span id="_CPPv2N9bayesship28auto_corr_intervals_outdatedEPdiPdid"></span><span id="bayesship::auto_corr_intervals_outdated__doubleP.i.doubleP.i.double"></span><span class="target" id="namespacebayesship_1ae4aa581532ebe6e64663457b1bb77bb0"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">auto_corr_intervals_outdated</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">data</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">length</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">output</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">num_segments</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">accuracy</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship28auto_corr_intervals_outdatedEPdiPdid" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship17comparator_ac_fftE">
+<span id="_CPPv3N9bayesship17comparator_ac_fftE"></span><span id="_CPPv2N9bayesship17comparator_ac_fftE"></span><span id="bayesship::comparator_ac_fft"></span><span class="target" id="classbayesship_1_1comparator__ac__fft"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">comparator_ac_fft</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship17comparator_ac_fftE" title="Permalink to this definition"></a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;autocorrelationUtilities.h&gt;</em></div>
+<p>comparator to sort ac-jobs </p>
+<p>Starts with the longest jobs, then works down the list </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship17comparator_ac_fftclE20threaded_ac_jobs_fft20threaded_ac_jobs_fft">
+<span id="_CPPv3N9bayesship17comparator_ac_fftclE20threaded_ac_jobs_fft20threaded_ac_jobs_fft"></span><span id="_CPPv2N9bayesship17comparator_ac_fftclE20threaded_ac_jobs_fft20threaded_ac_jobs_fft"></span><span id="bayesship::comparator_ac_fft::call-operator__threaded_ac_jobs_fft.threaded_ac_jobs_fft"></span><span class="target" id="classbayesship_1_1comparator__ac__fft_1ad5d0fdb385511a0d72fee617f58543c4"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">()</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N9bayesship20threaded_ac_jobs_fftE" title="bayesship::threaded_ac_jobs_fft"><span class="n"><span class="pre">threaded_ac_jobs_fft</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">t</span></span>, <a class="reference internal" href="#_CPPv4N9bayesship20threaded_ac_jobs_fftE" title="bayesship::threaded_ac_jobs_fft"><span class="n"><span class="pre">threaded_ac_jobs_fft</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">k</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship17comparator_ac_fftclE20threaded_ac_jobs_fft20threaded_ac_jobs_fft" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship20comparator_ac_serialE">
+<span id="_CPPv3N9bayesship20comparator_ac_serialE"></span><span id="_CPPv2N9bayesship20comparator_ac_serialE"></span><span id="bayesship::comparator_ac_serial"></span><span class="target" id="classbayesship_1_1comparator__ac__serial"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">comparator_ac_serial</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship20comparator_ac_serialE" title="Permalink to this definition"></a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;autocorrelationUtilities.h&gt;</em></div>
+<p>comparator to sort ac-jobs </p>
+<p>Starts with the longest jobs, then works down the list </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship20comparator_ac_serialclE23threaded_ac_jobs_serial23threaded_ac_jobs_serial">
+<span id="_CPPv3N9bayesship20comparator_ac_serialclE23threaded_ac_jobs_serial23threaded_ac_jobs_serial"></span><span id="_CPPv2N9bayesship20comparator_ac_serialclE23threaded_ac_jobs_serial23threaded_ac_jobs_serial"></span><span id="bayesship::comparator_ac_serial::call-operator__threaded_ac_jobs_serial.threaded_ac_jobs_serial"></span><span class="target" id="classbayesship_1_1comparator__ac__serial_1a698d3c79988c8fd6cae5013d75777a8d"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">()</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N9bayesship23threaded_ac_jobs_serialE" title="bayesship::threaded_ac_jobs_serial"><span class="n"><span class="pre">threaded_ac_jobs_serial</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">t</span></span>, <a class="reference internal" href="#_CPPv4N9bayesship23threaded_ac_jobs_serialE" title="bayesship::threaded_ac_jobs_serial"><span class="n"><span class="pre">threaded_ac_jobs_serial</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">k</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship20comparator_ac_serialclE23threaded_ac_jobs_serial23threaded_ac_jobs_serial" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship20threaded_ac_jobs_fftE">
+<span id="_CPPv3N9bayesship20threaded_ac_jobs_fftE"></span><span id="_CPPv2N9bayesship20threaded_ac_jobs_fftE"></span><span id="bayesship::threaded_ac_jobs_fft"></span><span class="target" id="classbayesship_1_1threaded__ac__jobs__fft"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">threaded_ac_jobs_fft</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship20threaded_ac_jobs_fftE" title="Permalink to this definition"></a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;autocorrelationUtilities.h&gt;</em></div>
+<p>Class to contain spectral method jobs. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship20threaded_ac_jobs_fft4dataE">
+<span id="_CPPv3N9bayesship20threaded_ac_jobs_fft4dataE"></span><span id="_CPPv2N9bayesship20threaded_ac_jobs_fft4dataE"></span><span id="bayesship::threaded_ac_jobs_fft::data__doublePP"></span><span class="target" id="classbayesship_1_1threaded__ac__jobs__fft_1aca9f933f79fa5b566d509fcdede9fe66"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">data</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship20threaded_ac_jobs_fft4dataE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship20threaded_ac_jobs_fft6lengthE">
+<span id="_CPPv3N9bayesship20threaded_ac_jobs_fft6lengthE"></span><span id="_CPPv2N9bayesship20threaded_ac_jobs_fft6lengthE"></span><span id="bayesship::threaded_ac_jobs_fft::length__iP"></span><span class="target" id="classbayesship_1_1threaded__ac__jobs__fft_1a8f57199244b31159d5f14a67c3900d1f"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">length</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship20threaded_ac_jobs_fft6lengthE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Read only &amp;#8212; Data to use &amp;#8212; full chain </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship20threaded_ac_jobs_fft5startE">
+<span id="_CPPv3N9bayesship20threaded_ac_jobs_fft5startE"></span><span id="_CPPv2N9bayesship20threaded_ac_jobs_fft5startE"></span><span id="bayesship::threaded_ac_jobs_fft::start__iP"></span><span class="target" id="classbayesship_1_1threaded__ac__jobs__fft_1a902dcb4b2af87bd36c40f11ea7c546f0"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">start</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship20threaded_ac_jobs_fft5startE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Read only &amp;#8212; length of total data </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship20threaded_ac_jobs_fft3endE">
+<span id="_CPPv3N9bayesship20threaded_ac_jobs_fft3endE"></span><span id="_CPPv2N9bayesship20threaded_ac_jobs_fft3endE"></span><span id="bayesship::threaded_ac_jobs_fft::end__iP"></span><span class="target" id="classbayesship_1_1threaded__ac__jobs__fft_1ae9a6083b41682f1755f8c2008d7ffc65"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">end</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship20threaded_ac_jobs_fft3endE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Read only &amp;#8212; start index </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship20threaded_ac_jobs_fft9dimensionE">
+<span id="_CPPv3N9bayesship20threaded_ac_jobs_fft9dimensionE"></span><span id="_CPPv2N9bayesship20threaded_ac_jobs_fft9dimensionE"></span><span id="bayesship::threaded_ac_jobs_fft::dimension__i"></span><span class="target" id="classbayesship_1_1threaded__ac__jobs__fft_1ac579f8a208f88bd9d5ad911fdc04a204"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dimension</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship20threaded_ac_jobs_fft9dimensionE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Read only &amp;#8212; end index </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship20threaded_ac_jobs_fft11planforwardE">
+<span id="_CPPv3N9bayesship20threaded_ac_jobs_fft11planforwardE"></span><span id="_CPPv2N9bayesship20threaded_ac_jobs_fft11planforwardE"></span><span id="bayesship::threaded_ac_jobs_fft::planforward__fftw_outlineP"></span><span class="target" id="classbayesship_1_1threaded__ac__jobs__fft_1ac2414f0c4cf7aaaece06baa75084f042"></span><a class="reference internal" href="utilities.html#_CPPv4N9bayesship12fftw_outlineE" title="bayesship::fftw_outline"><span class="n"><span class="pre">fftw_outline</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">planforward</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship20threaded_ac_jobs_fft11planforwardE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Read only &amp;#8212; dimension being analyzed </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship20threaded_ac_jobs_fft11planreverseE">
+<span id="_CPPv3N9bayesship20threaded_ac_jobs_fft11planreverseE"></span><span id="_CPPv2N9bayesship20threaded_ac_jobs_fft11planreverseE"></span><span id="bayesship::threaded_ac_jobs_fft::planreverse__fftw_outlineP"></span><span class="target" id="classbayesship_1_1threaded__ac__jobs__fft_1aeb6615f0e1a581686b8cbed8ad55acfa"></span><a class="reference internal" href="utilities.html#_CPPv4N9bayesship12fftw_outlineE" title="bayesship::fftw_outline"><span class="n"><span class="pre">fftw_outline</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">planreverse</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship20threaded_ac_jobs_fft11planreverseE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>fftw plan to use for spectral method </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship20threaded_ac_jobs_fft3lagE">
+<span id="_CPPv3N9bayesship20threaded_ac_jobs_fft3lagE"></span><span id="_CPPv2N9bayesship20threaded_ac_jobs_fft3lagE"></span><span id="bayesship::threaded_ac_jobs_fft::lag__iP"></span><span class="target" id="classbayesship_1_1threaded__ac__jobs__fft_1aae8f76d2934dbf527a41c713604fbc41"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">lag</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship20threaded_ac_jobs_fft3lagE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>fftw plan to use for spectral method </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship20threaded_ac_jobs_fft6targetE">
+<span id="_CPPv3N9bayesship20threaded_ac_jobs_fft6targetE"></span><span id="_CPPv2N9bayesship20threaded_ac_jobs_fft6targetE"></span><span id="bayesship::threaded_ac_jobs_fft::target__doubleP"></span><span class="target" id="classbayesship_1_1threaded__ac__jobs__fft_1a1e722a6245a99ae2a79b6fd1582223b3"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">target</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship20threaded_ac_jobs_fft6targetE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>READ AND WRITE &amp;#8212; final lag </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship23threaded_ac_jobs_serialE">
+<span id="_CPPv3N9bayesship23threaded_ac_jobs_serialE"></span><span id="_CPPv2N9bayesship23threaded_ac_jobs_serialE"></span><span id="bayesship::threaded_ac_jobs_serial"></span><span class="target" id="classbayesship_1_1threaded__ac__jobs__serial"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">threaded_ac_jobs_serial</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship23threaded_ac_jobs_serialE" title="Permalink to this definition"></a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;autocorrelationUtilities.h&gt;</em></div>
+<p>Class to contain serial method jobs. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship23threaded_ac_jobs_serial4dataE">
+<span id="_CPPv3N9bayesship23threaded_ac_jobs_serial4dataE"></span><span id="_CPPv2N9bayesship23threaded_ac_jobs_serial4dataE"></span><span id="bayesship::threaded_ac_jobs_serial::data__doublePP"></span><span class="target" id="classbayesship_1_1threaded__ac__jobs__serial_1a8d1a76a1b758ed9e9d4159ae956b52ef"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">data</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship23threaded_ac_jobs_serial4dataE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship23threaded_ac_jobs_serial6lengthE">
+<span id="_CPPv3N9bayesship23threaded_ac_jobs_serial6lengthE"></span><span id="_CPPv2N9bayesship23threaded_ac_jobs_serial6lengthE"></span><span id="bayesship::threaded_ac_jobs_serial::length__iP"></span><span class="target" id="classbayesship_1_1threaded__ac__jobs__serial_1a37c68261fedab6c61dbccd04428ee476"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">length</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship23threaded_ac_jobs_serial6lengthE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Read only &amp;#8212; Data to use &amp;#8212; full chain </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship23threaded_ac_jobs_serial5startE">
+<span id="_CPPv3N9bayesship23threaded_ac_jobs_serial5startE"></span><span id="_CPPv2N9bayesship23threaded_ac_jobs_serial5startE"></span><span id="bayesship::threaded_ac_jobs_serial::start__iP"></span><span class="target" id="classbayesship_1_1threaded__ac__jobs__serial_1ae7ebb3b04a808faaad432e49573edb2c"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">start</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship23threaded_ac_jobs_serial5startE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Read only &amp;#8212; length of total data </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship23threaded_ac_jobs_serial3endE">
+<span id="_CPPv3N9bayesship23threaded_ac_jobs_serial3endE"></span><span id="_CPPv2N9bayesship23threaded_ac_jobs_serial3endE"></span><span id="bayesship::threaded_ac_jobs_serial::end__iP"></span><span class="target" id="classbayesship_1_1threaded__ac__jobs__serial_1a2f1ea89df728260eb9023332d2865986"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">end</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship23threaded_ac_jobs_serial3endE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Read only &amp;#8212; start index </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship23threaded_ac_jobs_serial9dimensionE">
+<span id="_CPPv3N9bayesship23threaded_ac_jobs_serial9dimensionE"></span><span id="_CPPv2N9bayesship23threaded_ac_jobs_serial9dimensionE"></span><span id="bayesship::threaded_ac_jobs_serial::dimension__i"></span><span class="target" id="classbayesship_1_1threaded__ac__jobs__serial_1a9922f513ee4e58a79021f9bed5bc475f"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dimension</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship23threaded_ac_jobs_serial9dimensionE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Read only &amp;#8212; end index </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship23threaded_ac_jobs_serial3lagE">
+<span id="_CPPv3N9bayesship23threaded_ac_jobs_serial3lagE"></span><span id="_CPPv2N9bayesship23threaded_ac_jobs_serial3lagE"></span><span id="bayesship::threaded_ac_jobs_serial::lag__iP"></span><span class="target" id="classbayesship_1_1threaded__ac__jobs__serial_1aacc1c422705923905c6548bec880995e"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">lag</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship23threaded_ac_jobs_serial3lagE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Read only &amp;#8212; dimension being analyzed </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship23threaded_ac_jobs_serial6targetE">
+<span id="_CPPv3N9bayesship23threaded_ac_jobs_serial6targetE"></span><span id="_CPPv2N9bayesship23threaded_ac_jobs_serial6targetE"></span><span id="bayesship::threaded_ac_jobs_serial::target__doubleP"></span><span class="target" id="classbayesship_1_1threaded__ac__jobs__serial_1a1014e6c50c741b925786c29f2ec8f3d0"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">target</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship23threaded_ac_jobs_serial6targetE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>READ AND WRITE &amp;#8212; final lag </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="ThreadPool.html" class="btn btn-neutral float-left" title="ThreadPool" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="bayesshipSampler.html" class="btn btn-neutral float-right" title="bayesshipSampler" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Scott Ellis Perkins.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
