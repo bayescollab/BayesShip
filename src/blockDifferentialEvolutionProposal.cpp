@@ -50,7 +50,6 @@ void blockDifferentialEvolutionProposal::propose(positionInfo *currentPosition, 
 
 	/*Not doing RJ version yet..*/
 	if(currentStep < 2 ){
-	//if(true){
 		return;
 	}
 	positionInfo *historyPosition1=nullptr;
@@ -98,13 +97,10 @@ void blockDifferentialEvolutionProposal::propose(positionInfo *currentPosition, 
 		gamma = gsl_ran_gaussian(sampler->rvec[chainID],2.38/std::sqrt(2.*sampler->maxDim));
 	}
 	for(int i = 0 ; i<blocks[blockID].size(); i++){
-		proposedPosition->parameters[blocks[blockID][i]] +=
-			gamma*(historyPosition1->parameters[blocks[blockID][i]]-historyPosition2->parameters[blocks[blockID][i]]);
-		//std::cout<<blocks[blockID][i]<<" "<<proposedPosition->parameters[blocks[blockID][i]] -currentPosition->parameters[blocks[blockID][i]] <<std::endl;
+		int paramID = blocks[blockID][i];
+		proposedPosition->parameters[paramID] +=
+			gamma*(historyPosition1->parameters[paramID]-historyPosition2->parameters[paramID]);
 	}
-	//if(sampler->betas[chainID] == 1){
-	//std::cout<<chainID<<" "<<blockID<<" "<<gamma<<" "<<std::endl;
-	//}
 
 }
 

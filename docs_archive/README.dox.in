@@ -7,7 +7,7 @@ This software performs statistical inference through standard Markov chain Monte
 
 \section Methodology 
 
-The workhorse algorithm for this software is Parallel Tempering (PT), which works by running multiple, independent Markov chains in parallel, then allowing two chains to swap positions in parameter and/or model space through "swaps". This method has been shown to be highly effective for multi-modal distributions and for RJMCMC applications. The computational tax of running multiple chains is typically drastically made up for in the efficiency of drawing independent sampless.
+The workhorse algorithm for this software is Parallel Tempering (PT), which works by running multiple, independent Markov chains in parallel, then allowing two chains to swap positions in parameter and/or model space through "swaps". This method has been shown to be highly effective for multi-modal distributions and for RJMCMC applications. The computational tax of running multiple chains is typically drastically made up for in the efficiency of drawing independent samples.
 
 \section Technical Details of the implementation
 

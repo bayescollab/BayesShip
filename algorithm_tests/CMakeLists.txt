@@ -1,13 +1,17 @@
+add_executable(DiffEvTests "DiffEvTests.cpp")
 add_executable(KDETests "KDETests.cpp")
 add_executable(threadPoolTests "threadPoolTests.cpp")
 
+target_link_libraries(DiffEvTests PUBLIC bayesship)
 target_link_libraries(KDETests PUBLIC bayesship)
 target_link_libraries(threadPoolTests PUBLIC bayesship)
 
+target_link_libraries( DiffEvTests PUBLIC "${LIBS}")
 target_link_libraries( KDETests PUBLIC "${LIBS}")
 target_link_libraries( threadPoolTests PUBLIC "${LIBS}")
 
 
+target_include_directories( DiffEvTests PUBLIC "${INCLUDE_DIRS}")
 target_include_directories( KDETests PUBLIC "${INCLUDE_DIRS}")
 target_include_directories( threadPoolTests PUBLIC "${INCLUDE_DIRS}")
 
