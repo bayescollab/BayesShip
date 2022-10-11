@@ -8,7 +8,8 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-
+permissions:
+  contents: write
 jobs:
   build:
 
@@ -33,7 +34,7 @@ jobs:
       #uses: JamesIves/github-pages-deploy-action@releases/v3
       uses: JamesIves/github-pages-deploy-action@v4
       with:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         BRANCH: gh-pages # The branch the action should deploy to.
         FOLDER: docs/_build/html # The folder the action should deploy.
 
