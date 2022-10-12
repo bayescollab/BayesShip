@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dockerfiles &mdash; BayesShip  documentation</title>
+  <title>Dockerfiles with Jupyter &mdash; BayesShip  documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
@@ -20,7 +20,9 @@
         <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="API" href="../api/index.html" />
+    <link rel="prev" title="Contributing to the project" href="contributing.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -38,9 +40,18 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../index.html">Welcome to BayesShip’s documentation!</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../installation/installation.html">Installation Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="contributing.html">Contributing to the project</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Dockerfiles with Jupyter</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#running-container">Running container</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#logging-in">Logging in</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../api/index.html">API</a></li>
 </ul>
 
@@ -58,9 +69,10 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Dockerfiles</li>
+          <li><a href="index.html">Tutorials</a> &raquo;</li>
+      <li>Dockerfiles with Jupyter</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/extraDocs/jupyterDocker.md.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/tutorials/jupyterDocker.md.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -68,9 +80,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <p>Hosting jupyter servers in Docker containers can be extremely useful, ~~as this typically doesn’t involve logging into the container at all,~~<a class="footnote-reference brackets" href="#id2" id="id1">1</a> and you can just connect to your server in a browser.</p>
-<section id="dockerfiles">
-<h1>Dockerfiles<a class="headerlink" href="#dockerfiles" title="Permalink to this heading"></a></h1>
+  <section id="dockerfiles-with-jupyter">
+<h1>Dockerfiles with Jupyter<a class="headerlink" href="#dockerfiles-with-jupyter" title="Permalink to this heading"></a></h1>
+<p>Hosting jupyter servers in Docker containers can be extremely useful, ~~as this typically doesn’t involve logging into the container at all,~~<a class="footnote-reference brackets" href="#id2" id="id1">1</a> and you can just connect to your server in a browser.</p>
 <p>A typical docker file for this purpose looks like</p>
 <div class="highlight-docker notranslate"><div class="highlight"><pre><span></span>FROM debian:latest # or whatever base image you want
 
@@ -80,17 +92,16 @@ RUN pip3 install jupyter jupyterlab #plus whatever else
 CMD [&quot;jupyter-lab&quot;, &quot;--no-browser&quot;, &quot;--allow-root&quot;, &quot;--ip=0.0.0.0&quot;, &quot;--port=8989&quot;] # The port doesn&#39;t have to be the same, just some random port not in use
 </pre></div>
 </div>
-</section>
 <section id="running-container">
-<h1>Running container<a class="headerlink" href="#running-container" title="Permalink to this heading"></a></h1>
+<h2>Running container<a class="headerlink" href="#running-container" title="Permalink to this heading"></a></h2>
 <p>Now, with image in hand, navigate to the directory of interest and run the following command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker run -d --rm -p <span class="m">8989</span>:8989 -v <span class="k">$(</span>PWD<span class="k">)</span>:/opt/project scottperkins/gwat.jupyter
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker run -d --rm -p &lt;port-ID&gt;:&lt;port-ID&gt; -v <span class="k">$(</span>PWD<span class="k">)</span>:/container/dir/path &lt;image-ID&gt;
 </pre></div>
 </div>
-<p>where the port matches the port used in the image (at least the second one) and the “/opt/project” directory is whatever you want to call it (directory inside the container). The image (scottperkins/gwat.jupyter) is obviously the image of the container you want to run</p>
+<p>where the &lt;port-ID&gt; matches the port used in the image (at least the second one) and the “/container/dir/path” directory is whatever you want to call it (directory inside the container). The image (&lt;image-ID&gt;) is obviously the image you want to run (e.g. scottperkins/gwat.jupyter)</p>
 </section>
 <section id="logging-in">
-<h1>Logging in<a class="headerlink" href="#logging-in" title="Permalink to this heading"></a></h1>
+<h2>Logging in<a class="headerlink" href="#logging-in" title="Permalink to this heading"></a></h2>
 <p>For now, you have to log into the container with</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker <span class="nb">exec</span> -it &lt;container-id&gt; bash
 </pre></div>
@@ -99,7 +110,7 @@ CMD [&quot;jupyter-lab&quot;, &quot;--no-browser&quot;, &quot;--allow-root&quot;
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>jupyter server list
 </pre></div>
 </div>
-<p>Go to localhost:8989 in a browser and copy the token from the docker container to log in.</p>
+<p>Go to localhost:&lt;port-ID&gt; in a browser and copy the token from the docker container to log in.</p>
 <p>You’re in! Now you can exit out of the interactive session of the container if you want.</p>
 <hr class="footnotes docutils" />
 <dl class="footnote brackets">
@@ -108,11 +119,15 @@ CMD [&quot;jupyter-lab&quot;, &quot;--no-browser&quot;, &quot;--allow-root&quot;
 </dd>
 </dl>
 </section>
+</section>
 
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="contributing.html" class="btn btn-neutral float-left" title="Contributing to the project" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../api/index.html" class="btn btn-neutral float-right" title="API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

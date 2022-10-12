@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>API &mdash; BayesShip  documentation</title>
+  <title>Contributing to the project &mdash; BayesShip  documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
@@ -21,8 +21,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="ThreadPool" href="ThreadPool.html" />
-    <link rel="prev" title="Dockerfiles with Jupyter" href="../tutorials/jupyterDocker.html" /> 
+    <link rel="next" title="Dockerfiles with Jupyter" href="jupyterDocker.html" />
+    <link rel="prev" title="Tutorials" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -43,17 +43,12 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../index.html">Welcome to BayesShip’s documentation!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation/installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="ThreadPool.html">ThreadPool</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autocorrelationUtilities.html">autocorrelationUtilities</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bayesshipSampler.html">bayesshipSampler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dataUtilities.html">dataUtilities</a></li>
-<li class="toctree-l2"><a class="reference internal" href="proposalFunctions.html">proposalFunctions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="standardPriors.html">standardPriors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="utilities.html">utilities</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Contributing to the project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jupyterDocker.html">Dockerfiles with Jupyter</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API</a></li>
 </ul>
 
         </div>
@@ -70,9 +65,10 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>API</li>
+          <li><a href="index.html">Tutorials</a> &raquo;</li>
+      <li>Contributing to the project</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/api/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/tutorials/contributing.md.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -80,27 +76,49 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="api">
-<span id="api-funcs"></span><h1>API<a class="headerlink" href="#api" title="Permalink to this heading"></a></h1>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="ThreadPool.html">ThreadPool</a></li>
-<li class="toctree-l1"><a class="reference internal" href="autocorrelationUtilities.html">autocorrelationUtilities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="bayesshipSampler.html">bayesshipSampler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dataUtilities.html">dataUtilities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="proposalFunctions.html">proposalFunctions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="standardPriors.html">standardPriors</a></li>
-<li class="toctree-l1"><a class="reference internal" href="utilities.html">utilities</a></li>
-</ul>
+  <section id="contributing-to-the-project">
+<h1>Contributing to the project<a class="headerlink" href="#contributing-to-the-project" title="Permalink to this heading"></a></h1>
+<p>Contributions to this source code would be very much appreciated (both corrections or additions)!
+We use branches and pull requests to facilitate this kind of work, so please follow the follow steps for contributing to this project:</p>
+<ol class="arabic simple" start="0">
+<li><p>Optional - For corrections, file a bug report first so people know someone’s working on it and are aware of the issue</p></li>
+<li><p>Pull the latest code from the repository (probably from the master branch):</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git pull
+</pre></div>
 </div>
+<ol class="arabic simple" start="2">
+<li><p>Create a new branch and make it available on the online repository with the following command (where &lt;feature-branch&gt; can be anything you’d like to call it)</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git checkout -b &lt;feature-branch&gt;
+git push origin &lt;feature-branch&gt;
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Next, make your corrections to the code</p></li>
+<li><p>Stage the changes</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git add &lt;modified/added files&gt;
+git commit -m <span class="s2">&quot;A very clear and helpful message&quot;</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="5">
+<li><p>Push the changes to the online repository</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git push origin &lt;feature-branch&gt;
+</pre></div>
+</div>
+<ol class="arabic simple" start="6">
+<li><p>Make a pull request through the online GUI. This will start a discuss and verification process before the code is eventually merged by a moderator.</p></li>
+</ol>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../tutorials/jupyterDocker.html" class="btn btn-neutral float-left" title="Dockerfiles with Jupyter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="ThreadPool.html" class="btn btn-neutral float-right" title="ThreadPool" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Tutorials" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="jupyterDocker.html" class="btn btn-neutral float-right" title="Dockerfiles with Jupyter" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

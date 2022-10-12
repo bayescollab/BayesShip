@@ -30,6 +30,7 @@ Table of Contents
 
         self
         installation/installation
+        tutorials/index
         api/index
 
 

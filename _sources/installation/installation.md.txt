@@ -1,4 +1,4 @@
-# Installation Methods
+# Installation 
 
 There are currently two ways to install this software library: by compiling the source code directly on your computer or by using Docker containers.
 
