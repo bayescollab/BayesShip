@@ -2,6 +2,7 @@
 #include <math.h>
 #include <bayesship/ThreadPool.h>
 #include <unistd.h>
+#include <cmath>
 
 void RT_ERROR_MSG();
 
