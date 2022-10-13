@@ -6,7 +6,7 @@ There are currently two ways to install this software library: by compiling the 
 
 ### Install dependencies [^1] 
 
-1. gcc/g++
+1. gcc/g++ or clang/clang++
 
 2. CMake \*
 
@@ -18,7 +18,7 @@ There are currently two ways to install this software library: by compiling the 
 
 5. Armadillo \*
 
-6. HDF5 - Not as common. Might be available on certain systems, but will need to compile with gcc (not clang). This is a headache, but things won't compile properly if HDF5 is not compiled with the same compiler as GWAT
+6. HDF5 \*
 
 7. nlhomann_json \*
 
