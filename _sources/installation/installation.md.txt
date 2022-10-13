@@ -18,15 +18,13 @@ There are currently two ways to install this software library: by compiling the 
 
 5. Armadillo \*
 
-6. adol-c - Not as common, so probably will need to install from source. Use the appropriate openmp flag if that's desired 
+6. HDF5 - Not as common. Might be available on certain systems, but will need to compile with gcc (not clang). This is a headache, but things won't compile properly if HDF5 is not compiled with the same compiler as GWAT
 
-7. HDF5 - Not as common. Might be available on certain systems, but will need to compile with gcc (not clang). This is a headache, but things won't compile properly if HDF5 is not compiled with the same compiler as GWAT
+7. nlhomann_json \*
 
-8. nlhomann_json \*
+8. SWIG (if compiling python bindings) \*
 
-9. SWIG (if compiling python bindings) \*
-
-11. Python header files (if compiling python bindings) \*
+9. Python header files (if compiling python bindings) \*
 
 
 \* means the library is very common and is probably available through system package managers (apt/yum/etc) or through HPC infrastructure
