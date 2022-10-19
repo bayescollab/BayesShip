@@ -241,13 +241,25 @@
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler16isolateEnsemblesE">
 <span id="_CPPv3N9bayesship16bayesshipSampler16isolateEnsemblesE"></span><span id="_CPPv2N9bayesship16bayesshipSampler16isolateEnsemblesE"></span><span id="bayesship::bayesshipSampler::isolateEnsembles__b"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1a983fc9e430b90bdd158892e90ae9ad39"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">isolateEnsembles</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler16isolateEnsemblesE" title="Permalink to this definition"></a><br /></dt>
-<dd><p>Whether to allow for swapping between ensembles in burn perior </p>
+<dd><p>Whether to allow for swapping between ensembles in collection </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler20isolateEnsemblesBurnE">
 <span id="_CPPv3N9bayesship16bayesshipSampler20isolateEnsemblesBurnE"></span><span id="_CPPv2N9bayesship16bayesshipSampler20isolateEnsemblesBurnE"></span><span id="bayesship::bayesshipSampler::isolateEnsemblesBurn__b"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1a5fab79f1fc6e834fd1adf15b07fd9d88"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">isolateEnsemblesBurn</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler20isolateEnsemblesBurnE" title="Permalink to this definition"></a><br /></dt>
-<dd><p>Whether to allow for swapping between ensembles in collection </p>
+<dd><p>Whether to allow for swapping between ensembles in burn period </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler10swapRadiusE">
+<span id="_CPPv3N9bayesship16bayesshipSampler10swapRadiusE"></span><span id="_CPPv2N9bayesship16bayesshipSampler10swapRadiusE"></span><span id="bayesship::bayesshipSampler::swapRadius__i"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1a86b9cb8f04efd1894a0011cae502de51"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">swapRadius</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">3</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler10swapRadiusE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Radius of the pairing for swapping between temperature. As long as the two chains are within swapRadius rungs, they can swap </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16bayesshipSampler24restrictSwapTemperaturesE">
+<span id="_CPPv3N9bayesship16bayesshipSampler24restrictSwapTemperaturesE"></span><span id="_CPPv2N9bayesship16bayesshipSampler24restrictSwapTemperaturesE"></span><span id="bayesship::bayesshipSampler::restrictSwapTemperatures__b"></span><span class="target" id="classbayesship_1_1bayesshipSampler_1ae786a4991d7d32e1c4ea1509c0d72763"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">restrictSwapTemperatures</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><a class="headerlink" href="#_CPPv4N9bayesship16bayesshipSampler24restrictSwapTemperaturesE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Whether or not to check for temperature difference between chains before swapping: false means all chains can swap with all other temperatures, true means only certain temperatures can swap with other temperatures (see swapRadius) </p>
 </dd></dl>
 
 <dl class="cpp var">

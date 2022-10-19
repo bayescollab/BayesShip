@@ -136,6 +136,10 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a983fc9e430b90bdd158892e90ae9ad39"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5fab79f1fc6e834fd1adf15b07fd9d88"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classbayesship_1_1bayesshipSampler.html#a5fab79f1fc6e834fd1adf15b07fd9d88">isolateEnsemblesBurn</a> =false</td></tr>
 <tr class="separator:a5fab79f1fc6e834fd1adf15b07fd9d88"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a86b9cb8f04efd1894a0011cae502de51"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classbayesship_1_1bayesshipSampler.html#a86b9cb8f04efd1894a0011cae502de51">swapRadius</a> = 3</td></tr>
+<tr class="separator:a86b9cb8f04efd1894a0011cae502de51"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae786a4991d7d32e1c4ea1509c0d72763"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classbayesship_1_1bayesshipSampler.html#ae786a4991d7d32e1c4ea1509c0d72763">restrictSwapTemperatures</a> = true</td></tr>
+<tr class="separator:ae786a4991d7d32e1c4ea1509c0d72763"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abb59dd3114296309b16c55e45bf35408"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classbayesship_1_1bayesshipSampler.html#abb59dd3114296309b16c55e45bf35408">RJ</a> =false</td></tr>
 <tr class="separator:abb59dd3114296309b16c55e45bf35408"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a178c53fe2a3bc5c3bfd74270ea35906c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classbayesship_1_1bayesshipSampler.html#a178c53fe2a3bc5c3bfd74270ea35906c">threadPool</a> =false</td></tr>
@@ -709,7 +713,7 @@ void setActiveData( samplerData *newData);
         </tr>
       </table>
 </div><div class="memdoc">
-<p >Whether to allow for swapping between ensembles in burn perior </p>
+<p >Whether to allow for swapping between ensembles in collection </p>
 
 </div>
 </div>
@@ -724,7 +728,7 @@ void setActiveData( samplerData *newData);
         </tr>
       </table>
 </div><div class="memdoc">
-<p >Whether to allow for swapping between ensembles in collection </p>
+<p >Whether to allow for swapping between ensembles in burn period </p>
 
 </div>
 </div>
@@ -957,6 +961,21 @@ void setActiveData( samplerData *newData);
 
 </div>
 </div>
+<a id="ae786a4991d7d32e1c4ea1509c0d72763" name="ae786a4991d7d32e1c4ea1509c0d72763"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae786a4991d7d32e1c4ea1509c0d72763">&#9670;&#160;</a></span>restrictSwapTemperatures</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool bayesship::bayesshipSampler::restrictSwapTemperatures = true</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Whether or not to check for temperature difference between chains before swapping: false means all chains can swap with all other temperatures, true means only certain temperatures can swap with other temperatures (see swapRadius) </p>
+
+</div>
+</div>
 <a id="abb59dd3114296309b16c55e45bf35408" name="abb59dd3114296309b16c55e45bf35408"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abb59dd3114296309b16c55e45bf35408">&#9670;&#160;</a></span>RJ</h2>
 
@@ -1026,6 +1045,21 @@ void setActiveData( samplerData *newData);
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a86b9cb8f04efd1894a0011cae502de51" name="a86b9cb8f04efd1894a0011cae502de51"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a86b9cb8f04efd1894a0011cae502de51">&#9670;&#160;</a></span>swapRadius</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int bayesship::bayesshipSampler::swapRadius = 3</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Radius of the pairing for swapping between temperature. As long as the two chains are within swapRadius rungs, they can swap </p>
 
 </div>
 </div>

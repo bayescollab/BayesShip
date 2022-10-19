@@ -27,6 +27,7 @@ var searchData=
   ['swappairfunction_24',['swapPairFunction',['../namespacebayesship.html#aa93064be6f560797c32423d41ed451d2',1,'bayesship']]],
   ['swappool_25',['swapPool',['../structbayesship_1_1sampleJob.html#a76346bccf7ad9f644be8011649a9f1d1',1,'bayesship::sampleJob']]],
   ['swapprob_26',['swapProb',['../classbayesship_1_1bayesshipSampler.html#ad841926c8ce41425baf1a1eed7563ea8',1,'bayesship::bayesshipSampler']]],
-  ['swaprejects_27',['swapRejects',['../classbayesship_1_1samplerData.html#a3c16b1a82a94935f269ea5a0ee39115c',1,'bayesship::samplerData']]],
-  ['swapthreadedfunction_28',['swapThreadedFunction',['../namespacebayesship.html#a8b0678e593516c870fcd8ea6be8c7051',1,'bayesship']]]
+  ['swapradius_27',['swapRadius',['../classbayesship_1_1bayesshipSampler.html#a86b9cb8f04efd1894a0011cae502de51',1,'bayesship::bayesshipSampler']]],
+  ['swaprejects_28',['swapRejects',['../classbayesship_1_1samplerData.html#a3c16b1a82a94935f269ea5a0ee39115c',1,'bayesship::samplerData']]],
+  ['swapthreadedfunction_29',['swapThreadedFunction',['../namespacebayesship.html#a8b0678e593516c870fcd8ea6be8c7051',1,'bayesship']]]
 ];
