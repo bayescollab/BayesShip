@@ -182,8 +182,6 @@ void bayesshipSampler::sample()
 	}
 	
 	if(priorIterations >0 && priorRanges){
-		std::cout<<"Sampling Prior "<<std::endl;
-
 		//likelihoodFn tempL = likelihood;
 		probabilityFn *tempL = likelihood;
 		likelihood = prior;
@@ -231,10 +229,10 @@ void bayesshipSampler::sample()
 				betas[chainIndex(j,0)] = 1;
 				betas[chainIndex(j,ensembleSize-1)] = 0;
 			}
-			std::cout<<"Final temperatures after burn in"<<std::endl;
-			for(int i = 0 ; i<ensembleSize; i++){
-					std::cout<<"Temp: "<<i<<": "<<betas[chainIndex(0,i)]<<std::endl;
-			}
+			//std::cout<<"Final temperatures after burn in"<<std::endl;
+			//for(int i = 0 ; i<ensembleSize; i++){
+			//		std::cout<<"Temp: "<<i<<": "<<betas[chainIndex(0,i)]<<std::endl;
+			//}
 
 
 			for(int i = 0 ; i<chainN; i++){
@@ -253,6 +251,7 @@ void bayesshipSampler::sample()
 		}
 
 		isolateEnsemblesInternal = isolateEnsembles;
+		std::cout<<"Sampling prior"<<std::endl;
 		sampleLoop(priorIterations,priorData);
 
 		priorData->updateACs(threads);
@@ -1025,7 +1024,7 @@ bool swapPairFunction( swapJob job1, swapJob job2)
 	int l =  job2.sampler->ensembleID(job2.chainID);
 	int diffRung = fabs(i-j);
 	int diffLadder = fabs(k-l);
-	if( diffRung < 3 && diffRung >0){
+	if( (diffRung < job1.sampler->swapRadius && diffRung >0) || !job1.sampler->restrictSwapTemperatures){
 		if(!job1.sampler->getCurrentIsolateEnsemblesInternal()){
 			return true;
 		}

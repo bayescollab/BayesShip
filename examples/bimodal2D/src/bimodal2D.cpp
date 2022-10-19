@@ -76,6 +76,7 @@ int main(int argc, char *argv[])
 	sampler->ensembleN = 5;
 	sampler->ensembleSize=4;
 	sampler->threads = 4;
+	sampler->restrictSwapTemperatures = false;
 	sampler->randomizeSwapping = true;
 	int chainN = sampler->ensembleSize*sampler->ensembleN;
 	sampler->initialPosition = new bayesship::positionInfo(sampler->maxDim,false);

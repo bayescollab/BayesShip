@@ -94,7 +94,8 @@ void blockDifferentialEvolutionProposal::propose(positionInfo *currentPosition, 
 	double gamma = 1;
 	if( alpha < .9){
 		//gamma = gsl_ran_gaussian(sampler->rvec[chainID],2.38/std::sqrt(2.*blocks[blockID].size()));
-		gamma = gsl_ran_gaussian(sampler->rvec[chainID],2.38/std::sqrt(2.*sampler->maxDim));
+		//gamma = gsl_ran_gaussian(sampler->rvec[chainID],2.38/std::sqrt(2.*sampler->maxDim));
+		gamma = gsl_ran_gaussian(sampler->rvec[chainID],1)*2.38/std::sqrt(2.*sampler->maxDim);
 	}
 	for(int i = 0 ; i<blocks[blockID].size(); i++){
 		int paramID = blocks[blockID][i];

@@ -64,7 +64,7 @@ int DiffEvDrawTesting(int argc, char *argv[])
 
 	int length = 10000;
 	//int length = 5827;
-	int lengthOut = 8000;
+	int lengthOut = 100000;
 	double **data =new double*[length];
 	double **dataOut =new double*[lengthOut];
 	for (int i = 0; i<length; i++){
@@ -83,7 +83,7 @@ int DiffEvDrawTesting(int argc, char *argv[])
 
 	double prob = 1;
 	std::vector<std::vector<int>> blocks = {{0,1,2},{0,1},{2}} ;
-	std::vector<double> blockProb = {.3,.3,.4};
+	std::vector<double> blockProb = {.4,.3,.3};
 	bayesship::proposal *proposal = new bayesship::blockDifferentialEvolutionProposal(sampler, blocks, blockProb);
 
 	bayesship::proposalData *pf = new bayesship::proposalData(sampler->ensembleN*sampler->ensembleSize,1,&proposal,  &prob );

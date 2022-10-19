@@ -222,10 +222,15 @@ public:
 	/*! If a checkpoint file exists in the output directory, ignore it (true) or load it (false)*/
 	bool ignoreExistingCheckpoint=false;
 
-	/*! Whether to allow for swapping between ensembles in burn perior*/
-	bool isolateEnsembles=false;
 	/*! Whether to allow for swapping between ensembles in collection*/
+	bool isolateEnsembles=false;
+	/*! Whether to allow for swapping between ensembles in burn period*/
 	bool isolateEnsemblesBurn=false;
+
+	/*! Radius of the pairing for swapping between temperature. As long as the two chains are within swapRadius rungs, they can swap*/
+	int swapRadius = 3;
+	/*! Whether or not to check for temperature difference between chains before swapping: false means all chains can swap with all other temperatures, true means only certain temperatures can swap with other temperatures (see swapRadius) */
+	bool restrictSwapTemperatures = true;
 
 
 	/* Meta Data -- read in from Checkpoint File*/

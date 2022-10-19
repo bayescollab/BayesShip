@@ -127,8 +127,9 @@ int main(int argc, char *argv[])
 	sampler->ensembleN = 5;
 	sampler->ensembleSize=50;
 	//sampler->swapProb=.05;
-	sampler->swapProb=.1;
+	sampler->swapProb=.5;
 	sampler->isolateEnsembles=false;
+	sampler->restrictSwapTemperatures=false;
 	sampler->threads = 14;
 	int chainN = sampler->ensembleSize*sampler->ensembleN;
 	sampler->initialPosition = new bayesship::positionInfo(sampler->maxDim,false);

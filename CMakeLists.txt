@@ -69,6 +69,10 @@ find_package(FFTW3 REQUIRED)
 
 find_package(SWIG COMPONENTS python )
 
+if( NOT SWIG_FOUND AND ENABLE_SWIG)
+	message("SWIG not found, not producing python wrappings")
+endif()
+
 
 #find_package(MLPACK)
 #if(MLPACK_FOUND)
