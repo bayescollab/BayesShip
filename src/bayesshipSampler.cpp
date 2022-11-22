@@ -1435,9 +1435,9 @@ proposalData::proposalData(
 	this->maxDim = maxDim;
 	this->proposalProb = new double*[chainN];	
 
-	this->proposalN = 4;
+	this->proposalN = 3;
 
-	this->proposals = new proposal*[4];
+	this->proposals = new proposal*[3];
 
 	this->proposals[0] = new gaussianProposal(chainN, maxDim,sampler);
 	//this->proposals[1] = new differentialEvolutionProposal(sampler);
@@ -1448,16 +1448,50 @@ proposalData::proposalData(
 	std::vector<double> blockProb={1};
 	//this->proposals[1] = new differentialEvolutionProposal(sampler);
 	this->proposals[1] = new blockDifferentialEvolutionProposal(sampler,blocks,blockProb);
-	this->proposals[2] = new KDEProposal(chainN, maxDim, sampler,RJ);
-	this->proposals[3] = new GMMProposal(chainN, maxDim, sampler,10,10,10,1e-10, RJ,100*maxDim);
+	this->proposals[2] = new GMMProposal(chainN, maxDim, sampler,10,10,10,1e-10, RJ,100*maxDim);
 
 	for(int i =0  ; i<chainN; i++){
 		this->proposalProb[i] = new double[4];	
-		this->proposalProb[i][0] = .3;
+		this->proposalProb[i][0] = .2;
 		this->proposalProb[i][1] = .4;
-		this->proposalProb[i][2] = .0;
-		this->proposalProb[i][3] = .3;
+		this->proposalProb[i][2] = .4;
 	}
+
+
+
+	//this->proposalN = 4;
+
+	//this->proposals = new proposal*[4];
+
+	//this->proposals[0] = new gaussianProposal(chainN, maxDim,sampler);
+	////this->proposals[1] = new differentialEvolutionProposal(sampler);
+	//std::vector<std::vector<int>> blocks = std::vector<std::vector<int>>(1);
+	//for(int i = 0 ; i< maxDim;i++){
+	//	blocks[0].push_back(i);
+	//}
+	//std::vector<double> blockProb={1};
+	////this->proposals[1] = new differentialEvolutionProposal(sampler);
+	//this->proposals[1] = new blockDifferentialEvolutionProposal(sampler,blocks,blockProb);
+	//this->proposals[2] = new KDEProposal(chainN, maxDim, sampler,RJ);
+	//this->proposals[3] = new GMMProposal(chainN, maxDim, sampler,10,10,10,1e-10, RJ,100*maxDim);
+
+	//for(int i =0  ; i<chainN; i++){
+	//	this->proposalProb[i] = new double[4];	
+	//	this->proposalProb[i][0] = .1;
+	//	this->proposalProb[i][1] = .3;
+	//	this->proposalProb[i][2] = .2;
+	//	this->proposalProb[i][3] = .3;
+	//}
+
+	//this->proposalN = 1;
+
+	//this->proposals = new proposal*[1];
+
+	//this->proposals[0] = new gaussianProposal(chainN, maxDim,sampler);
+	//for(int i =0  ; i<chainN; i++){
+	//	this->proposalProb[i] = new double[4];	
+	//	this->proposalProb[i][0] = 1;
+	//}
 
 	
 	

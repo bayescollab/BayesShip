@@ -26,6 +26,7 @@ class gaussianLikelihood: public bayesship::probabilityFn
 public:
 	virtual double eval(bayesship::positionInfo *position, int chainID)
 	{
+		//return 0;
 		return -.5 * (position->parameters[0]*position->parameters[0]);
 
 	}
@@ -56,11 +57,15 @@ int main(int argc, char *argv[])
 
 	sampler->threadPool = true;
 
+	sampler->swapProb = 0.1;
+	sampler->restrictSwapTemperatures = false;
+	sampler->isolateEnsembles = false;
+
 
 	sampler->outputDir = "data/";
 	sampler->outputFileMoniker = "gaussianLikelihoodTest";
 	//sampler->iterations = 1000;
-	sampler->independentSamples = 3000;
+	sampler->independentSamples = 10000;
 	//sampler->independentSamples = 500;
 	//sampler->independentSamples = 50;
 	sampler->burnIterations = 10000;

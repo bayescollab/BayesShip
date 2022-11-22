@@ -70,7 +70,11 @@ void GMMProposal::propose(positionInfo *current, positionInfo *proposed, int cha
 		currentData[chainID] = sampler->activeData;
 	}
 	bool status=true;
-	if(stepNumber[chainID]%updateInterval== 0 && stepNumber[chainID] !=0 ){
+	if(
+		(stepNumber[chainID]%updateInterval== 0 && stepNumber[chainID] !=0) 
+		|| 
+		(stepNumber[chainID] != 0 && !primed[chainID]) 
+	){
 		status = train(chainID);
 	}
 	if(!primed[chainID] ){
@@ -81,7 +85,9 @@ void GMMProposal::propose(positionInfo *current, positionInfo *proposed, int cha
 	//std::cout<<"DONE"<<std::endl;
 	for(int i = 0 ; i<maxDim ; i++){
 		proposed->parameters[i] = v.at(i);
+		//std::cout<<proposed->parameters[i]<<", ";
 	}
+	//std::cout<<std::endl;
 	for(int i = 0 ; i<maxDim ; i++){
 		v.at(i) = current->parameters[i];
 	}
