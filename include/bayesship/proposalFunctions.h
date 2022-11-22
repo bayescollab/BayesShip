@@ -4,6 +4,7 @@
 #include "bayesship/dataUtilities.h"
 #include <vector>
 #include <string>
+#include <armadillo>
 
 /*! \file 
  *
@@ -318,6 +319,75 @@ public:
 	randomLayerRJProposal(bayesshipSampler *sampler,double alpha=.5 );
 	virtual ~randomLayerRJProposal(){return;};
 	virtual void propose(positionInfo *current, positionInfo *proposed, int chainID,int stepID,double *MHRatioModifications);
+
+};
+
+
+//###################################################################
+//###################################################################
+
+class jointKDEProposal: public proposal
+{
+public:
+	int additionalThreads = 1;
+	int ensembleSize ;
+	//std::vector<std::mutex> historyMutexVec;
+	//std::vector<std::mutex> historyMutexVec;
+	jointKDEProposal(int ensembleSize, int ,int threads=1);
+	virtual ~jointKDEProposal();
+	virtual void propose(positionInfo *current, positionInfo *proposed, int chainID,int stepID,double *MHRatioModifications);
+	virtual void writeCheckpoint(std::string outputDirectory , std::string runMoniker);
+	virtual void loadCheckpoint( std::string inputDirectory, std::string runMoniker);
+
+};
+
+
+//###################################################################
+//###################################################################
+class GMMProposal: public proposal
+{
+public:
+	/*! Number of chains*/
+	int chainN;
+	/*! Maximum dimension of the space*/
+	int maxDim;
+	/*! Current step number in storage*/
+	int *stepNumber=nullptr;
+	/*! Last ID that was harvested from a samplerData structure*/
+	int *lastUpdatePositionID=nullptr;
+	/*! Pointer of the current samplerData object -- if this changes, we can restart counters (Does NOT erase old samples)*/
+	samplerData **currentData = nullptr;
+	
+	bayesshipSampler *sampler;
+
+	/*! The number of samples to skip between storing samples in storage*/
+	int updateInterval;
+
+	bool RJ;
+	 
+	int gaussians;
+	int km_iter;
+	int em_iter;
+	double var_floor;
+
+	arma::gmm_full *models=nullptr;
+
+	bool *primed=nullptr;
+
+	GMMProposal(
+		int chainN, /**< Number of chains in the ensemble*/
+		int maxDim, /**< Maximum dimension of the space*/
+		bayesshipSampler *sampler,
+		int gaussians=10,/**< Number of gaussians to use*/
+		int km_iter=10,/**< Number of gaussians to use*/
+		int em_iter=10,/**< Number of gaussians to use*/
+		double var_floor=1e-10,/**< Number of gaussians to use*/
+		bool RJ=false,
+		int updateInterval = 1000/**< number of steps to take before storing a sample*/
+	);
+	virtual ~GMMProposal();
+	virtual void propose(positionInfo *current, positionInfo *proposed, int chainID,int stepID,double *MHRatioModifications);
+	bool train(int chainID);
 
 };
 

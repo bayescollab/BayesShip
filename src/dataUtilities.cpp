@@ -5,6 +5,8 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <gsl/gsl_spline.h>
+#include <gsl/gsl_integration.h>
 
 #ifdef _HDF5
 #include <H5Cpp.h>
@@ -292,6 +294,72 @@ int positionInfo::countActiveDimensions()
 	}
 	return activeDims;
 }
+
+struct helper_params
+{
+	gsl_interp_accel *a;	
+	gsl_spline *s;	
+};
+double integration_helper(double beta, void *params)
+{
+	helper_params *p = (helper_params *) params;
+	double likelihood =  gsl_spline_eval(p->s, beta, p->a);
+	return likelihood;
+}
+
+void samplerData::calculateEvidence()
+{
+	double integratedLikelihoods[this->ensembleSize];
+	double betasLocal[this->ensembleSize];
+	for(int i = 0 ; i<ensembleSize; i++){
+
+		//For the integration, we have to reverse the order (ie, 0 -> 1 not 1 -> 0, which is how they're naturally stored)
+		int index = ensembleSize -1 -i;
+
+		integratedLikelihoods[index] = 0 ;
+		double norm = 0 ;
+		int chainIndex;
+		for(int j = 0 ; j<ensembleN; j++){
+			chainIndex = j + i*ensembleN;
+			for(int k = 0 ;k<currentStepID[chainIndex]; k++){
+				integratedLikelihoods[index]+=likelihoodVals[chainIndex][k];
+			}
+			norm+=currentStepID[chainIndex];
+		}		
+		integratedLikelihoods[index]/=norm;
+		betasLocal[index] = betas[chainIndex];
+	}
+	//for(int i = 0 ; i<ensembleSize; i++){
+	//	std::cout<<betasLocal[i]<<" "<<integratedLikelihoods[i]<<std::endl;
+	//}
+
+
+	gsl_interp_accel *acc = gsl_interp_accel_alloc();	
+	gsl_spline *spline = gsl_spline_alloc(gsl_interp_cspline, ensembleSize);
+	gsl_spline_init(spline, betasLocal, integratedLikelihoods, ensembleSize);
+
+	helper_params params;
+	params.a = acc;
+	params.s = spline;
+
+	gsl_function F;
+	F.function = &integration_helper;
+	F.params = &params;
+
+	gsl_integration_workspace *w = gsl_integration_workspace_alloc(1000);
+
+	double error;
+	int errorcode = gsl_integration_qags(&F, betasLocal[0],betasLocal[ensembleSize-1],0,1e-7,1000,w, &evidence, &evidenceError);
+	std::cout<<errorcode<<std::endl;
+
+	gsl_integration_workspace_free(w);
+	gsl_spline_free(spline);
+	gsl_interp_accel_free(acc);
+	calculatedEvidence = true;
+	
+
+}
+
 void samplerData::writeStatFile(std::string filename)
 {
 	std::ofstream outFile;
@@ -1079,18 +1147,18 @@ int samplerData::create_data_dump(bool cold_only, bool trim,std::string filename
 		//	delete dataspace;
 		//}
 		//#################################################
-		//if(calculated_evidence){
-		//	hsize_t dimsE[1];
-		//	dimsE[0]= 1;
-		//	dataspace = new H5::DataSpace(1,dimsE);
-		//	dataset = new H5::DataSet(
-		//		meta_group.createDataSet("EVIDENCE",
-		//			H5::PredType::NATIVE_DOUBLE,*dataspace)
-		//		);
-		//	dataset->write(&evidence, H5::PredType::NATIVE_DOUBLE);	
-		//	delete dataset;
-		//	delete dataspace;
-		//}
+		if(calculatedEvidence){
+			hsize_t dimsE[1];
+			dimsE[0]= 1;
+			dataspace = new H5::DataSpace(1,dimsE);
+			dataset = new H5::DataSet(
+				meta_group.createDataSet("EVIDENCE",
+					H5::PredType::NATIVE_DOUBLE,*dataspace)
+				);
+			dataset->write(&evidence, H5::PredType::NATIVE_DOUBLE);	
+			delete dataset;
+			delete dataspace;
+		}
 		//#################################################
 		dataspace = new H5::DataSpace(1,dimsT);
 		dataset = new H5::DataSet(
@@ -1468,11 +1536,11 @@ int samplerData::append_to_data_dump( std::string filename)
 		//	delete dataset;
 		//}
 		////#####################################################
-		//if(calculated_evidence){
-		//	dataset = new H5::DataSet(meta_group.openDataSet("EVIDENCE"));
-		//	dataset->write(&evidence, H5::PredType::NATIVE_DOUBLE);	
-		//	delete dataset;
-		//}
+		if(calculatedEvidence){
+			dataset = new H5::DataSet(meta_group.openDataSet("EVIDENCE"));
+			dataset->write(&evidence, H5::PredType::NATIVE_DOUBLE);	
+			delete dataset;
+		}
 		////#####################################################
 		if(!dump_files[file_id]->trimmed ){
 			

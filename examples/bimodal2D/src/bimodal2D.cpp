@@ -61,8 +61,8 @@ int main(int argc, char *argv[])
 	sampler->priorRanges = priorRange;
 	//sampler->burnPriorIterations =1000;
 	//sampler->priorIterations =10000;
-	sampler->burnPriorIterations =0;
-	sampler->priorIterations =0;
+	sampler->burnPriorIterations =1000;
+	sampler->priorIterations =10000;
 	sampler->writePriorData = true;
 
 	sampler->coldOnlyStorage=true;
@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
 	sampler->independentSamples = 1000;
 	//sampler->independentSamples = 45*100;
 	sampler->burnIterations = 1000;
-	sampler->swapProb=.2;	
+	sampler->swapProb=.1;	
 	sampler->ensembleN = 5;
 	sampler->ensembleSize=4;
 	sampler->threads = 4;

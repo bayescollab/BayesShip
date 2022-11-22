@@ -103,6 +103,12 @@ void blockDifferentialEvolutionProposal::propose(positionInfo *currentPosition, 
 			gamma*(historyPosition1->parameters[paramID]-historyPosition2->parameters[paramID]);
 	}
 
+	//std::cout<<blockID<<", ";
+	//for(int i = 0 ; i<proposedPosition->dimension; i++){
+	//	std::cout<<std::setprecision(5)<<proposedPosition->parameters[i] -currentPosition->parameters[i]<<", ";
+	//}
+	//std::cout<<std::endl;
+
 }
 
 

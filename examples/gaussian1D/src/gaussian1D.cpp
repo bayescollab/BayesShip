@@ -47,10 +47,10 @@ int main(int argc, char *argv[])
 	priorRange[0][1] = 10;
 	sampler->priorRanges = priorRange;
 	//sampler->priorIterations = 10000;
-	sampler->priorIterations = 10000;
+	sampler->priorIterations = 1000;
 	sampler->burnPriorIterations = 1000;
 	sampler->writePriorData = true;
-	sampler->ignoreExistingCheckpoint=false;
+	sampler->ignoreExistingCheckpoint=true;
 	//sampler->priorIterations = 0;
 
 
@@ -63,12 +63,12 @@ int main(int argc, char *argv[])
 	sampler->independentSamples = 3000;
 	//sampler->independentSamples = 500;
 	//sampler->independentSamples = 50;
-	sampler->burnIterations = 5000;
+	sampler->burnIterations = 10000;
 	//sampler->burnIterations = 10;
 	//sampler->burnIterations = 0;
 	sampler->ensembleN = 4;
 	//sampler->ensembleN = 1;
-	sampler->ensembleSize=5;
+	sampler->ensembleSize=6;
 	sampler->threads = 4;
 	int chainN = sampler->ensembleSize*sampler->ensembleN;
 	sampler->initialPosition = new bayesship::positionInfo(sampler->maxDim,false);

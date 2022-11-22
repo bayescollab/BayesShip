@@ -31,6 +31,7 @@ class bayesshipSampler;
 class proposal
 {
 public:
+	int additionalThreads = 0;
 	proposal(){return;};
 	virtual ~proposal(){return;};
 	virtual void propose(positionInfo *current, positionInfo *proposed, int chainID,int stepID,double *MHRatioModifications)

@@ -1,3 +1,4 @@
+
 #include "bayesship/bayesshipSampler.h"
 #include "bayesship/utilities.h"
 #include "bayesship/dataUtilities.h"
@@ -426,6 +427,8 @@ void bayesshipSampler::sample()
 				data->updateACs(threads);
 				int independentSamples = data->countIndependentSamples();
 				std::cout<<"Independent samples per chain: "<<independentSamples<<std::endl;
+				data->calculateEvidence();
+				std::cout<<"Current Evidence: "<<data->evidence<<std::endl;
 			}
 			#ifdef _HDF5
 			data->create_data_dump(coldOnlyStorage, true, outputDir+outputFileMoniker+"_output.hdf5");
@@ -453,6 +456,8 @@ void bayesshipSampler::sample()
 						AC += data->maxACs[i];
 					}
 					AC /= data->ensembleN;
+					data->calculateEvidence();
+					std::cout<<"Current Evidence: "<<data->evidence<<std::endl;
 				}
 	
 
@@ -512,6 +517,8 @@ void bayesshipSampler::sample()
 		while(currentIndependentSamples < independentSamples){
 
 			sampleLoop(batchSize,data);
+			data->calculateEvidence();
+			std::cout<<"Current Evidence: "<<data->evidence<<std::endl;
 			writeCheckpoint(data);
 	
 			data->updateACs(threads);
@@ -1428,9 +1435,9 @@ proposalData::proposalData(
 	this->maxDim = maxDim;
 	this->proposalProb = new double*[chainN];	
 
-	this->proposalN = 3;
+	this->proposalN = 4;
 
-	this->proposals = new proposal*[3];
+	this->proposals = new proposal*[4];
 
 	this->proposals[0] = new gaussianProposal(chainN, maxDim,sampler);
 	//this->proposals[1] = new differentialEvolutionProposal(sampler);
@@ -1442,12 +1449,14 @@ proposalData::proposalData(
 	//this->proposals[1] = new differentialEvolutionProposal(sampler);
 	this->proposals[1] = new blockDifferentialEvolutionProposal(sampler,blocks,blockProb);
 	this->proposals[2] = new KDEProposal(chainN, maxDim, sampler,RJ);
+	this->proposals[3] = new GMMProposal(chainN, maxDim, sampler,10,10,10,1e-10, RJ,100*maxDim);
 
 	for(int i =0  ; i<chainN; i++){
-		this->proposalProb[i] = new double[3];	
+		this->proposalProb[i] = new double[4];	
 		this->proposalProb[i][0] = .3;
-		this->proposalProb[i][1] = .7;
+		this->proposalProb[i][1] = .4;
 		this->proposalProb[i][2] = .0;
+		this->proposalProb[i][3] = .3;
 	}
 
 	

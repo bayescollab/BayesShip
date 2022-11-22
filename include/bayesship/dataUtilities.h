@@ -100,6 +100,9 @@ public:
 	double *likelihoodTimes = nullptr;
 	double *priorTimes = nullptr;
 	int *likelihoodEvals = nullptr;
+	bool calculatedEvidence=false;
+	double evidence;
+	double evidenceError;
 	//int *chain_lengths=NULL;
 
 
@@ -137,6 +140,7 @@ public:
 	int append_to_data_dump(std::string filename);
 	void set_trim(int trim);
 	void updateBetas(double *betas);
+	void calculateEvidence();
 
 private:
 	int *file_trim_lengths =NULL;
