@@ -120,9 +120,9 @@ void GMMProposal::propose(positionInfo *current, positionInfo *proposed, int cha
 	}
 
 	//std::cout<<std::endl;
-	//for(int i = 0 ; i<maxDim ; i++){
-	//	v.at(i) = current->parameters[i];
-	//}
+	for(int i = 0 ; i<maxDim ; i++){
+		v.at(i) = current->parameters[i];
+	}
 	double probCurrent = models[chainID].log_p(v);
 	*MHRatioModifications = probCurrent-probProposed;
 	return;
