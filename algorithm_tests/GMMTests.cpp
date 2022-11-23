@@ -80,7 +80,10 @@ int GMMDrawTesting(int argc, char *argv[])
 	int km_iter = 10;
 	int em_iter = 10;
 	double var_floor = 1e-10;
-	bayesship::proposal *proposal = new bayesship::GMMProposal(sampler->ensembleN*sampler->ensembleSize, sampler->maxDim, sampler, NG, km_iter, em_iter,var_floor,false,1000);
+
+	std::vector<std::vector<int>> blocks = {{0,1,2}, {1,2}} ;
+	std::vector<double> blockProb = {.5,.5};
+	bayesship::proposal *proposal = new bayesship::GMMProposal(sampler->ensembleN*sampler->ensembleSize, sampler->maxDim, sampler, blocks,blockProb,NG, km_iter, em_iter,var_floor,false,1000);
 	double prob = 1;
 	bayesship::proposalData *pf = new bayesship::proposalData(sampler->ensembleN*sampler->ensembleSize,1,&proposal,  &prob );
 	//bayesship::proposalFnData *pf = new bayesship::proposalFnData(sampler->ensembleN*sampler->ensembleSize, sampler->maxDim, false);

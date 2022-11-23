@@ -374,10 +374,17 @@ public:
 
 	bool *primed=nullptr;
 
+
+	std::vector<std::vector<int>> blocks;
+	std::vector<double> blockProb;
+	std::vector<double> blockProbBoundaries;
+
 	GMMProposal(
 		int chainN, /**< Number of chains in the ensemble*/
 		int maxDim, /**< Maximum dimension of the space*/
 		bayesshipSampler *sampler,
+		std::vector<std::vector<int>> blocks, 
+		std::vector<double> blockProb,
 		int gaussians=10,/**< Number of gaussians to use*/
 		int km_iter=10,/**< Number of gaussians to use*/
 		int em_iter=10,/**< Number of gaussians to use*/

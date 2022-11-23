@@ -193,7 +193,7 @@ void blockFisherProposal::propose(positionInfo *currentPosition, positionInfo *p
 		bool success = eig_sym(eigval,eigenvec, f);
 		if(!success){
 			
-			//std::cout<<"Failed Fisher"<<std::endl;
+			std::cout<<"Failed Fisher"<<std::endl;
 			return;	
 		}
 		noFisher[chainID][alpha]= false;
@@ -227,9 +227,10 @@ void blockFisherProposal::propose(positionInfo *currentPosition, positionInfo *p
 		for(int i = 0 ; i<blocks[alpha].size(); i++){
 			proposedPosition->parameters[blocks[alpha][i]] += randGauss * (FisherEigenVecs[chainID][alpha][randDim][i]);
 			//std::cout<<blocks[alpha][i]<<"|"<<1./std::sqrt(scaling) * (FisherEigenVecs[chainID][alpha][randDim][i])<<"\n";
+			//std::cout<<blocks[alpha][i]<<"|"<<randGauss * (FisherEigenVecs[chainID][alpha][randDim][i])<<"\n";
 		}
 	}
-	//std::cout<<std::endl;
+	std::cout<<std::endl;
 	FisherAttemptsSinceLastUpdate[chainID][alpha] ++;
 
 

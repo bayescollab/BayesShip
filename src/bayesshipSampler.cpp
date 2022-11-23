@@ -1448,7 +1448,7 @@ proposalData::proposalData(
 	std::vector<double> blockProb={1};
 	//this->proposals[1] = new differentialEvolutionProposal(sampler);
 	this->proposals[1] = new blockDifferentialEvolutionProposal(sampler,blocks,blockProb);
-	this->proposals[2] = new GMMProposal(chainN, maxDim, sampler,10,10,10,1e-10, RJ,100*maxDim);
+	this->proposals[2] = new GMMProposal(chainN, maxDim, sampler,blocks,blockProb,10,10,10,1e-10, RJ,100*maxDim);
 
 	for(int i =0  ; i<chainN; i++){
 		this->proposalProb[i] = new double[4];	

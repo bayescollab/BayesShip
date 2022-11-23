@@ -3,7 +3,7 @@
 
 namespace bayesship{
 
-GMMProposal::GMMProposal(int chainN, int maxDim, bayesshipSampler *sampler, int gaussians, int km_iter, int em_iter, double var_floor, bool RJ, int updateInterval)
+GMMProposal::GMMProposal(int chainN, int maxDim, bayesshipSampler *sampler,std::vector<std::vector<int>> blocks, std::vector<double> blockProb, int gaussians, int km_iter, int em_iter, double var_floor, bool RJ, int updateInterval)
 {
 	
 	this->chainN = chainN;
@@ -27,6 +27,26 @@ GMMProposal::GMMProposal(int chainN, int maxDim, bayesshipSampler *sampler, int 
 	this->currentData = new samplerData*[chainN];
 	for(int i = 0 ; i<chainN; i++){
 		currentData[i] = nullptr;
+	}
+
+
+
+	this->blocks = std::vector<std::vector<int>>(blocks.size());
+	this->blockProb = std::vector<double>(blocks.size());
+	this->blockProbBoundaries = std::vector<double>(blocks.size());
+	for(int i = 0 ; i<blocks.size(); i++){
+		this->blockProb[i] = blockProb[i];
+		this->blocks[i] = std::vector<int>(blocks[i].size());
+		for(int j =0 ; j<blocks[i].size(); j++){
+			this->blocks[i][j] = blocks[i][j];
+		}
+		
+	}
+	//Need the boundaries to do the random number generation easier. Storing for convenience and speed
+	//For prob array {.3,.4,.3}, boundaries should be {.3,.7,1.}
+	this->blockProbBoundaries[0] = blockProb[0];
+	for(int i = 1 ; i<blocks.size(); i++){
+		this->blockProbBoundaries[i] = 	this->blockProbBoundaries[i-1]+ this->blockProb[i];
 	}
 		
 
@@ -73,24 +93,36 @@ void GMMProposal::propose(positionInfo *current, positionInfo *proposed, int cha
 	if(
 		(stepNumber[chainID]%updateInterval== 0 && stepNumber[chainID] !=0) 
 		|| 
-		(stepNumber[chainID] != 0 && !primed[chainID]) 
+		(stepNumber[chainID] > 5*maxDim  && !primed[chainID]) 
 	){
 		status = train(chainID);
 	}
 	if(!primed[chainID] ){
 		return;
 	}
+	double beta = gsl_rng_uniform(sampler->rvec[chainID]);
+	int blockID = 0 ;
+	for(int i = 0 ; i<blocks.size(); i++){
+		if (beta < blockProbBoundaries[i]){
+			blockID = i;
+			break;
+		}
+	}
+
+
 	arma::vec v = models[chainID].generate();	
 	double probProposed = models[chainID].log_p(v);
 	//std::cout<<"DONE"<<std::endl;
-	for(int i = 0 ; i<maxDim ; i++){
-		proposed->parameters[i] = v.at(i);
-		//std::cout<<proposed->parameters[i]<<", ";
+	
+	for(int i = 0 ; i<blocks[blockID].size(); i++){
+		int paramID = blocks[blockID][i];
+		proposed->parameters[paramID] = v.at(paramID);
 	}
+
 	//std::cout<<std::endl;
-	for(int i = 0 ; i<maxDim ; i++){
-		v.at(i) = current->parameters[i];
-	}
+	//for(int i = 0 ; i<maxDim ; i++){
+	//	v.at(i) = current->parameters[i];
+	//}
 	double probCurrent = models[chainID].log_p(v);
 	*MHRatioModifications = probCurrent-probProposed;
 	return;
