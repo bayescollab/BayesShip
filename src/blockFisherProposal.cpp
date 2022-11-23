@@ -230,7 +230,7 @@ void blockFisherProposal::propose(positionInfo *currentPosition, positionInfo *p
 			//std::cout<<blocks[alpha][i]<<"|"<<randGauss * (FisherEigenVecs[chainID][alpha][randDim][i])<<"\n";
 		}
 	}
-	std::cout<<std::endl;
+	//std::cout<<std::endl;
 	FisherAttemptsSinceLastUpdate[chainID][alpha] ++;
 
 
