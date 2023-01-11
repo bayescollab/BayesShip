@@ -282,12 +282,14 @@ void bayesshipSampler::sample()
 		burnData = new samplerData(maxDim, ensembleN,ensembleSize, burnIterations, proposalFns->proposalN, RJ,betas);
 		if(priorData){
 		//if(false){
+			std::cout<<"Using Prior values for initial points for burn-in"<<std::endl;
 			for(int i = 0 ; i<chainN; i++){
 				burnData->positions[i][0]->updatePosition(priorData->positions[i][priorData->currentStepID[i]]);
 				//burnData->likelihoodVals[i][0] = likelihood(burnData->positions[i][0],i, this,userParameters[i]);
 				burnData->likelihoodVals[i][0] = likelihood->eval(burnData->positions[i][0],i);
 				//burnData->priorVals[i][0] = prior(burnData->positions[i][0],i, this,userParameters[i]);
 				burnData->priorVals[i][0] = prior->eval(burnData->positions[i][0],i);
+				burnData->currentStepID[i] = 0;
 			}
 
 		}
@@ -395,6 +397,8 @@ void bayesshipSampler::sample()
 		for(int i = 0 ; i<ensembleSize; i++){
 				std::cout<<"Temp: "<<i<<": "<<betas[chainIndex(0,i)]<<std::endl;
 		}
+		std::cout<<"Writing Burn Data"<<std::endl;
+		burnData->create_data_dump(coldOnlyStorage, true, outputDir+outputFileMoniker+"Burn_output.hdf5");
 
 
 
@@ -411,6 +415,18 @@ void bayesshipSampler::sample()
 		threadPool=savePool;
 	
 		//burnData->create_data_dump(coldOnlyStorage, true, outputDir+outputFileMoniker+"Burn_output.hdf5");
+	}
+	else if(priorData){
+		std::cout<<"Using Prior values for initial points for sampling"<<std::endl;
+		for(int i = 0 ; i<chainN; i++){
+			data->positions[i][0]->updatePosition(priorData->positions[i][priorData->currentStepID[i]]);
+			//burnData->likelihoodVals[i][0] = likelihood(burnData->positions[i][0],i, this,userParameters[i]);
+			data->likelihoodVals[i][0] = likelihood->eval(data->positions[i][0],i);
+			//burnData->priorVals[i][0] = prior(burnData->positions[i][0],i, this,userParameters[i]);
+			data->priorVals[i][0] = prior->eval(data->positions[i][0],i);
+			data->currentStepID[i] = 0;
+		}
+
 	}
 	else{
 		std::cout<<"Using initial position and skipping burn in"<<std::endl;
