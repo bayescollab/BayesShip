@@ -69,9 +69,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="index.html">API</a> &raquo;</li>
-      <li>proposalFunctions</li>
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">API</a></li>
+      <li class="breadcrumb-item active">proposalFunctions</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/api/proposalFunctions.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -484,6 +484,201 @@
 </dd></dl>
 
 <dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship11GMMProposalE">
+<span id="_CPPv3N9bayesship11GMMProposalE"></span><span id="_CPPv2N9bayesship11GMMProposalE"></span><span id="bayesship::GMMProposal"></span><span class="target" id="classbayesship_1_1GMMProposal"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">GMMProposal</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="ThreadPool.html#_CPPv49bayesship" title="bayesship"><span class="n"><span class="pre">bayesship</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="bayesshipSampler.html#_CPPv4N9bayesship8proposalE" title="bayesship::proposal"><span class="n"><span class="pre">proposal</span></span></a><a class="headerlink" href="#_CPPv4N9bayesship11GMMProposalE" title="Permalink to this definition"></a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;proposalFunctions.h&gt;</em></div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship11GMMProposal11GMMProposalEiiP16bayesshipSamplerNSt6vectorINSt6vectorIiEEEENSt6vectorIdEEiiidbi">
+<span id="_CPPv3N9bayesship11GMMProposal11GMMProposalEiiP16bayesshipSamplerNSt6vectorINSt6vectorIiEEEENSt6vectorIdEEiiidbi"></span><span id="_CPPv2N9bayesship11GMMProposal11GMMProposalEiiP16bayesshipSamplerNSt6vectorINSt6vectorIiEEEENSt6vectorIdEEiiidbi"></span><span id="bayesship::GMMProposal::GMMProposal__i.i.bayesshipSamplerP.std::vector:std::vector:i::.std::vector:double:.i.i.i.double.b.i"></span><span class="target" id="classbayesship_1_1GMMProposal_1ace4763e47e6c0e7980b4a9c5921e3d22"></span><span class="sig-name descname"><span class="n"><span class="pre">GMMProposal</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">chainN</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">maxDim</span></span>, <a class="reference internal" href="bayesshipSampler.html#_CPPv4N9bayesship16bayesshipSamplerE" title="bayesship::bayesshipSampler"><span class="n"><span class="pre">bayesshipSampler</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">sampler</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">int</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">blocks</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">blockProb</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">gaussians</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">10</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">km_iter</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">10</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">em_iter</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">10</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">var_floor</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e-10</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">RJ</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">updateInterval</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1000</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship11GMMProposal11GMMProposalEiiP16bayesshipSamplerNSt6vectorINSt6vectorIiEEEENSt6vectorIdEEiiidbi" title="Permalink to this definition"></a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chainN</strong> – Number of chains in the ensemble </p></li>
+<li><p><strong>maxDim</strong> – Maximum dimension of the space </p></li>
+<li><p><strong>gaussians</strong> – Number of gaussians to use </p></li>
+<li><p><strong>km_iter</strong> – Number of gaussians to use </p></li>
+<li><p><strong>em_iter</strong> – Number of gaussians to use </p></li>
+<li><p><strong>var_floor</strong> – Number of gaussians to use </p></li>
+<li><p><strong>updateInterval</strong> – number of steps to take before storing a sample </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship11GMMProposalD0Ev">
+<span id="_CPPv3N9bayesship11GMMProposalD0Ev"></span><span id="_CPPv2N9bayesship11GMMProposalD0Ev"></span><span id="bayesship::GMMProposal::~GMMProposal"></span><span class="target" id="classbayesship_1_1GMMProposal_1a0a867262fc81b8a73e5da87856990a18"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">~GMMProposal</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship11GMMProposalD0Ev" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship11GMMProposal7proposeEP12positionInfoP12positionInfoiiPd">
+<span id="_CPPv3N9bayesship11GMMProposal7proposeEP12positionInfoP12positionInfoiiPd"></span><span id="_CPPv2N9bayesship11GMMProposal7proposeEP12positionInfoP12positionInfoiiPd"></span><span id="bayesship::GMMProposal::propose__positionInfoP.positionInfoP.i.i.doubleP"></span><span class="target" id="classbayesship_1_1GMMProposal_1a1031031fad8156048b65c3fcafbab237"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">propose</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="dataUtilities.html#_CPPv4N9bayesship12positionInfoE" title="bayesship::positionInfo"><span class="n"><span class="pre">positionInfo</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">current</span></span>, <a class="reference internal" href="dataUtilities.html#_CPPv4N9bayesship12positionInfoE" title="bayesship::positionInfo"><span class="n"><span class="pre">positionInfo</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">proposed</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">chainID</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">stepID</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">MHRatioModifications</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship11GMMProposal7proposeEP12positionInfoP12positionInfoiiPd" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship11GMMProposal5trainEi">
+<span id="_CPPv3N9bayesship11GMMProposal5trainEi"></span><span id="_CPPv2N9bayesship11GMMProposal5trainEi"></span><span id="bayesship::GMMProposal::train__i"></span><span class="target" id="classbayesship_1_1GMMProposal_1a35758afd74392d97fb39aed8d75d9a7a"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">train</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">chainID</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship11GMMProposal5trainEi" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship11GMMProposal6chainNE">
+<span id="_CPPv3N9bayesship11GMMProposal6chainNE"></span><span id="_CPPv2N9bayesship11GMMProposal6chainNE"></span><span id="bayesship::GMMProposal::chainN__i"></span><span class="target" id="classbayesship_1_1GMMProposal_1a8ea68e2f9a19dc44fa2052bc5e078745"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">chainN</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship11GMMProposal6chainNE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Number of chains </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship11GMMProposal6maxDimE">
+<span id="_CPPv3N9bayesship11GMMProposal6maxDimE"></span><span id="_CPPv2N9bayesship11GMMProposal6maxDimE"></span><span id="bayesship::GMMProposal::maxDim__i"></span><span class="target" id="classbayesship_1_1GMMProposal_1a8ef5536df6a83a3d064885a66bfed748"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">maxDim</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship11GMMProposal6maxDimE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Maximum dimension of the space </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship11GMMProposal10stepNumberE">
+<span id="_CPPv3N9bayesship11GMMProposal10stepNumberE"></span><span id="_CPPv2N9bayesship11GMMProposal10stepNumberE"></span><span id="bayesship::GMMProposal::stepNumber__iP"></span><span class="target" id="classbayesship_1_1GMMProposal_1a4760278eb15b26aa3e4e731c37e91dd8"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">stepNumber</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N9bayesship11GMMProposal10stepNumberE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Current step number in storage </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship11GMMProposal20lastUpdatePositionIDE">
+<span id="_CPPv3N9bayesship11GMMProposal20lastUpdatePositionIDE"></span><span id="_CPPv2N9bayesship11GMMProposal20lastUpdatePositionIDE"></span><span id="bayesship::GMMProposal::lastUpdatePositionID__iP"></span><span class="target" id="classbayesship_1_1GMMProposal_1a0d5248cf0fe813c02c662e9c6a16d572"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">lastUpdatePositionID</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N9bayesship11GMMProposal20lastUpdatePositionIDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Last ID that was harvested from a <a class="reference internal" href="dataUtilities.html#classbayesship_1_1samplerData"><span class="std std-ref">samplerData</span></a> structure </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship11GMMProposal11currentDataE">
+<span id="_CPPv3N9bayesship11GMMProposal11currentDataE"></span><span id="_CPPv2N9bayesship11GMMProposal11currentDataE"></span><span id="bayesship::GMMProposal::currentData__samplerDataPP"></span><span class="target" id="classbayesship_1_1GMMProposal_1a86708faad6ac87ea29d17e884c0166cb"></span><a class="reference internal" href="dataUtilities.html#_CPPv4N9bayesship11samplerDataE" title="bayesship::samplerData"><span class="n"><span class="pre">samplerData</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">currentData</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N9bayesship11GMMProposal11currentDataE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Pointer of the current <a class="reference internal" href="dataUtilities.html#classbayesship_1_1samplerData"><span class="std std-ref">samplerData</span></a> object &amp;#8212; if this changes, we can restart counters (Does NOT erase old samples) </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship11GMMProposal7samplerE">
+<span id="_CPPv3N9bayesship11GMMProposal7samplerE"></span><span id="_CPPv2N9bayesship11GMMProposal7samplerE"></span><span id="bayesship::GMMProposal::sampler__bayesshipSamplerP"></span><span class="target" id="classbayesship_1_1GMMProposal_1acd5cba645869ce20546e48d0e02784f7"></span><a class="reference internal" href="bayesshipSampler.html#_CPPv4N9bayesship16bayesshipSamplerE" title="bayesship::bayesshipSampler"><span class="n"><span class="pre">bayesshipSampler</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">sampler</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship11GMMProposal7samplerE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship11GMMProposal14updateIntervalE">
+<span id="_CPPv3N9bayesship11GMMProposal14updateIntervalE"></span><span id="_CPPv2N9bayesship11GMMProposal14updateIntervalE"></span><span id="bayesship::GMMProposal::updateInterval__i"></span><span class="target" id="classbayesship_1_1GMMProposal_1ae3b7ad846f867e174981c40fa805fdfd"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">updateInterval</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship11GMMProposal14updateIntervalE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The number of samples to skip between storing samples in storage </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship11GMMProposal2RJE">
+<span id="_CPPv3N9bayesship11GMMProposal2RJE"></span><span id="_CPPv2N9bayesship11GMMProposal2RJE"></span><span id="bayesship::GMMProposal::RJ__b"></span><span class="target" id="classbayesship_1_1GMMProposal_1a705b5112b529e420456c98fe6371b3b2"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">RJ</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship11GMMProposal2RJE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship11GMMProposal9gaussiansE">
+<span id="_CPPv3N9bayesship11GMMProposal9gaussiansE"></span><span id="_CPPv2N9bayesship11GMMProposal9gaussiansE"></span><span id="bayesship::GMMProposal::gaussians__i"></span><span class="target" id="classbayesship_1_1GMMProposal_1a3562f32e5b7427cb6deb1b8c0cf95c56"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">gaussians</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship11GMMProposal9gaussiansE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship11GMMProposal7km_iterE">
+<span id="_CPPv3N9bayesship11GMMProposal7km_iterE"></span><span id="_CPPv2N9bayesship11GMMProposal7km_iterE"></span><span id="bayesship::GMMProposal::km_iter__i"></span><span class="target" id="classbayesship_1_1GMMProposal_1a51ab9f842d8fc44ad025f7790bba3dc4"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">km_iter</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship11GMMProposal7km_iterE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship11GMMProposal7em_iterE">
+<span id="_CPPv3N9bayesship11GMMProposal7em_iterE"></span><span id="_CPPv2N9bayesship11GMMProposal7em_iterE"></span><span id="bayesship::GMMProposal::em_iter__i"></span><span class="target" id="classbayesship_1_1GMMProposal_1a5f5acafe82374611524867b8a488dbab"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">em_iter</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship11GMMProposal7em_iterE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship11GMMProposal9var_floorE">
+<span id="_CPPv3N9bayesship11GMMProposal9var_floorE"></span><span id="_CPPv2N9bayesship11GMMProposal9var_floorE"></span><span id="bayesship::GMMProposal::var_floor__double"></span><span class="target" id="classbayesship_1_1GMMProposal_1af2da69c81ad76ad32c8fd721e6cef471"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">var_floor</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship11GMMProposal9var_floorE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship11GMMProposal6modelsE">
+<span id="_CPPv3N9bayesship11GMMProposal6modelsE"></span><span id="_CPPv2N9bayesship11GMMProposal6modelsE"></span><span id="bayesship::GMMProposal::models__arma::gmm_fullP"></span><span class="target" id="classbayesship_1_1GMMProposal_1a041bed4a5b71bb216a6a892c16a6a4dd"></span><span class="n"><span class="pre">arma</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">gmm_full</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">models</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N9bayesship11GMMProposal6modelsE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship11GMMProposal6primedE">
+<span id="_CPPv3N9bayesship11GMMProposal6primedE"></span><span id="_CPPv2N9bayesship11GMMProposal6primedE"></span><span id="bayesship::GMMProposal::primed__bP"></span><span class="target" id="classbayesship_1_1GMMProposal_1a5672904e7befadaad7a615584f83cdfe"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">primed</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N9bayesship11GMMProposal6primedE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship11GMMProposal6blocksE">
+<span id="_CPPv3N9bayesship11GMMProposal6blocksE"></span><span id="_CPPv2N9bayesship11GMMProposal6blocksE"></span><span id="bayesship::GMMProposal::blocks__std::vector:std::vector:i::"></span><span class="target" id="classbayesship_1_1GMMProposal_1a43d5132c838940ae5b8dc3a4d6548370"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">int</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">blocks</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship11GMMProposal6blocksE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship11GMMProposal9blockProbE">
+<span id="_CPPv3N9bayesship11GMMProposal9blockProbE"></span><span id="_CPPv2N9bayesship11GMMProposal9blockProbE"></span><span id="bayesship::GMMProposal::blockProb__std::vector:double:"></span><span class="target" id="classbayesship_1_1GMMProposal_1ae3e093dd58ffafc2ca488bbb5fe00095"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">blockProb</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship11GMMProposal9blockProbE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship11GMMProposal19blockProbBoundariesE">
+<span id="_CPPv3N9bayesship11GMMProposal19blockProbBoundariesE"></span><span id="_CPPv2N9bayesship11GMMProposal19blockProbBoundariesE"></span><span id="bayesship::GMMProposal::blockProbBoundaries__std::vector:double:"></span><span class="target" id="classbayesship_1_1GMMProposal_1aae7b5b74e37140cf292dd5a0a5e59d19"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">blockProbBoundaries</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship11GMMProposal19blockProbBoundariesE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16jointKDEProposalE">
+<span id="_CPPv3N9bayesship16jointKDEProposalE"></span><span id="_CPPv2N9bayesship16jointKDEProposalE"></span><span id="bayesship::jointKDEProposal"></span><span class="target" id="classbayesship_1_1jointKDEProposal"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">jointKDEProposal</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="ThreadPool.html#_CPPv49bayesship" title="bayesship"><span class="n"><span class="pre">bayesship</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="bayesshipSampler.html#_CPPv4N9bayesship8proposalE" title="bayesship::proposal"><span class="n"><span class="pre">proposal</span></span></a><a class="headerlink" href="#_CPPv4N9bayesship16jointKDEProposalE" title="Permalink to this definition"></a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;proposalFunctions.h&gt;</em></div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16jointKDEProposal16jointKDEProposalEiii">
+<span id="_CPPv3N9bayesship16jointKDEProposal16jointKDEProposalEiii"></span><span id="_CPPv2N9bayesship16jointKDEProposal16jointKDEProposalEiii"></span><span id="bayesship::jointKDEProposal::jointKDEProposal__i.i.i"></span><span class="target" id="classbayesship_1_1jointKDEProposal_1ab45215a4a44d230185b84a56114cce7f"></span><span class="sig-name descname"><span class="n"><span class="pre">jointKDEProposal</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">ensembleSize</span></span>, <span class="kt"><span class="pre">int</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">threads</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship16jointKDEProposal16jointKDEProposalEiii" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16jointKDEProposalD0Ev">
+<span id="_CPPv3N9bayesship16jointKDEProposalD0Ev"></span><span id="_CPPv2N9bayesship16jointKDEProposalD0Ev"></span><span id="bayesship::jointKDEProposal::~jointKDEProposal"></span><span class="target" id="classbayesship_1_1jointKDEProposal_1abcb13d625facec4b38729b13337b0470"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">~jointKDEProposal</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship16jointKDEProposalD0Ev" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16jointKDEProposal7proposeEP12positionInfoP12positionInfoiiPd">
+<span id="_CPPv3N9bayesship16jointKDEProposal7proposeEP12positionInfoP12positionInfoiiPd"></span><span id="_CPPv2N9bayesship16jointKDEProposal7proposeEP12positionInfoP12positionInfoiiPd"></span><span id="bayesship::jointKDEProposal::propose__positionInfoP.positionInfoP.i.i.doubleP"></span><span class="target" id="classbayesship_1_1jointKDEProposal_1a4d510282f308a68816b9a2180945a812"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">propose</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="dataUtilities.html#_CPPv4N9bayesship12positionInfoE" title="bayesship::positionInfo"><span class="n"><span class="pre">positionInfo</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">current</span></span>, <a class="reference internal" href="dataUtilities.html#_CPPv4N9bayesship12positionInfoE" title="bayesship::positionInfo"><span class="n"><span class="pre">positionInfo</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">proposed</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">chainID</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">stepID</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">MHRatioModifications</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship16jointKDEProposal7proposeEP12positionInfoP12positionInfoiiPd" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16jointKDEProposal15writeCheckpointENSt6stringENSt6stringE">
+<span id="_CPPv3N9bayesship16jointKDEProposal15writeCheckpointENSt6stringENSt6stringE"></span><span id="_CPPv2N9bayesship16jointKDEProposal15writeCheckpointENSt6stringENSt6stringE"></span><span id="bayesship::jointKDEProposal::writeCheckpoint__ss.ss"></span><span class="target" id="classbayesship_1_1jointKDEProposal_1a40ce75429134bcd8da3d935d8830ed85"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">writeCheckpoint</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">outputDirectory</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">runMoniker</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship16jointKDEProposal15writeCheckpointENSt6stringENSt6stringE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>proposalFn write checkpoint function typedef </p>
+<p>Specifies the form of proposal function write checkpoint functions.</p>
+<p>These functions are called when writing out checkpoint files. It’s up to the user whether and how these files should be written.</p>
+<p>These functions are only necessary if the proposal saves data or optimizes itself in some way. If not necessary, (void *) can be passed instead.</p>
+<p>The write and read checkpoint functions <em>should be compatible</em>. That is, the file naming should be consistent between the two, in such a way the files being written out can be read in without external information. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16jointKDEProposal14loadCheckpointENSt6stringENSt6stringE">
+<span id="_CPPv3N9bayesship16jointKDEProposal14loadCheckpointENSt6stringENSt6stringE"></span><span id="_CPPv2N9bayesship16jointKDEProposal14loadCheckpointENSt6stringENSt6stringE"></span><span id="bayesship::jointKDEProposal::loadCheckpoint__ss.ss"></span><span class="target" id="classbayesship_1_1jointKDEProposal_1a6f66fada83e3f8d67b8b7d2de74580f4"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">loadCheckpoint</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">inputDirectory</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">runMoniker</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9bayesship16jointKDEProposal14loadCheckpointENSt6stringENSt6stringE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>proposalFn read checkpoint function typedef </p>
+<p>Specifies the form of proposal function read checkpoint functions.</p>
+<p>These functions are called when reading in checkpoint files. It’s up to the user whether and how these files should be written.</p>
+<p>These functions are only necessary if the proposal saves data or optimizes itself in some way. If not necessary, (void *) can be passed instead.</p>
+<p>The write and read checkpoint functions <em>should be compatible</em>. That is, the file naming should be consistent between the two, in such a way the files being written out can be read in without external information. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16jointKDEProposal17additionalThreadsE">
+<span id="_CPPv3N9bayesship16jointKDEProposal17additionalThreadsE"></span><span id="_CPPv2N9bayesship16jointKDEProposal17additionalThreadsE"></span><span id="bayesship::jointKDEProposal::additionalThreads__i"></span><span class="target" id="classbayesship_1_1jointKDEProposal_1ac60fbfa0e70cf0456f6281e91e888d60"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">additionalThreads</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1</span></span><a class="headerlink" href="#_CPPv4N9bayesship16jointKDEProposal17additionalThreadsE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship16jointKDEProposal12ensembleSizeE">
+<span id="_CPPv3N9bayesship16jointKDEProposal12ensembleSizeE"></span><span id="_CPPv2N9bayesship16jointKDEProposal12ensembleSizeE"></span><span id="bayesship::jointKDEProposal::ensembleSize__i"></span><span class="target" id="classbayesship_1_1jointKDEProposal_1a3adb5a2ff6819cd7801e7c8dc32abe65"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ensembleSize</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship16jointKDEProposal12ensembleSizeE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N9bayesship11KDEProposalE">
 <span id="_CPPv3N9bayesship11KDEProposalE"></span><span id="_CPPv2N9bayesship11KDEProposalE"></span><span id="bayesship::KDEProposal"></span><span class="target" id="classbayesship_1_1KDEProposal"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">KDEProposal</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="ThreadPool.html#_CPPv49bayesship" title="bayesship"><span class="n"><span class="pre">bayesship</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="bayesshipSampler.html#_CPPv4N9bayesship8proposalE" title="bayesship::proposal"><span class="n"><span class="pre">proposal</span></span></a><a class="headerlink" href="#_CPPv4N9bayesship11KDEProposalE" title="Permalink to this definition"></a><br /></dt>
 <dd><div class="docutils container">
@@ -712,17 +907,17 @@
 <dd><p>Proposal for RJMCMC that randomly adds or subtracts dimensions between minDim and maxDim. </p>
 <p>Probability to add a dimension: alpha</p>
 <p>Probability to remove a dimension: 1 - alpha</p>
-<p>If you have a maximum dimension of 10 and minimum dimension of 5, an example of a series of proposals would be: <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">Start</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="n">dimensions</span><span class="p">;</span><span class="w"></span>
+<p>If you have a maximum dimension of 10 and minimum dimension of 5, an example of a series of proposals would be: <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">Start</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="n">dimensions</span><span class="p">;</span>
 
-<span class="n">Propose</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">random</span><span class="w"> </span><span class="mi">6</span><span class="n">th</span><span class="w"> </span><span class="p">(</span><span class="n">accept</span><span class="p">);</span><span class="w"></span>
+<span class="n">Propose</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">random</span><span class="w"> </span><span class="mi">6</span><span class="n">th</span><span class="w"> </span><span class="p">(</span><span class="n">accept</span><span class="p">);</span>
 
-<span class="n">Propose</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">random</span><span class="w"> </span><span class="mi">7</span><span class="n">th</span><span class="w"> </span><span class="p">(</span><span class="n">reject</span><span class="p">);</span><span class="w"></span>
+<span class="n">Propose</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">random</span><span class="w"> </span><span class="mi">7</span><span class="n">th</span><span class="w"> </span><span class="p">(</span><span class="n">reject</span><span class="p">);</span>
 
-<span class="n">propose</span><span class="w"> </span><span class="n">removing</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">random</span><span class="w"> </span><span class="n">dimension</span><span class="w"> </span><span class="p">(</span><span class="n">move</span><span class="w"> </span><span class="n">back</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">reject</span><span class="p">);</span><span class="w"></span>
+<span class="n">propose</span><span class="w"> </span><span class="n">removing</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">random</span><span class="w"> </span><span class="n">dimension</span><span class="w"> </span><span class="p">(</span><span class="n">move</span><span class="w"> </span><span class="n">back</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">reject</span><span class="p">);</span>
 
-<span class="n">Propose</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">random</span><span class="w"> </span><span class="mi">7</span><span class="n">th</span><span class="w"> </span><span class="p">(</span><span class="n">accept</span><span class="p">);</span><span class="w"></span>
+<span class="n">Propose</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">random</span><span class="w"> </span><span class="mi">7</span><span class="n">th</span><span class="w"> </span><span class="p">(</span><span class="n">accept</span><span class="p">);</span>
 
-<span class="n">etc</span><span class="w"></span>
+<span class="n">etc</span>
 </pre></div>
 </div>
  If priorRanges is provided, it proposes a uniform number in that range. Otherwise, uses a uniform number between (0,1) </p>
@@ -767,17 +962,17 @@
 <dd><p>Proposal for RJMCMC that sequentially adds or subtracts dimensions between minDim and maxDim. </p>
 <p>Probability to add a dimension: alpha</p>
 <p>Probability to remove a dimension: 1 - alpha</p>
-<p>If you have a maximum dimension of 10 and minimum dimension of 5, an example of a series of proposals would be: <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">Start</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="n">dimensions</span><span class="p">;</span><span class="w"></span>
+<p>If you have a maximum dimension of 10 and minimum dimension of 5, an example of a series of proposals would be: <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">Start</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="n">dimensions</span><span class="p">;</span>
 
-<span class="n">Propose</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="mi">6</span><span class="n">th</span><span class="w"> </span><span class="p">(</span><span class="n">accept</span><span class="p">);</span><span class="w"></span>
+<span class="n">Propose</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="mi">6</span><span class="n">th</span><span class="w"> </span><span class="p">(</span><span class="n">accept</span><span class="p">);</span>
 
-<span class="n">Propose</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="mi">7</span><span class="n">th</span><span class="w"> </span><span class="p">(</span><span class="n">reject</span><span class="p">);</span><span class="w"></span>
+<span class="n">Propose</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="mi">7</span><span class="n">th</span><span class="w"> </span><span class="p">(</span><span class="n">reject</span><span class="p">);</span>
 
-<span class="n">propose</span><span class="w"> </span><span class="n">removing</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">dimension</span><span class="w"> </span><span class="p">(</span><span class="n">move</span><span class="w"> </span><span class="n">back</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">reject</span><span class="p">);</span><span class="w"></span>
+<span class="n">propose</span><span class="w"> </span><span class="n">removing</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">dimension</span><span class="w"> </span><span class="p">(</span><span class="n">move</span><span class="w"> </span><span class="n">back</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">reject</span><span class="p">);</span>
 
-<span class="n">Propose</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="mi">7</span><span class="n">th</span><span class="w"> </span><span class="p">(</span><span class="n">accept</span><span class="p">);</span><span class="w"></span>
+<span class="n">Propose</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="mi">7</span><span class="n">th</span><span class="w"> </span><span class="p">(</span><span class="n">accept</span><span class="p">);</span>
 
-<span class="n">etc</span><span class="w"></span>
+<span class="n">etc</span>
 </pre></div>
 </div>
  If priorRanges is provided, it proposes a uniform number in that range. Otherwise, uses a uniform number between (0,1) </p>

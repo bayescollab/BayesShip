@@ -29,9 +29,11 @@ digraph "/Users/runner/work/BayesShip/BayesShip/include/bayesship/utilities.h"
   Node1 -> Node11 [dir="back",color="steelblue1",style="solid"];
   Node11 [label="/Users/runner/work\l/BayesShip/BayesShip\l/src/gaussianProposal.cpp",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$gaussianProposal_8cpp.html",tooltip=" "];
   Node1 -> Node12 [dir="back",color="steelblue1",style="solid"];
-  Node12 [label="/Users/runner/work\l/BayesShip/BayesShip\l/src/randomLayerProposalRJ.cpp",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$randomLayerProposalRJ_8cpp.html",tooltip=" "];
+  Node12 [label="/Users/runner/work\l/BayesShip/BayesShip\l/src/jointKDEProposal.cpp",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$jointKDEProposal_8cpp.html",tooltip=" "];
   Node1 -> Node13 [dir="back",color="steelblue1",style="solid"];
-  Node13 [label="/Users/runner/work\l/BayesShip/BayesShip\l/src/sequentialLayerProposal\lRJ.cpp",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$sequentialLayerProposalRJ_8cpp.html",tooltip=" "];
+  Node13 [label="/Users/runner/work\l/BayesShip/BayesShip\l/src/randomLayerProposalRJ.cpp",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$randomLayerProposalRJ_8cpp.html",tooltip=" "];
   Node1 -> Node14 [dir="back",color="steelblue1",style="solid"];
-  Node14 [label="/Users/runner/work\l/BayesShip/BayesShip\l/src/utilities.cpp",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$utilities_8cpp.html",tooltip=" "];
+  Node14 [label="/Users/runner/work\l/BayesShip/BayesShip\l/src/sequentialLayerProposal\lRJ.cpp",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$sequentialLayerProposalRJ_8cpp.html",tooltip=" "];
+  Node1 -> Node15 [dir="back",color="steelblue1",style="solid"];
+  Node15 [label="/Users/runner/work\l/BayesShip/BayesShip\l/src/utilities.cpp",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$utilities_8cpp.html",tooltip=" "];
 }

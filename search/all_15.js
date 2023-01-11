@@ -1,18 +1,10 @@
 var searchData=
 [
-  ['_7eblockdifferentialevolutionproposal_0',['~blockDifferentialEvolutionProposal',['../classbayesship_1_1blockDifferentialEvolutionProposal.html#acb6d18a443e7d57a0c16f93c9d7194c9',1,'bayesship::blockDifferentialEvolutionProposal']]],
-  ['_7eblockfisherproposal_1',['~blockFisherProposal',['../namespacebayesship.html#a0d7baecc727c6695fb25c2b096896a98',1,'bayesship']]],
-  ['_7edifferentialevolutionproposal_2',['~differentialEvolutionProposal',['../classbayesship_1_1differentialEvolutionProposal.html#a3aa8247996e7b09dd8ccd7e9dcd4e761',1,'bayesship::differentialEvolutionProposal']]],
-  ['_7efisherproposal_3',['~fisherProposal',['../classbayesship_1_1fisherProposal.html#a91ead96ed3d5f93e884701804e7d6544',1,'bayesship::fisherProposal']]],
-  ['_7egaussianproposal_4',['~gaussianProposal',['../classbayesship_1_1gaussianProposal.html#a63ea6805641e83b4d82ea736151cc2df',1,'bayesship::gaussianProposal']]],
-  ['_7ekdeproposal_5',['~KDEProposal',['../classbayesship_1_1KDEProposal.html#ae7acf692f737572c1473df8b9f5c2310',1,'bayesship::KDEProposal']]],
-  ['_7epositioninfo_6',['~positionInfo',['../classbayesship_1_1positionInfo.html#a629b10964b0627a2ea301b4af7133584',1,'bayesship::positionInfo']]],
-  ['_7eprobabilityfn_7',['~probabilityFn',['../classbayesship_1_1probabilityFn.html#acb585a700b86d1fb1183676bd134b346',1,'bayesship::probabilityFn']]],
-  ['_7eproposal_8',['~proposal',['../classbayesship_1_1proposal.html#a37581683507ed7af32c1701876d9dbf4',1,'bayesship::proposal']]],
-  ['_7eproposaldata_9',['~proposalData',['../classbayesship_1_1proposalData.html#a66c810dd4c549347cfe2ed41cd3866c0',1,'bayesship::proposalData']]],
-  ['_7erandomlayerrjproposal_10',['~randomLayerRJProposal',['../classbayesship_1_1randomLayerRJProposal.html#aa773e489aded08fad0409e5735a66999',1,'bayesship::randomLayerRJProposal']]],
-  ['_7esamplerdata_11',['~samplerData',['../classbayesship_1_1samplerData.html#a9366a0f2ab9e9ce622f322bd1aa95a40',1,'bayesship::samplerData']]],
-  ['_7esequentiallayerrjproposal_12',['~sequentialLayerRJProposal',['../classbayesship_1_1sequentialLayerRJProposal.html#adcdfc1eea88114669ba2b2bf36ce4830',1,'bayesship::sequentialLayerRJProposal']]],
-  ['_7ethreadpool_13',['~ThreadPool',['../classbayesship_1_1ThreadPool.html#a53d6519fb749159649355a35919732d9',1,'bayesship::ThreadPool']]],
-  ['_7ethreadpoolpair_14',['~ThreadPoolPair',['../classbayesship_1_1ThreadPoolPair.html#adc8fdf2378dade1644510057aad168e9',1,'bayesship::ThreadPoolPair']]]
+  ['waitingmutexes_0',['waitingMutexes',['../classbayesship_1_1bayesshipSampler.html#a72e90ee00b574f46577e37e1e504d4d3',1,'bayesship::bayesshipSampler']]],
+  ['waitingsample_1',['waitingSample',['../classbayesship_1_1bayesshipSampler.html#a4976c3f8a901a24b249394598d769ffd',1,'bayesship::bayesshipSampler']]],
+  ['work_5ffn_5finternal_2',['work_fn_internal',['../classbayesship_1_1ThreadPool.html#a40c62700c4f02884410be4106befb55e',1,'bayesship::ThreadPool::work_fn_internal()'],['../classbayesship_1_1ThreadPoolPair.html#ae0feabac0fd456d68b60977b2e2fc9b9',1,'bayesship::ThreadPoolPair::work_fn_internal()']]],
+  ['writecheckpoint_3',['writeCheckpoint',['../classbayesship_1_1proposal.html#a5a3ece1ef77d7ee8b6f85229ef947749',1,'bayesship::proposal::writeCheckpoint()'],['../classbayesship_1_1bayesshipSampler.html#ab91705e3178277f41f17537ea109f893',1,'bayesship::bayesshipSampler::writeCheckpoint()'],['../classbayesship_1_1gaussianProposal.html#a94df06c4301e6016368971633b70aa9f',1,'bayesship::gaussianProposal::writeCheckpoint()'],['../classbayesship_1_1jointKDEProposal.html#a40ce75429134bcd8da3d935d8830ed85',1,'bayesship::jointKDEProposal::writeCheckpoint()']]],
+  ['writecsvfile_4',['writeCSVFile',['../namespacebayesship.html#a111e18569f96d1417806e926e84cb6e9',1,'bayesship::writeCSVFile(std::string filename, double **input, int rows, int cols)'],['../namespacebayesship.html#a7c748d21a181f934daf8b7d2735e35fd',1,'bayesship::writeCSVFile(std::string filename, int **input, int rows, int cols)'],['../namespacebayesship.html#a4373d9105efa1a37a96906d06a500ff7',1,'bayesship::writeCSVFile(std::string filename, double *input, int length)'],['../namespacebayesship.html#a7e759c3409a9441bb9397213a0b019bb',1,'bayesship::writeCSVFile(std::string filename, int *input, int length)']]],
+  ['writepriordata_5',['writePriorData',['../classbayesship_1_1bayesshipSampler.html#a24e920fa394122c66069e2598da50c75',1,'bayesship::bayesshipSampler']]],
+  ['writestatfile_6',['writeStatFile',['../classbayesship_1_1proposal.html#a4bf2942d537315ec9473ce618ffbee36',1,'bayesship::proposal::writeStatFile()'],['../classbayesship_1_1samplerData.html#a39646899d1b23a08c4c7da336363fc0b',1,'bayesship::samplerData::writeStatFile()']]]
 ];

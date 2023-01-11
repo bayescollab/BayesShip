@@ -1,7 +1,8 @@
 var searchData=
 [
-  ['kdedraw_0',['KDEDraw',['../namespacebayesship.html#a2cf74b2acce202853c0218072531e1c6',1,'bayesship::KDEDraw(positionInfo *sampleLocation, double **cov, positionInfo *output)'],['../namespacebayesship.html#a8ef1f0024d77df6e7eec62370bcb34b5',1,'bayesship::KDEDraw(positionInfo *sampleLocation, double **cov, positionInfo *output, gsl_rng *r, double *var)']]],
-  ['kdeproposal_1',['KDEProposal',['../classbayesship_1_1KDEProposal.html',1,'bayesship::KDEProposal'],['../classbayesship_1_1KDEProposal.html#ab8abd674092a4f6910520ae425040646',1,'bayesship::KDEProposal::KDEProposal()']]],
-  ['kdeproposal_2ecpp_2',['KDEProposal.cpp',['../KDEProposal_8cpp.html',1,'']]],
-  ['kdetrainingbatchsize_3',['KDETrainingBatchSize',['../classbayesship_1_1KDEProposal.html#a6ccbd2f712ea50e530456df3cecd3e6a',1,'bayesship::KDEProposal']]]
+  ['job1_0',['job1',['../structbayesship_1_1ThreadPoolPair_1_1jobPair.html#af958c74ddc23f6048137f0fa27127a73',1,'bayesship::ThreadPoolPair::jobPair']]],
+  ['job2_1',['job2',['../structbayesship_1_1ThreadPoolPair_1_1jobPair.html#a64755039bd50c62cee2b4068f3e98d16',1,'bayesship::ThreadPoolPair::jobPair']]],
+  ['jobpair_2',['jobPair',['../structbayesship_1_1ThreadPoolPair_1_1jobPair.html',1,'bayesship::ThreadPoolPair']]],
+  ['jointkdeproposal_3',['jointKDEProposal',['../classbayesship_1_1jointKDEProposal.html',1,'bayesship::jointKDEProposal'],['../classbayesship_1_1jointKDEProposal.html#ab45215a4a44d230185b84a56114cce7f',1,'bayesship::jointKDEProposal::jointKDEProposal()']]],
+  ['jointkdeproposal_2ecpp_4',['jointKDEProposal.cpp',['../jointKDEProposal_8cpp.html',1,'']]]
 ];

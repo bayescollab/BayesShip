@@ -1,6 +1,19 @@
 var searchData=
 [
-  ['job1_0',['job1',['../structbayesship_1_1ThreadPoolPair_1_1jobPair.html#af958c74ddc23f6048137f0fa27127a73',1,'bayesship::ThreadPoolPair::jobPair']]],
-  ['job2_1',['job2',['../structbayesship_1_1ThreadPoolPair_1_1jobPair.html#a64755039bd50c62cee2b4068f3e98d16',1,'bayesship::ThreadPoolPair::jobPair']]],
-  ['jobpair_2',['jobPair',['../structbayesship_1_1ThreadPoolPair_1_1jobPair.html',1,'bayesship::ThreadPoolPair']]]
+  ['ignoreexistingcheckpoint_0',['ignoreExistingCheckpoint',['../classbayesship_1_1bayesshipSampler.html#a762d13f5a76fc2c07ddea5a3be606b32',1,'bayesship::bayesshipSampler']]],
+  ['in_1',['in',['../structbayesship_1_1fftw__outline.html#a5ab5b2d836502b180c7aa6cf439c13ba',1,'bayesship::fftw_outline']]],
+  ['independentsamples_2',['independentSamples',['../classbayesship_1_1bayesshipSampler.html#a62722085bdc5defb8a99f546f36e7a7b',1,'bayesship::bayesshipSampler']]],
+  ['initialposition_3',['initialPosition',['../classbayesship_1_1bayesshipSampler.html#a26b761770fc449f58fe0b13f2e772d83',1,'bayesship::bayesshipSampler']]],
+  ['initialpositionensemble_4',['initialPositionEnsemble',['../classbayesship_1_1bayesshipSampler.html#ad4daf3db704b6ccaa4f8b8a15997ae8e',1,'bayesship::bayesshipSampler']]],
+  ['integration_5fhelper_5',['integration_helper',['../namespacebayesship.html#aa5aac21c2e5e06abd08c1b2a06e1808d',1,'bayesship']]],
+  ['internalbetascheduleflag_6',['internalBetaScheduleFlag',['../classbayesship_1_1bayesshipSampler.html#a5f866f95baa437040c399f550961f57e',1,'bayesship::bayesshipSampler']]],
+  ['internalinitialpositionensemble_7',['internalInitialPositionEnsemble',['../classbayesship_1_1bayesshipSampler.html#a1223dd8de95ec69390fb72a76c90659c',1,'bayesship::bayesshipSampler']]],
+  ['internalmemoryset_8',['internalMemorySet',['../classbayesship_1_1proposalData.html#ad160918927b295fc1accad6252eb8180',1,'bayesship::proposalData']]],
+  ['internalpriorranges_9',['internalPriorRanges',['../classbayesship_1_1bayesshipSampler.html#ab64cd510e27ae0a05688177cfd17b0b2',1,'bayesship::bayesshipSampler']]],
+  ['internalproposalfnsflag_10',['internalProposalFnsFlag',['../classbayesship_1_1bayesshipSampler.html#a1f8e1a9a93e5ccce080128becc292dc0',1,'bayesship::bayesshipSampler']]],
+  ['internaluserparameters_11',['internalUserParameters',['../classbayesship_1_1bayesshipSampler.html#ae55fe354215955b358a569c4cfb84c94',1,'bayesship::bayesshipSampler']]],
+  ['isolateensembles_12',['isolateEnsembles',['../classbayesship_1_1bayesshipSampler.html#a983fc9e430b90bdd158892e90ae9ad39',1,'bayesship::bayesshipSampler']]],
+  ['isolateensemblesburn_13',['isolateEnsemblesBurn',['../classbayesship_1_1bayesshipSampler.html#a5fab79f1fc6e834fd1adf15b07fd9d88',1,'bayesship::bayesshipSampler']]],
+  ['isolateensemblesinternal_14',['isolateEnsemblesInternal',['../classbayesship_1_1bayesshipSampler.html#a44d9454d4792662470457b9c467bdf3b',1,'bayesship::bayesshipSampler']]],
+  ['iterations_15',['iterations',['../classbayesship_1_1bayesshipSampler.html#ab4b354f25e7f7ec0694505b29f64852c',1,'bayesship::bayesshipSampler::iterations()'],['../classbayesship_1_1samplerData.html#a7334a1a73253d568b656866c447fd3ff',1,'bayesship::samplerData::iterations()']]]
 ];

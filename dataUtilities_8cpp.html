@@ -74,6 +74,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">dataUtilities.cpp File Reference</div></div>
@@ -86,12 +87,19 @@ $(function() {
 <code>#include &lt;fstream&gt;</code><br />
 <code>#include &lt;sstream&gt;</code><br />
 <code>#include &lt;iostream&gt;</code><br />
+<code>#include &lt;gsl/gsl_spline.h&gt;</code><br />
+<code>#include &lt;gsl/gsl_integration.h&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for dataUtilities.cpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="dataUtilities_8cpp__incl.png" border="0" usemap="#a_2Users_2runner_2work_2BayesShip_2BayesShip_2src_2dataUtilities_8cpp" alt=""/></div>
 </div>
 </div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structbayesship_1_1helper__params.html">bayesship::helper_params</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:namespacebayesship"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacebayesship.html">bayesship</a></td></tr>
@@ -123,6 +131,8 @@ Functions</h2></td></tr>
 <tr class="memitem:a7e759c3409a9441bb9397213a0b019bb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacebayesship.html#a7e759c3409a9441bb9397213a0b019bb">bayesship::writeCSVFile</a> (std::string filename, int *input, int length)</td></tr>
 <tr class="memdesc:a7e759c3409a9441bb9397213a0b019bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Utility to write 1D array to file.  <a href="namespacebayesship.html#a7e759c3409a9441bb9397213a0b019bb">More...</a><br /></td></tr>
 <tr class="separator:a7e759c3409a9441bb9397213a0b019bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa5aac21c2e5e06abd08c1b2a06e1808d"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacebayesship.html#aa5aac21c2e5e06abd08c1b2a06e1808d">bayesship::integration_helper</a> (double beta, void *params)</td></tr>
+<tr class="separator:aa5aac21c2e5e06abd08c1b2a06e1808d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >File containing source code for the utilities related to information storage, io, writing data to disk, etc. </p>

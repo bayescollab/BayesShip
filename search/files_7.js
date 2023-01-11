@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['randomlayerproposalrj_2ecpp_0',['randomLayerProposalRJ.cpp',['../randomLayerProposalRJ_8cpp.html',1,'']]]
+  ['proposalfunctions_2eh_0',['proposalFunctions.h',['../proposalFunctions_8h.html',1,'']]]
 ];

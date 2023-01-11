@@ -7,17 +7,21 @@ digraph "bayesship::proposal"
   rankdir="LR";
   Node1 [label="bayesship::proposal",height=0.2,width=0.4,color="gray40", fillcolor="grey60", style="filled", fontcolor="black",tooltip=" "];
   Node1 -> Node2 [dir="back",color="steelblue1",style="solid"];
-  Node2 [label="bayesship::KDEProposal",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$classbayesship_1_1KDEProposal.html",tooltip=" "];
+  Node2 [label="bayesship::GMMProposal",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$classbayesship_1_1GMMProposal.html",tooltip=" "];
   Node1 -> Node3 [dir="back",color="steelblue1",style="solid"];
-  Node3 [label="bayesship::blockDifferential\lEvolutionProposal",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$classbayesship_1_1blockDifferentialEvolutionProposal.html",tooltip=" "];
+  Node3 [label="bayesship::KDEProposal",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$classbayesship_1_1KDEProposal.html",tooltip=" "];
   Node1 -> Node4 [dir="back",color="steelblue1",style="solid"];
-  Node4 [label="bayesship::differentialEvolution\lProposal",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$classbayesship_1_1differentialEvolutionProposal.html",tooltip=" "];
+  Node4 [label="bayesship::blockDifferential\lEvolutionProposal",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$classbayesship_1_1blockDifferentialEvolutionProposal.html",tooltip=" "];
   Node1 -> Node5 [dir="back",color="steelblue1",style="solid"];
-  Node5 [label="bayesship::fisherProposal",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$classbayesship_1_1fisherProposal.html",tooltip=" "];
+  Node5 [label="bayesship::differentialEvolution\lProposal",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$classbayesship_1_1differentialEvolutionProposal.html",tooltip=" "];
   Node1 -> Node6 [dir="back",color="steelblue1",style="solid"];
-  Node6 [label="bayesship::gaussianProposal",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$classbayesship_1_1gaussianProposal.html",tooltip=" "];
+  Node6 [label="bayesship::fisherProposal",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$classbayesship_1_1fisherProposal.html",tooltip=" "];
   Node1 -> Node7 [dir="back",color="steelblue1",style="solid"];
-  Node7 [label="bayesship::randomLayerRJProposal",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$classbayesship_1_1randomLayerRJProposal.html",tooltip=" "];
+  Node7 [label="bayesship::gaussianProposal",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$classbayesship_1_1gaussianProposal.html",tooltip=" "];
   Node1 -> Node8 [dir="back",color="steelblue1",style="solid"];
-  Node8 [label="bayesship::sequentialLayer\lRJProposal",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$classbayesship_1_1sequentialLayerRJProposal.html",tooltip=" "];
+  Node8 [label="bayesship::jointKDEProposal",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$classbayesship_1_1jointKDEProposal.html",tooltip=" "];
+  Node1 -> Node9 [dir="back",color="steelblue1",style="solid"];
+  Node9 [label="bayesship::randomLayerRJProposal",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$classbayesship_1_1randomLayerRJProposal.html",tooltip=" "];
+  Node1 -> Node10 [dir="back",color="steelblue1",style="solid"];
+  Node10 [label="bayesship::sequentialLayer\lRJProposal",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$classbayesship_1_1sequentialLayerRJProposal.html",tooltip=" "];
 }

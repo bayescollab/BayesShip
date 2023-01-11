@@ -5,7 +5,5 @@ digraph "Graphical Class Hierarchy"
   edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
   node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
   rankdir="LR";
-  Node0 [label="bayesship::probabilityFn",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$classbayesship_1_1probabilityFn.html",tooltip=" "];
-  Node0 -> Node1 [dir="back",color="steelblue1",style="solid"];
-  Node1 [label="bayesship::uniformPrior",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$classbayesship_1_1uniformPrior.html",tooltip=" "];
+  Node0 [label="bayesship::positionInfo",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$classbayesship_1_1positionInfo.html",tooltip="Class to hold information about a position in parameter/model space."];
 }

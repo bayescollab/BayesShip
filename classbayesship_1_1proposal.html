@@ -75,6 +75,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="classbayesship_1_1proposal-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">bayesship::proposal Class Reference</div></div>
 </div><!--header-->
@@ -104,6 +105,11 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a4bf2942d537315ec9473ce618ffbee36"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classbayesship_1_1proposal.html#a4bf2942d537315ec9473ce618ffbee36">writeStatFile</a> (std::string inputDirectory, std::string runMoniker)</td></tr>
 <tr class="memdesc:a4bf2942d537315ec9473ce618ffbee36"><td class="mdescLeft">&#160;</td><td class="mdescRight">proposalFn write stat file  <a href="classbayesship_1_1proposal.html#a4bf2942d537315ec9473ce618ffbee36">More...</a><br /></td></tr>
 <tr class="separator:a4bf2942d537315ec9473ce618ffbee36"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:a4b7284d95d8d4febe1939a5e040ebecf"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classbayesship_1_1proposal.html#a4b7284d95d8d4febe1939a5e040ebecf">additionalThreads</a> = 0</td></tr>
+<tr class="separator:a4b7284d95d8d4febe1939a5e040ebecf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ad480691a367f7d5e590f11c7098956a9" name="ad480691a367f7d5e590f11c7098956a9"></a>
@@ -197,7 +203,7 @@ Public Member Functions</h2></td></tr>
 <p >These functions are only necessary if the proposal saves data or optimizes itself in some way. If not necessary, (void *) can be passed instead.</p>
 <p >The write and read checkpoint functions <em>should be compatible</em>. That is, the file naming should be consistent between the two, in such a way the files being written out can be read in without external information. </p>
 
-<p>Reimplemented in <a class="el" href="classbayesship_1_1gaussianProposal.html#a37a3b6f8e9fadbe30b0b5a83ceba6d89">bayesship::gaussianProposal</a>.</p>
+<p>Reimplemented in <a class="el" href="classbayesship_1_1gaussianProposal.html#a37a3b6f8e9fadbe30b0b5a83ceba6d89">bayesship::gaussianProposal</a>, and <a class="el" href="classbayesship_1_1jointKDEProposal.html#a6f66fada83e3f8d67b8b7d2de74580f4">bayesship::jointKDEProposal</a>.</p>
 
 </div>
 </div>
@@ -253,7 +259,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Reimplemented in <a class="el" href="classbayesship_1_1fisherProposal.html#aff6e218277d37423fec987393656658e">bayesship::fisherProposal</a>, <a class="el" href="classbayesship_1_1gaussianProposal.html#a044aab271918b0aa2db7324be1901e38">bayesship::gaussianProposal</a>, <a class="el" href="classbayesship_1_1KDEProposal.html#aea02354c2a1e3d67671150ba849c4941">bayesship::KDEProposal</a>, <a class="el" href="classbayesship_1_1differentialEvolutionProposal.html#aa87134eab54e648c03a188ee650be46c">bayesship::differentialEvolutionProposal</a>, <a class="el" href="classbayesship_1_1blockDifferentialEvolutionProposal.html#a9a9000f59855288269300ff6c1333782">bayesship::blockDifferentialEvolutionProposal</a>, <a class="el" href="classbayesship_1_1sequentialLayerRJProposal.html#a14da30a81165dc5cd30d0197d34d4df7">bayesship::sequentialLayerRJProposal</a>, and <a class="el" href="classbayesship_1_1randomLayerRJProposal.html#a4f7473e0cbed94fffea53566ff31699b">bayesship::randomLayerRJProposal</a>.</p>
+<p>Reimplemented in <a class="el" href="classbayesship_1_1fisherProposal.html#aff6e218277d37423fec987393656658e">bayesship::fisherProposal</a>, <a class="el" href="classbayesship_1_1gaussianProposal.html#a044aab271918b0aa2db7324be1901e38">bayesship::gaussianProposal</a>, <a class="el" href="classbayesship_1_1KDEProposal.html#aea02354c2a1e3d67671150ba849c4941">bayesship::KDEProposal</a>, <a class="el" href="classbayesship_1_1differentialEvolutionProposal.html#aa87134eab54e648c03a188ee650be46c">bayesship::differentialEvolutionProposal</a>, <a class="el" href="classbayesship_1_1blockDifferentialEvolutionProposal.html#a9a9000f59855288269300ff6c1333782">bayesship::blockDifferentialEvolutionProposal</a>, <a class="el" href="classbayesship_1_1sequentialLayerRJProposal.html#a14da30a81165dc5cd30d0197d34d4df7">bayesship::sequentialLayerRJProposal</a>, <a class="el" href="classbayesship_1_1randomLayerRJProposal.html#a4f7473e0cbed94fffea53566ff31699b">bayesship::randomLayerRJProposal</a>, <a class="el" href="classbayesship_1_1jointKDEProposal.html#a4d510282f308a68816b9a2180945a812">bayesship::jointKDEProposal</a>, and <a class="el" href="classbayesship_1_1GMMProposal.html#a1031031fad8156048b65c3fcafbab237">bayesship::GMMProposal</a>.</p>
 
 </div>
 </div>
@@ -297,7 +303,7 @@ Public Member Functions</h2></td></tr>
 <p >These functions are only necessary if the proposal saves data or optimizes itself in some way. If not necessary, (void *) can be passed instead.</p>
 <p >The write and read checkpoint functions <em>should be compatible</em>. That is, the file naming should be consistent between the two, in such a way the files being written out can be read in without external information. </p>
 
-<p>Reimplemented in <a class="el" href="classbayesship_1_1gaussianProposal.html#a94df06c4301e6016368971633b70aa9f">bayesship::gaussianProposal</a>.</p>
+<p>Reimplemented in <a class="el" href="classbayesship_1_1gaussianProposal.html#a94df06c4301e6016368971633b70aa9f">bayesship::gaussianProposal</a>, and <a class="el" href="classbayesship_1_1jointKDEProposal.html#a40ce75429134bcd8da3d935d8830ed85">bayesship::jointKDEProposal</a>.</p>
 
 </div>
 </div>
@@ -337,6 +343,21 @@ Public Member Functions</h2></td></tr>
 
 <p>proposalFn write stat file </p>
 <p >Writes out statistics about the proposal functions, if needed. This goes beyond what's already reported in the general stat file </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="a4b7284d95d8d4febe1939a5e040ebecf" name="a4b7284d95d8d4febe1939a5e040ebecf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4b7284d95d8d4febe1939a5e040ebecf">&#9670;&#160;</a></span>additionalThreads</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int bayesship::proposal::additionalThreads = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>

@@ -1,10 +1,7 @@
 var searchData=
 [
-  ['waitingmutexes_0',['waitingMutexes',['../classbayesship_1_1bayesshipSampler.html#a72e90ee00b574f46577e37e1e504d4d3',1,'bayesship::bayesshipSampler']]],
-  ['waitingsample_1',['waitingSample',['../classbayesship_1_1bayesshipSampler.html#a4976c3f8a901a24b249394598d769ffd',1,'bayesship::bayesshipSampler']]],
-  ['work_5ffn_5finternal_2',['work_fn_internal',['../classbayesship_1_1ThreadPool.html#a40c62700c4f02884410be4106befb55e',1,'bayesship::ThreadPool::work_fn_internal()'],['../classbayesship_1_1ThreadPoolPair.html#ae0feabac0fd456d68b60977b2e2fc9b9',1,'bayesship::ThreadPoolPair::work_fn_internal()']]],
-  ['writecheckpoint_3',['writeCheckpoint',['../classbayesship_1_1proposal.html#a5a3ece1ef77d7ee8b6f85229ef947749',1,'bayesship::proposal::writeCheckpoint()'],['../classbayesship_1_1bayesshipSampler.html#ab91705e3178277f41f17537ea109f893',1,'bayesship::bayesshipSampler::writeCheckpoint()'],['../classbayesship_1_1gaussianProposal.html#a94df06c4301e6016368971633b70aa9f',1,'bayesship::gaussianProposal::writeCheckpoint()']]],
-  ['writecsvfile_4',['writeCSVFile',['../namespacebayesship.html#a111e18569f96d1417806e926e84cb6e9',1,'bayesship::writeCSVFile(std::string filename, double **input, int rows, int cols)'],['../namespacebayesship.html#a7c748d21a181f934daf8b7d2735e35fd',1,'bayesship::writeCSVFile(std::string filename, int **input, int rows, int cols)'],['../namespacebayesship.html#a4373d9105efa1a37a96906d06a500ff7',1,'bayesship::writeCSVFile(std::string filename, double *input, int length)'],['../namespacebayesship.html#a7e759c3409a9441bb9397213a0b019bb',1,'bayesship::writeCSVFile(std::string filename, int *input, int length)']]],
-  ['writepriordata_5',['writePriorData',['../classbayesship_1_1bayesshipSampler.html#a24e920fa394122c66069e2598da50c75',1,'bayesship::bayesshipSampler']]],
-  ['writestatfile_6',['writeStatFile',['../classbayesship_1_1proposal.html#a4bf2942d537315ec9473ce618ffbee36',1,'bayesship::proposal::writeStatFile()'],['../classbayesship_1_1samplerData.html#a39646899d1b23a08c4c7da336363fc0b',1,'bayesship::samplerData::writeStatFile()']]]
+  ['var_5ffloor_0',['var_floor',['../classbayesship_1_1GMMProposal.html#af2da69c81ad76ad32c8fd721e6cef471',1,'bayesship::GMMProposal']]],
+  ['variance_5flist_1',['variance_list',['../namespacebayesship.html#a2e42c8d33e5f8bea6ab8d0274b7e3690',1,'bayesship']]],
+  ['variance_5flist_3c_20double_2c_20double_20_3e_2',['variance_list&lt; double, double &gt;',['../namespacebayesship.html#af11cd3b400fa201bbc4cca4c4b078399',1,'bayesship']]],
+  ['variance_5flist_3c_20int_2c_20double_20_3e_3',['variance_list&lt; int, double &gt;',['../namespacebayesship.html#ab971d7a6d81fcf61180f7541b2536b86',1,'bayesship']]]
 ];

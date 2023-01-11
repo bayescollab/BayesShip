@@ -116,6 +116,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:af79c21ce3891b5dc8f1962bc205c2a19"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad96aa907c5043f47899be46c04877176"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classbayesship_1_1samplerData.html#ad96aa907c5043f47899be46c04877176">updateBetas</a> (double *<a class="el" href="classbayesship_1_1samplerData.html#a626b95bb597b54c97052e637cd7ec989">betas</a>)</td></tr>
 <tr class="separator:ad96aa907c5043f47899be46c04877176"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac5d37a80c7bdf81f38ffd05248dfaaea"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classbayesship_1_1samplerData.html#ac5d37a80c7bdf81f38ffd05248dfaaea">calculateEvidence</a> ()</td></tr>
+<tr class="separator:ac5d37a80c7bdf81f38ffd05248dfaaea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -147,6 +149,12 @@ Public Attributes</h2></td></tr>
 <tr class="separator:aabac4d1e0f3fb428cfbb2a8135f16079"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab3bf37cc16a4221668a5a4f43590dc0e"><td class="memItemLeft" align="right" valign="top">int *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classbayesship_1_1samplerData.html#ab3bf37cc16a4221668a5a4f43590dc0e">likelihoodEvals</a> = nullptr</td></tr>
 <tr class="separator:ab3bf37cc16a4221668a5a4f43590dc0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43396d10ed86039ce2bea73ba5f8cf26"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classbayesship_1_1samplerData.html#a43396d10ed86039ce2bea73ba5f8cf26">calculatedEvidence</a> =false</td></tr>
+<tr class="separator:a43396d10ed86039ce2bea73ba5f8cf26"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a875b87c90ea47da041bd08bee233d553"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classbayesship_1_1samplerData.html#a875b87c90ea47da041bd08bee233d553">evidence</a></td></tr>
+<tr class="separator:a875b87c90ea47da041bd08bee233d553"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c2efa9ce0431e5bfcae275221c2584d"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classbayesship_1_1samplerData.html#a0c2efa9ce0431e5bfcae275221c2584d">evidenceError</a></td></tr>
+<tr class="separator:a0c2efa9ce0431e5bfcae275221c2584d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af19707f6da54d1260e62faea38fc967a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classbayesship_1_1positionInfo.html">positionInfo</a> ***&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classbayesship_1_1samplerData.html#af19707f6da54d1260e62faea38fc967a">positions</a> =nullptr</td></tr>
 <tr class="separator:af19707f6da54d1260e62faea38fc967a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af49f2c0fc6da2f86c88d5a5952e9b117"><td class="memItemLeft" align="right" valign="top">int *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classbayesship_1_1samplerData.html#af49f2c0fc6da2f86c88d5a5952e9b117">currentStepID</a> =nullptr</td></tr>
@@ -271,6 +279,23 @@ Private Attributes</h2></td></tr>
           <td>(</td>
           <td class="paramtype">std::string&#160;</td>
           <td class="paramname"><em>filename</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac5d37a80c7bdf81f38ffd05248dfaaea" name="ac5d37a80c7bdf81f38ffd05248dfaaea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac5d37a80c7bdf81f38ffd05248dfaaea">&#9670;&#160;</a></span>calculateEvidence()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void bayesship::samplerData::calculateEvidence </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -491,6 +516,20 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a43396d10ed86039ce2bea73ba5f8cf26" name="a43396d10ed86039ce2bea73ba5f8cf26"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a43396d10ed86039ce2bea73ba5f8cf26">&#9670;&#160;</a></span>calculatedEvidence</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool bayesship::samplerData::calculatedEvidence =false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a36c5b8512d49a69ae212618a38b625d4" name="a36c5b8512d49a69ae212618a38b625d4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a36c5b8512d49a69ae212618a38b625d4">&#9670;&#160;</a></span>chainN</h2>
 
@@ -600,6 +639,34 @@ Private Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">int bayesship::samplerData::ensembleSize</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a875b87c90ea47da041bd08bee233d553" name="a875b87c90ea47da041bd08bee233d553"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a875b87c90ea47da041bd08bee233d553">&#9670;&#160;</a></span>evidence</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double bayesship::samplerData::evidence</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0c2efa9ce0431e5bfcae275221c2584d" name="a0c2efa9ce0431e5bfcae275221c2584d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0c2efa9ce0431e5bfcae275221c2584d">&#9670;&#160;</a></span>evidenceError</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double bayesship::samplerData::evidenceError</td>
         </tr>
       </table>
 </div><div class="memdoc">

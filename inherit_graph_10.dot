@@ -5,5 +5,5 @@ digraph "Graphical Class Hierarchy"
   edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
   node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
   rankdir="LR";
-  Node0 [label="bayesship::sampleJob",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$structbayesship_1_1sampleJob.html",tooltip="Structure to package sample jobs for sampling."];
+  Node0 [label="bayesship::proposalData",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$classbayesship_1_1proposalData.html",tooltip="Likelihood function typedef."];
 }

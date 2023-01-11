@@ -69,9 +69,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="index.html">API</a> &raquo;</li>
-      <li>bayesshipSampler</li>
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">API</a></li>
+      <li class="breadcrumb-item active">bayesshipSampler</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/api/bayesshipSampler.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -111,15 +111,15 @@
 <p>int **swapAccepts=nullptr;</p>
 <p><em></em></p>
 <p><a class="reference internal" href="#classbayesship_1_1bayesshipSampler"><span class="std std-ref">bayesshipSampler</span></a>(int chainN=10, double <em>betas=(double</em>)nullptr, int maxDim=1, int proposalFnN=0,proposalFn *proposalFnArray=nullptr,float *proposalFnProb=nullptr, void **proposalVariables=nullptr); bool checkStatus(); void allocateMemory(); void deallocateMemory(); bayesshipSampler(likelihoodFn likelihood, priorFn prior); bayesshipSampler(probabilityFn *likelihood, probabilityFn *prior); ~bayesshipSampler(); void sample(); void sampleLoop(int iterations,samplerData *data); void stepMH(int chainID,samplerData *data); int getChainN(); double getBeta(int chainID);</p>
-<p>void setInitialPositionIdentical(positionInfo *position); <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">assignInitialPosition</span><span class="p">(</span><span class="n">samplerData</span><span class="w"> </span><span class="o">*</span><span class="n">data</span><span class="p">);</span><span class="w"></span>
+<p>void setInitialPositionIdentical(positionInfo *position); <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">assignInitialPosition</span><span class="p">(</span><span class="n">samplerData</span><span class="w"> </span><span class="o">*</span><span class="n">data</span><span class="p">);</span>
 
-<span class="kt">void</span><span class="w"> </span><span class="nf">chainSwap</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">chainID1</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">chainID2</span><span class="p">,</span><span class="n">samplerData</span><span class="w"> </span><span class="o">*</span><span class="n">data</span><span class="p">);</span><span class="w"></span>
-<span class="kt">void</span><span class="w"> </span><span class="nf">adjustTemperatures</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">t</span><span class="p">);</span><span class="w"></span>
-<span class="kt">int</span><span class="w"> </span><span class="nf">chainIndex</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">ensemble</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">betaN</span><span class="p">);</span><span class="w"></span>
-<span class="kt">int</span><span class="w"> </span><span class="nf">betaN</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">chainID</span><span class="p">);</span><span class="w"></span>
-<span class="kt">int</span><span class="w"> </span><span class="nf">ensembleID</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">chainID</span><span class="p">);</span><span class="w"></span>
-<span class="n">samplerData</span><span class="w"> </span><span class="o">*</span><span class="nf">getActiveData</span><span class="p">();</span><span class="w"></span>
-<span class="kt">void</span><span class="w"> </span><span class="nf">setActiveData</span><span class="p">(</span><span class="w"> </span><span class="n">samplerData</span><span class="w"> </span><span class="o">*</span><span class="n">newData</span><span class="p">);</span><span class="w"></span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">chainSwap</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">chainID1</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">chainID2</span><span class="p">,</span><span class="n">samplerData</span><span class="w"> </span><span class="o">*</span><span class="n">data</span><span class="p">);</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">adjustTemperatures</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">t</span><span class="p">);</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">chainIndex</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">ensemble</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">betaN</span><span class="p">);</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">betaN</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">chainID</span><span class="p">);</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">ensembleID</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">chainID</span><span class="p">);</span>
+<span class="n">samplerData</span><span class="w"> </span><span class="o">*</span><span class="nf">getActiveData</span><span class="p">();</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">setActiveData</span><span class="p">(</span><span class="w"> </span><span class="n">samplerData</span><span class="w"> </span><span class="o">*</span><span class="n">newData</span><span class="p">);</span>
 
 
 <span class="cm">/*! Write checkpoint file for sampler -- stores data in json to completely reconstruct Sampler object</span>
@@ -496,7 +496,7 @@
 <span id="_CPPv3N9bayesship8proposalE"></span><span id="_CPPv2N9bayesship8proposalE"></span><span id="bayesship::proposal"></span><span class="target" id="classbayesship_1_1proposal"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">proposal</span></span></span><a class="headerlink" href="#_CPPv4N9bayesship8proposalE" title="Permalink to this definition"></a><br /></dt>
 <dd><div class="docutils container">
 <em>#include &lt;bayesshipSampler.h&gt;</em></div>
-<p>Subclassed by <a class="reference internal" href="proposalFunctions.html#classbayesship_1_1KDEProposal"><span class="std std-ref">bayesship::KDEProposal</span></a>, <a class="reference internal" href="proposalFunctions.html#classbayesship_1_1blockDifferentialEvolutionProposal"><span class="std std-ref">bayesship::blockDifferentialEvolutionProposal</span></a>, <a class="reference internal" href="proposalFunctions.html#classbayesship_1_1differentialEvolutionProposal"><span class="std std-ref">bayesship::differentialEvolutionProposal</span></a>, <a class="reference internal" href="proposalFunctions.html#classbayesship_1_1fisherProposal"><span class="std std-ref">bayesship::fisherProposal</span></a>, <a class="reference internal" href="proposalFunctions.html#classbayesship_1_1gaussianProposal"><span class="std std-ref">bayesship::gaussianProposal</span></a>, <a class="reference internal" href="proposalFunctions.html#classbayesship_1_1randomLayerRJProposal"><span class="std std-ref">bayesship::randomLayerRJProposal</span></a>, <a class="reference internal" href="proposalFunctions.html#classbayesship_1_1sequentialLayerRJProposal"><span class="std std-ref">bayesship::sequentialLayerRJProposal</span></a></p>
+<p>Subclassed by <a class="reference internal" href="proposalFunctions.html#classbayesship_1_1GMMProposal"><span class="std std-ref">bayesship::GMMProposal</span></a>, <a class="reference internal" href="proposalFunctions.html#classbayesship_1_1KDEProposal"><span class="std std-ref">bayesship::KDEProposal</span></a>, <a class="reference internal" href="proposalFunctions.html#classbayesship_1_1blockDifferentialEvolutionProposal"><span class="std std-ref">bayesship::blockDifferentialEvolutionProposal</span></a>, <a class="reference internal" href="proposalFunctions.html#classbayesship_1_1differentialEvolutionProposal"><span class="std std-ref">bayesship::differentialEvolutionProposal</span></a>, <a class="reference internal" href="proposalFunctions.html#classbayesship_1_1fisherProposal"><span class="std std-ref">bayesship::fisherProposal</span></a>, <a class="reference internal" href="proposalFunctions.html#classbayesship_1_1gaussianProposal"><span class="std std-ref">bayesship::gaussianProposal</span></a>, <a class="reference internal" href="proposalFunctions.html#classbayesship_1_1jointKDEProposal"><span class="std std-ref">bayesship::jointKDEProposal</span></a>, <a class="reference internal" href="proposalFunctions.html#classbayesship_1_1randomLayerRJProposal"><span class="std std-ref">bayesship::randomLayerRJProposal</span></a>, <a class="reference internal" href="proposalFunctions.html#classbayesship_1_1sequentialLayerRJProposal"><span class="std std-ref">bayesship::sequentialLayerRJProposal</span></a></p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
 <dl class="cpp function">
@@ -540,6 +540,14 @@
 <dd><p>proposalFn write stat file </p>
 <p>Writes out statistics about the proposal functions, if needed. This goes beyond what’s already reported in the general stat file </p>
 </dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N9bayesship8proposal17additionalThreadsE">
+<span id="_CPPv3N9bayesship8proposal17additionalThreadsE"></span><span id="_CPPv2N9bayesship8proposal17additionalThreadsE"></span><span id="bayesship::proposal::additionalThreads__i"></span><span class="target" id="classbayesship_1_1proposal_1a4b7284d95d8d4febe1939a5e040ebecf"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">additionalThreads</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#_CPPv4N9bayesship8proposal17additionalThreadsE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
 
 </div>
 </dd></dl>

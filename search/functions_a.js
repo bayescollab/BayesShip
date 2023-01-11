@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['operator_28_29_0',['operator()',['../classbayesship_1_1comparator__ac__fft.html#ad5d0fdb385511a0d72fee617f58543c4',1,'bayesship::comparator_ac_fft::operator()()'],['../classbayesship_1_1comparator__ac__serial.html#a698d3c79988c8fd6cae5013d75777a8d',1,'bayesship::comparator_ac_serial::operator()()'],['../classbayesship_1_1DefaultComp.html#aa14666aa34fbf835b03f104112a799c9',1,'bayesship::DefaultComp::operator()()']]]
+  ['loadcheckpoint_0',['loadCheckpoint',['../classbayesship_1_1proposal.html#a5498955ad6feb8069906c51468f6ecd3',1,'bayesship::proposal::loadCheckpoint()'],['../classbayesship_1_1bayesshipSampler.html#ab5cbb893b0205cdc6ad6bf4c53cf055c',1,'bayesship::bayesshipSampler::loadCheckpoint()'],['../classbayesship_1_1gaussianProposal.html#a37a3b6f8e9fadbe30b0b5a83ceba6d89',1,'bayesship::gaussianProposal::loadCheckpoint()'],['../classbayesship_1_1jointKDEProposal.html#a6f66fada83e3f8d67b8b7d2de74580f4',1,'bayesship::jointKDEProposal::loadCheckpoint()']]]
 ];

@@ -5,5 +5,5 @@ digraph "Graphical Class Hierarchy"
   edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
   node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
   rankdir="LR";
-  Node0 [label="bayesship::ThreadPoolPair\l\< jobtype, comparator \>",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$classbayesship_1_1ThreadPoolPair.html",tooltip="Class for creating a pool of threads to asynchronously distribute work in groups of variable size."];
+  Node0 [label="bayesship::ThreadPoolPair\l\< bayesship::swapJob \>",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$classbayesship_1_1ThreadPoolPair.html",tooltip=" "];
 }
