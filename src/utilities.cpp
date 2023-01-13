@@ -224,6 +224,26 @@ void variance_list(T *list, int length,U *result)
 }
 template void variance_list<double,double>(double *,int,double*);
 template void variance_list<int,double>(int *,int,double*);
+
+/*! \brief Calculates the mean and variance of an array
+ *
+ */
+template<class T, class U>
+void mean_variance_list(T *list, int length,U *mean, U *variance)
+{
+	U m;
+	mean_list(list,length,&m);
+	U var=0;
+	for(int i = 0; i<length ;i++){
+		var += pow_int(list[i] - m, 2);
+	}
+	var/=length;
+	*variance=var;
+	*mean=m;
+}
+template void mean_variance_list<double,double>(double *,int,double*, double *);
+template void mean_variance_list<int,double>(int *,int,double*, double*);
+
 //#########################################################
 //#########################################################
 
@@ -398,4 +418,33 @@ void errorMessage(std::string message, int code)
 	exit(code);
 	return;
 }
+
+//########################################################
+//########################################################
+/*! \brief Gelman Rubin statistic between chainN chains with lengths[chainN].
+ *
+ * The chains should already be thinned and trimmed before submitting to this method
+ *
+ */
+//double GRStatistic(double ***chains,/**< Data from each chain, shape [chainN][lengths[chainN][dim]]*/
+//	 int chainN, /**< Number of chains*/
+//	 int *lengths,/**< Length of each chain*/
+//	 int dim /**< Number of dimensions*/
+//	)
+//{
+//	double chainMeans[chainN];
+//	double chainVariances[chainN];
+//	double totalMean;
+//	double totalVariance;
+//	double W;
+//	for(int i = 0 ; i<chainN; i++){
+//
+//		mean_variance_list(chains[i], lengths[i], &(chainMeans[i]), &(chainVariances[i]))
+//	}
+//	mean_list(chainMeans, chainN, &totalMean);
+//	variance_list(chainVariances, chainN, &totalVariance);
+//	totalVariance *= 
+//}
+
+//########################################################
 }

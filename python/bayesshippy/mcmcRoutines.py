@@ -6,6 +6,11 @@ from scipy.interpolate import interp1d
 from scipy.integrate import quad
 
 
+## Comparison tests
+#import tensorflow_probability as tfp
+
+
+
 class MCMCOutput:
     filename = ""
     outputFile = None
@@ -72,7 +77,7 @@ class MCMCOutput:
         for i in np.arange(len(betaSchedule)):
             d = unpackMCMCData(betaID=i,trim=0,thin=1,sizeCap=integrationSizeCap)
             integratedLikelihoods[i] = np.sum(d["logL"])/len(d["logL"])
-        f_ = interp1d(betaSchedule, integratedLikelihoods,kind='cubic')        
+        f_ = interp1d(betaSchedule, integratedLikelihoods,kind='cubic')
         result = quad(f_,0,1)
         return result[0]
 
@@ -111,7 +116,7 @@ class MCMCOutput:
                 trim_local = self.trimLengths[x]
             if thin is None and betaID ==0 and not self.RJ:
                 thin_local = np.amax(self.ACVals[x][:])
-                print(thin_local)
+                #print(thin_local)
             if thin_local == 0:
                 thin_local=1
             data = np.insert(data,-1, self.outputFile["MCMC_OUTPUT"]["CHAIN {}".format(x)][trim_local::thin_local],axis=0)
@@ -147,6 +152,51 @@ class MCMCOutput:
 
     def chainIndex(self,ensemble, betaN):
         return ensemble+betaN*self.ensembleN
+
+
+# Takes the dataObjs for MCMC runs and returns a N-dimensional array for the average R value for each dimension
+def gelmanRubinStatistic(dataObjs):
+    minEnsembleN = np.amin( np.array( [d.ensembleN for d in dataObjs] ) )
+    chainIDs = []
+    for d in dataObjs:
+        chainIDs.append(np.arange(d.chainIndex(0,0) , d.chainIndex(minEnsembleN,0)))
+
+    chains = []
+    lengths = np.ones( ( len(dataObjs), minEnsembleN ))
+    for i, d in enumerate(dataObjs):
+        chains.append([])
+        for j, c in enumerate(chainIDs[i]):
+            trim, thin = int(d.trimLengths[c]), int(np.amax(d.ACVals[c]))
+            chains[-1].append(d.outputFile["MCMC_OUTPUT"]["CHAIN {}".format(c)][trim::thin])
+            lengths[i,j] = len(chains[-1][-1])
+    minLength = int(np.amin(lengths))
+    dim = len(chains[0][0][0])
+    R = []
+    #temp = np.ones( (minLength, len(dataObjs), dim))
+    #tempv2 = np.zeros( dim)
+    for i in np.arange(minEnsembleN):
+        chainMeans = np.ones( ( len(dataObjs),dim ) )
+        chainVars = np.ones((len(dataObjs), dim) )
+        for j in np.arange( len(dataObjs)):
+            for k in np.arange(dim):
+                chainMeans[j,k] = np.mean(chains[j][i][:minLength, k],axis=0)
+                chainVars[j,k] = np.var(chains[j][i][:minLength, k],axis=0,ddof=1)
+                #temp[:,j,k] = chains[j][i][:minLength, k]
+        totalMean = np.mean(chainMeans,axis=0)
+        totalVar = minLength*np.var(chainMeans,axis=0,ddof=1)
+        W = np.mean(chainVars, axis=0)
+        #R.append( np.sqrt(( (minLength - 1.)/ minLength * W + 1./minLength * totalVar )/W ))
+        R.append( ( (minLength - 1.)/ minLength * W + 1./minLength * totalVar )/W )
+        #tfprhat = tfp.mcmc.diagnostic.potential_scale_reduction(temp,independent_chain_ndims=1)
+        #print(R[-1])
+        #print(tfprhat)
+        #tempv2 +=tfprhat
+    #tempv2/=minEnsembleN
+    #print("tensorflow final: ",tempv2)
+    R = np.mean(R, axis=0)
+
+    return R
+
 
 def chainIndex(ensemble, betaN, ensembleN):
     return ensemble+betaN*ensembleN
