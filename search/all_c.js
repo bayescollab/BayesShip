@@ -7,8 +7,11 @@ var searchData=
   ['mean_5flist_4',['mean_list',['../namespacebayesship.html#a05e35bbf7a163b5a14d6efd4096f7947',1,'bayesship']]],
   ['mean_5flist_3c_20double_2c_20double_20_3e_5',['mean_list&lt; double, double &gt;',['../namespacebayesship.html#ae27118d926555130532e93312fde6d07',1,'bayesship']]],
   ['mean_5flist_3c_20int_2c_20double_20_3e_6',['mean_list&lt; int, double &gt;',['../namespacebayesship.html#ad3899bdfd3317e14b9c4f63524fc217a',1,'bayesship']]],
-  ['mindim_7',['minDim',['../classbayesship_1_1bayesshipSampler.html#ae78ac3cd51fadcfe8b203e17758f5733',1,'bayesship::bayesshipSampler']]],
-  ['modelid_8',['modelID',['../classbayesship_1_1positionInfo.html#a6a0560a08b671536d9dd3253fcddae99',1,'bayesship::positionInfo']]],
-  ['models_9',['models',['../classbayesship_1_1GMMProposal.html#a041bed4a5b71bb216a6a892c16a6a4dd',1,'bayesship::GMMProposal']]],
-  ['mvn_5fsample_10',['mvn_sample',['../namespacebayesship.html#ac59c8a6f5fe42c9ff19a021679517b59',1,'bayesship::mvn_sample(int samples, double *mean, double **cov, int dim, double **output)'],['../namespacebayesship.html#a94129d51b0fe87bda61547fddb9ca7c1',1,'bayesship::mvn_sample(int samples, double *mean, double **cov, int dim, gsl_rng *r, double **output)']]]
+  ['mean_5fvariance_5flist_7',['mean_variance_list',['../namespacebayesship.html#a5fcd612c233b89ae54e3b69f7554e982',1,'bayesship']]],
+  ['mean_5fvariance_5flist_3c_20double_2c_20double_20_3e_8',['mean_variance_list&lt; double, double &gt;',['../namespacebayesship.html#a096459b231c5b931f1b99cc38e3c62d9',1,'bayesship']]],
+  ['mean_5fvariance_5flist_3c_20int_2c_20double_20_3e_9',['mean_variance_list&lt; int, double &gt;',['../namespacebayesship.html#a3547f3efce34f65e186b0b28d084f969',1,'bayesship']]],
+  ['mindim_10',['minDim',['../classbayesship_1_1bayesshipSampler.html#ae78ac3cd51fadcfe8b203e17758f5733',1,'bayesship::bayesshipSampler']]],
+  ['modelid_11',['modelID',['../classbayesship_1_1positionInfo.html#a6a0560a08b671536d9dd3253fcddae99',1,'bayesship::positionInfo']]],
+  ['models_12',['models',['../classbayesship_1_1GMMProposal.html#a041bed4a5b71bb216a6a892c16a6a4dd',1,'bayesship::GMMProposal']]],
+  ['mvn_5fsample_13',['mvn_sample',['../namespacebayesship.html#ac59c8a6f5fe42c9ff19a021679517b59',1,'bayesship::mvn_sample(int samples, double *mean, double **cov, int dim, double **output)'],['../namespacebayesship.html#a94129d51b0fe87bda61547fddb9ca7c1',1,'bayesship::mvn_sample(int samples, double *mean, double **cov, int dim, gsl_rng *r, double **output)']]]
 ];

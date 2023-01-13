@@ -321,6 +321,14 @@ Functions</h2></td></tr>
 <tr class="separator:af11cd3b400fa201bbc4cca4c4b078399"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab971d7a6d81fcf61180f7541b2536b86"><td class="memItemLeft" align="right" valign="top">template void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacebayesship.html#ab971d7a6d81fcf61180f7541b2536b86">variance_list&lt; int, double &gt;</a> (int *, int, double *)</td></tr>
 <tr class="separator:ab971d7a6d81fcf61180f7541b2536b86"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5fcd612c233b89ae54e3b69f7554e982"><td class="memTemplParams" colspan="2">template&lt;class T , class U &gt; </td></tr>
+<tr class="memitem:a5fcd612c233b89ae54e3b69f7554e982"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacebayesship.html#a5fcd612c233b89ae54e3b69f7554e982">mean_variance_list</a> (T *list, int length, U *mean, U *variance)</td></tr>
+<tr class="memdesc:a5fcd612c233b89ae54e3b69f7554e982"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates the mean and variance of an array.  <a href="namespacebayesship.html#a5fcd612c233b89ae54e3b69f7554e982">More...</a><br /></td></tr>
+<tr class="separator:a5fcd612c233b89ae54e3b69f7554e982"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a096459b231c5b931f1b99cc38e3c62d9"><td class="memItemLeft" align="right" valign="top">template void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacebayesship.html#a096459b231c5b931f1b99cc38e3c62d9">mean_variance_list&lt; double, double &gt;</a> (double *, int, double *, double *)</td></tr>
+<tr class="separator:a096459b231c5b931f1b99cc38e3c62d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3547f3efce34f65e186b0b28d084f969"><td class="memItemLeft" align="right" valign="top">template void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacebayesship.html#a3547f3efce34f65e186b0b28d084f969">mean_variance_list&lt; int, double &gt;</a> (int *, int, double *, double *)</td></tr>
+<tr class="separator:a3547f3efce34f65e186b0b28d084f969"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
@@ -1771,6 +1779,130 @@ template&lt;class T , class U &gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double *&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5fcd612c233b89ae54e3b69f7554e982" name="a5fcd612c233b89ae54e3b69f7554e982"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5fcd612c233b89ae54e3b69f7554e982">&#9670;&#160;</a></span>mean_variance_list()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T , class U &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void bayesship::mean_variance_list </td>
+          <td>(</td>
+          <td class="paramtype">T *&#160;</td>
+          <td class="paramname"><em>list</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>length</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">U *&#160;</td>
+          <td class="paramname"><em>mean</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">U *&#160;</td>
+          <td class="paramname"><em>variance</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Calculates the mean and variance of an array. </p>
+
+</div>
+</div>
+<a id="a096459b231c5b931f1b99cc38e3c62d9" name="a096459b231c5b931f1b99cc38e3c62d9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a096459b231c5b931f1b99cc38e3c62d9">&#9670;&#160;</a></span>mean_variance_list&lt; double, double &gt;()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">template void <a class="el" href="namespacebayesship.html#a5fcd612c233b89ae54e3b69f7554e982">bayesship::mean_variance_list</a>&lt; double, double &gt; </td>
+          <td>(</td>
+          <td class="paramtype">double *&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double *&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double *&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3547f3efce34f65e186b0b28d084f969" name="a3547f3efce34f65e186b0b28d084f969"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3547f3efce34f65e186b0b28d084f969">&#9670;&#160;</a></span>mean_variance_list&lt; int, double &gt;()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">template void <a class="el" href="namespacebayesship.html#a5fcd612c233b89ae54e3b69f7554e982">bayesship::mean_variance_list</a>&lt; int, double &gt; </td>
+          <td>(</td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double *&#160;</td>
           <td class="paramname">, </td>
         </tr>
         <tr>
