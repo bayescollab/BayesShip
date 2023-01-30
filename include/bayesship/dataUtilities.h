@@ -103,6 +103,7 @@ public:
 	bool calculatedEvidence=false;
 	double evidence;
 	double evidenceError;
+	double *integratedLikelihoods=nullptr;
 	//int *chain_lengths=NULL;
 
 

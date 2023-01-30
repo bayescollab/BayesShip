@@ -309,7 +309,7 @@ double integration_helper(double beta, void *params)
 
 void samplerData::calculateEvidence()
 {
-	double integratedLikelihoods[this->ensembleSize];
+	//double integratedLikelihoods[this->ensembleSize];
 	double betasLocal[this->ensembleSize];
 	for(int i = 0 ; i<ensembleSize; i++){
 
@@ -346,16 +346,21 @@ void samplerData::calculateEvidence()
 	F.function = &integration_helper;
 	F.params = &params;
 
-	gsl_integration_workspace *w = gsl_integration_workspace_alloc(1000);
+	gsl_integration_workspace *w = gsl_integration_workspace_alloc(5000);
 
 	double error;
-	int errorcode = gsl_integration_qags(&F, betasLocal[0],betasLocal[ensembleSize-1],0,1e-7,1000,w, &evidence, &evidenceError);
-	std::cout<<errorcode<<std::endl;
-
+	//int errorcode = gsl_integration_qags(&F, betasLocal[0],betasLocal[ensembleSize-1],0,1e-7,5000,w, &evidence, &evidenceError);
+	int errorcode = gsl_integration_qag(&F, betasLocal[0],betasLocal[ensembleSize-1],0,1e-5,5000,6,w, &evidence, &evidenceError);
 	gsl_integration_workspace_free(w);
 	gsl_spline_free(spline);
 	gsl_interp_accel_free(acc);
+	if (errorcode !=0){
+		std::cout<<"GSL integration error code for evidence calculation (Evidence will not be calculated): "<<errorcode<<std::endl;
+		return;
+	}
+
 	calculatedEvidence = true;
+	return;
 	
 
 }
@@ -660,6 +665,13 @@ samplerData::samplerData(int maxDim, int ensembleN,int ensembleSize, int iterati
 		}
 		
 	}
+	if(!this->integratedLikelihoods){	
+		this->integratedLikelihoods = new double[ensembleSize];
+		for(int j =0 ; j<ensembleSize; j++){
+			this->integratedLikelihoods[j] = 0;
+		}
+		
+	}
 	if(!this->priorTimes){	
 		this->priorTimes = new double[chainN];
 		for(int j =0 ; j<chainN; j++){
@@ -771,6 +783,10 @@ samplerData::~samplerData()
 		}
 		delete [] proposalTimes;
 		proposalTimes = nullptr;
+	}
+	if(integratedLikelihoods){
+		delete [] integratedLikelihoods;
+		integratedLikelihoods = nullptr;
 	}
 	if(likelihoodTimes){
 		delete [] likelihoodTimes;
@@ -1121,18 +1137,18 @@ int samplerData::create_data_dump(bool cold_only, bool trim,std::string filename
 		delete dataset;
 		delete dataspace;
 		//#################################################
-		//if(integrated_likelihoods){
-		//	hsize_t dimsIL[1];
-		//	dimsIL[0]= ensemble_size;
-		//	dataspace = new H5::DataSpace(1,dimsIL);
-		//	dataset = new H5::DataSet(
-		//		meta_group.createDataSet("INTEGRATED LIKELIHOODS",
-		//			H5::PredType::NATIVE_DOUBLE,*dataspace)
-		//		);
-		//	dataset->write(integrated_likelihoods, H5::PredType::NATIVE_DOUBLE);	
-		//	delete dataset;
-		//	delete dataspace;
-		//}
+		if(calculatedEvidence){
+			hsize_t dimsIL[1];
+			dimsIL[0]= ensembleSize;
+			dataspace = new H5::DataSpace(1,dimsIL);
+			dataset = new H5::DataSet(
+				meta_group.createDataSet("INTEGRATED LIKELIHOODS",
+					H5::PredType::NATIVE_DOUBLE,*dataspace)
+				);
+			dataset->write(integratedLikelihoods, H5::PredType::NATIVE_DOUBLE);	
+			delete dataset;
+			delete dataspace;
+		}
 		//#################################################
 		//if(integrated_likelihoods_terms){
 		//	hsize_t dimsILT[1];

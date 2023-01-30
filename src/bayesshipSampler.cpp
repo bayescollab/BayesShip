@@ -444,7 +444,7 @@ void bayesshipSampler::sample()
 				int independentSamples = data->countIndependentSamples();
 				std::cout<<"Independent samples per chain: "<<independentSamples<<std::endl;
 				data->calculateEvidence();
-				std::cout<<"Current Evidence: "<<data->evidence<<std::endl;
+				std::cout<<"Current ln Evidence: "<<data->evidence<<std::endl;
 			}
 			#ifdef _HDF5
 			data->create_data_dump(coldOnlyStorage, true, outputDir+outputFileMoniker+"_output.hdf5");
@@ -473,7 +473,7 @@ void bayesshipSampler::sample()
 					}
 					AC /= data->ensembleN;
 					data->calculateEvidence();
-					std::cout<<"Current Evidence: "<<data->evidence<<std::endl;
+					std::cout<<"Current ln Evidence: "<<data->evidence<<std::endl;
 				}
 	
 
@@ -534,7 +534,7 @@ void bayesshipSampler::sample()
 
 			sampleLoop(batchSize,data);
 			data->calculateEvidence();
-			std::cout<<"Current Evidence: "<<data->evidence<<std::endl;
+			std::cout<<"Current ln Evidence: "<<data->evidence<<std::endl;
 			writeCheckpoint(data);
 	
 			data->updateACs(threads);
