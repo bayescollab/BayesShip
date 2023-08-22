@@ -1,4 +1,3 @@
-
 #include "bayesship/bayesshipSampler.h"
 #include "bayesship/utilities.h"
 #include "bayesship/dataUtilities.h"
@@ -271,6 +270,10 @@ void bayesshipSampler::sample()
 		}
 		
 	}
+	else if( (priorIterations >0 && !priorRanges) || (priorIterations <0 && priorRanges)){
+		std::cout<<"Error: If sampling the prior, the priorIterations must be > 0 and the priorRanges (double[dim][2]) must be allocated (! null)"<<std::endl;		
+		std::cout<<"Skipping prior exploration"<<std::endl;		
+	}
 	if(burnIterations >0){
 		std::cout<<"Burning in "<<std::endl;
 		bool saveRandomizeSwappingFlag = randomizeSwapping;
@@ -283,6 +286,10 @@ void bayesshipSampler::sample()
 		if(priorData){
 		//if(false){
 			std::cout<<"Using Prior values for initial points for burn-in"<<std::endl;
+			std::cout<<"Calculating likelihood at initial Position"<<std::endl;
+			#ifdef _OPENMP
+			#pragma omp parallel for
+			#endif
 			for(int i = 0 ; i<chainN; i++){
 				burnData->positions[i][0]->updatePosition(priorData->positions[i][priorData->currentStepID[i]]);
 				//burnData->likelihoodVals[i][0] = likelihood(burnData->positions[i][0],i, this,userParameters[i]);
@@ -291,6 +298,7 @@ void bayesshipSampler::sample()
 				burnData->priorVals[i][0] = prior->eval(burnData->positions[i][0],i);
 				burnData->currentStepID[i] = 0;
 			}
+			std::cout<<"Finished calculating likelihood at initial Position"<<std::endl;
 
 		}
 		else{
@@ -418,6 +426,10 @@ void bayesshipSampler::sample()
 	}
 	else if(priorData){
 		std::cout<<"Using Prior values for initial points for sampling"<<std::endl;
+		std::cout<<"Calculating likelihood at initial Position"<<std::endl;
+		#ifdef _OPENMP
+		#pragma omp parallel for
+		#endif
 		for(int i = 0 ; i<chainN; i++){
 			data->positions[i][0]->updatePosition(priorData->positions[i][priorData->currentStepID[i]]);
 			//burnData->likelihoodVals[i][0] = likelihood(burnData->positions[i][0],i, this,userParameters[i]);
@@ -426,6 +438,7 @@ void bayesshipSampler::sample()
 			data->priorVals[i][0] = prior->eval(data->positions[i][0],i);
 			data->currentStepID[i] = 0;
 		}
+		std::cout<<"Finished calculating likelihood at initial Position"<<std::endl;
 
 	}
 	else{
