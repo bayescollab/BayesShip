@@ -10,7 +10,7 @@ add_library(OBJS OBJECT ${SRC_LIST})
 set_property(TARGET OBJS PROPERTY  POSITION_INDEPENDENT_CODE ON)
 set_property(TARGET OBJS PROPERTY CXX_STANDARD 11)
 # Link to the libraries defined in main CMakeList file
-target_link_libraries( OBJS PUBLIC "${LIBS}")
+target_link_libraries( OBJS PUBLIC "${LIBS}" Threads::Threads)
 # Include header files defined in main CMakeList file
 target_include_directories( OBJS PUBLIC "${INCLUDE_DIRS}")
 
@@ -22,8 +22,8 @@ set_property(TARGET bayesship PROPERTY CXX_STANDARD 11)
 set_property(TARGET bayesship_static PROPERTY CXX_STANDARD 11)
 
 # Link to libraries
-target_link_libraries( bayesship PUBLIC "${LIBS}")
-target_link_libraries( bayesship_static PUBLIC "${LIBS}")
+target_link_libraries( bayesship PUBLIC "${LIBS}" Threads::Threads)
+target_link_libraries( bayesship_static PUBLIC "${LIBS}" Threads::Threads)
 # Include to header files
 target_include_directories( bayesship PUBLIC "${INCLUDE_DIRS}")
 target_include_directories( bayesship_static PUBLIC "${INCLUDE_DIRS}")
