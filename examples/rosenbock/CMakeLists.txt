@@ -2,9 +2,9 @@ add_executable(rosenbock "src/rosenbock.cpp")
 
 target_link_libraries(rosenbock PUBLIC bayesship)
 
-target_link_libraries( rosenbock PUBLIC "${LIBS}")
+target_link_libraries( rosenbock PUBLIC ${PROJECT_NAME}_compiler_flags)
 
-target_include_directories( rosenbock PUBLIC "${INCLUDE_DIRS}")
+# target_include_directories( rosenbock PUBLIC "${INCLUDE_DIRS}")
 
 file(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/examples/rosenbock/python/")
 file(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/examples/rosenbock/plots/")

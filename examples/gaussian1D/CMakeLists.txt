@@ -2,9 +2,9 @@ add_executable(gaussian1D "src/gaussian1D.cpp")
 
 target_link_libraries(gaussian1D PUBLIC bayesship)
 
-target_link_libraries( gaussian1D PUBLIC "${LIBS}")
+target_link_libraries( gaussian1D PUBLIC ${PROJECT_NAME}_compiler_flags)
 
-target_include_directories( gaussian1D PUBLIC "${INCLUDE_DIRS}")
+# target_include_directories( gaussian1D PUBLIC "${INCLUDE_DIRS}")
 
 file(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/examples/gaussian1D/python/")
 file(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/examples/gaussian1D/plots/")

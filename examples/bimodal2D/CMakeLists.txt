@@ -2,9 +2,9 @@ add_executable(bimodal2D "src/bimodal2D.cpp")
 
 target_link_libraries(bimodal2D PUBLIC bayesship)
 
-target_link_libraries( bimodal2D PUBLIC "${LIBS}")
+target_link_libraries( bimodal2D PUBLIC ${PROJECT_NAME}_compiler_flags)
 
-target_include_directories( bimodal2D PUBLIC "${INCLUDE_DIRS}")
+# target_include_directories( bimodal2D PUBLIC "${INCLUDE_DIRS}")
 
 file(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/examples/bimodal2D/python/")
 file(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/examples/bimodal2D/plots/")
