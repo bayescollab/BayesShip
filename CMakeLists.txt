@@ -13,14 +13,6 @@ option(ENABLE_SWIG "Use SWIG to compile python modules" ON)
 option(DEBUG "set debugger options" OFF)
 
 
-# if(DEBUG)
-# 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -std=c++11")
-# 	#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O2 -Wall CPPDEFINES=BOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS")
-# else()
-# 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -std=c++11")
-# 	#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 CPPDEFINES=BOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS")
-# endif()
-
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install/" CACHE PATH "..." FORCE)
 endif()
@@ -31,7 +23,7 @@ set (BAYESSHIP_VERSION_MINOR ${PROJECT_VERSION_MINOR})
 set (BAYESSHIP_ROOT_DIRECTORY "${PROJECT_SOURCE_DIR}/")
 
  
-# configure a header file to pass some of the CMake settings
+# Configure a header file to pass some of the CMake settings
 # to the source code
 configure_file (
   "${PROJECT_SOURCE_DIR}/include/bayesship/BayesShipConfig.h.in"
@@ -48,8 +40,9 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
 
 include_directories("${PROJECT_BINARY_DIR}/include/bayesship")
 
+# Create interface to pass compiler options to build objects
 add_library(${PROJECT_NAME}_compiler_flags INTERFACE)
-
+# Specify C++11 standard
 target_compile_features(${PROJECT_NAME}_compiler_flags INTERFACE cxx_std_11)
 
 #Required packages
@@ -64,12 +57,8 @@ endif()
 find_package(nlohmann_json REQUIRED)
 
 find_package(OpenMP)
-#if(OpenMP_FOUND AND IMPLEMENT_OMP)
-#	add_compile_definitions(_OPENMP)
-#endif()
 find_package(GSL REQUIRED)
 find_package(Threads REQUIRED)
-#find_package(Eigen3 REQUIRED)
 find_package(Armadillo REQUIRED)
 find_package(FFTW3 REQUIRED)
 
@@ -78,12 +67,6 @@ find_package(SWIG COMPONENTS python )
 if( NOT SWIG_FOUND AND ENABLE_SWIG)
 	message("SWIG not found, not producing python wrappings")
 endif()
-
-
-#find_package(MLPACK)
-#if(MLPACK_FOUND)
-#	add_compile_definitions(_MLPACK)
-#endif()
 
 # Leaving in INCLUDE_DIRS and LIBS as the SWIG CMake uses them
 # However, the rest of the libraries are to use target_link_libraries()
