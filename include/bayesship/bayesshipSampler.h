@@ -183,6 +183,50 @@ private:
 
 
 
+// PTRACKER
+//! \class proposalTracking
+//! Handle tracking proposals for certain chains.
+class proposalTracking
+{
+private:
+	//! Vector of chain IDs being tracked
+	std::vector<int> chains;
+
+	//! Struct to hold proposal info to be dumped at each sampler checkpoint
+	struct proposalTracker
+	{
+		// Vectors of proposed parameter values
+		std::vector<double> proposed_logMc, proposed_eta;
+		// Vector of proposal function types and if accepted or not
+		// Accepted flags: -1: rejected from prior, 0: rejected by MH, 1: accepted
+		std::vector<int> proposal_func_idx, accepted_tracker;
+		// File name
+		std::string filename;
+
+		proposalTracker(std::string filename);
+
+		void store(const positionInfo *position, int proposal_idx, int accept_flag);
+		void write();
+
+		void clear();
+	};
+
+	//! Vector of proposalTracker, one for each tracked chain
+	std::vector<proposalTracker> trackers;
+
+public:
+	//! Constructor	
+	proposalTracking(const std::vector<int> chains, std::string filename);
+
+	//! Store the proposal point if the chain is being tracked
+	void store(int chainID, const positionInfo *position, int proposal_idx, int accept_flag);
+	//! Write the tracked values out to file
+	void write();
+	//! Clear the tracked vectors, to be called after calling write
+	void clear();
+};
+
+
 class bayesshipSampler
 {
 public:
@@ -366,6 +410,8 @@ private:
 	/*! iterations + burnSamples*/
 	bool internalPriorRanges=false;
 	bool internalInitialPositionEnsemble=false;
+
+	proposalTracking *proposal_tracker;
 
 };
 

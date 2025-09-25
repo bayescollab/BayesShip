@@ -82,6 +82,141 @@ bool swapPairFunction( swapJob job1, swapJob job2);
 
 
 
+// PTRACKER - Class definitions
+proposalTracking::proposalTracker::proposalTracker(std::string filename)
+{
+	// Create output file
+	std::ofstream file(filename);
+
+	if (file.good())
+	{
+		// Write header
+		file << "# logMc, eta, proposal, accept\n";
+	}
+	else
+	{
+		std::cerr << "Unable to create " << filename << "\n";
+	}
+
+	file.close();
+
+	this->filename = filename;
+}
+
+void proposalTracking::proposalTracker::store(
+	const positionInfo *position, int proposal_idx, int accept_flag
+)
+{
+	proposed_logMc.push_back(position->parameters[7]);
+	proposed_eta.push_back(position->parameters[8]);
+	proposal_func_idx.push_back(proposal_idx);
+	accepted_tracker.push_back(accept_flag);
+}
+
+void proposalTracking::proposalTracker::clear()
+{
+	proposed_logMc.clear();
+	proposed_eta.clear();
+	proposal_func_idx.clear();
+	accepted_tracker.clear();
+}
+
+void proposalTracking::proposalTracker::write()
+{
+	std::ofstream file(filename, std::ios::app);
+	file.precision(15);
+
+	if (!file.good())
+	{
+		std::cerr << "Unable to open " << filename << "\n";
+		return;
+	}
+
+	if (!proposal_func_idx.empty())
+	{
+		for (size_t i = 0; i < proposal_func_idx.size(); i++)
+		{
+			file << proposed_logMc.at(i) << " ";
+			file << proposed_eta.at(i) << " ";
+			file << proposal_func_idx.at(i) << " ";
+			file << accepted_tracker.at(i) << "\n";			
+		}
+	}
+
+	file.close();
+	// Clear the vectors
+	clear();
+}
+
+proposalTracking::proposalTracking(const std::vector<int> chains, std::string fileprefix)
+{
+	this->chains = chains;
+	std::cout << "Storing proposals for chains ";
+	for (auto &chain: chains)
+	{
+		std::cout << chain << " ";
+	}
+	std::cout << " in:\n";
+
+	// Initialize structs
+	for (size_t i = 0; i < chains.size(); i++)
+	{
+		std::string filename(
+			fileprefix + "_mass_params_proposals_chain"
+			+ std::to_string(chains.at(i)) + ".dat"
+		);
+		std::cout << "- " << filename << "\n";
+		trackers.push_back(
+			proposalTracker(filename)
+		);
+	}
+	trackers.shrink_to_fit();
+}
+
+void proposalTracking::store(
+	int chainID,
+	const positionInfo *position,
+	int proposal_idx,
+	int accept_flag
+)
+{
+	// Store only if the chainID is in our list of chains.
+	// Find where chainID matches.
+	int chain_pos = -1;
+	for (int i = 0; i < chains.size(); i++)
+	{
+		if (chains.at(i) == chainID) {chain_pos = i;}
+	}
+	
+	// If not matched, exit
+	if (chain_pos == -1)
+	{
+		return;
+	}
+	else // Store at the matched chain tracker
+	{
+		trackers.at(chain_pos).store(position, proposal_idx, accept_flag);
+	}
+}
+
+void proposalTracking::write()
+{
+	std::cout << "Writing proposed mass parameters out.\n";
+
+	for (auto &tr: trackers)
+	{
+		tr.write();
+	}
+}
+
+void proposalTracking::clear()
+{
+	// Iterate over each tracker
+	for (auto &tr: trackers)
+	{
+		tr.clear();
+	}		
+}
 
 
 /*! \brief Constructor for bayesshipSampler class
@@ -543,6 +678,8 @@ void bayesshipSampler::sample()
 			localBatchSize = true;
 		}
 		bool initializedData=false;
+		// PTRACKER - Clear off burn-in proposals
+		proposal_tracker->clear();
 		while(currentIndependentSamples < independentSamples){
 
 			sampleLoop(batchSize,data);
@@ -636,6 +773,12 @@ void bayesshipSampler::allocateMemory( )
 	}
 	omp_set_num_threads(threads);
 	chainN = ensembleSize*ensembleN;
+	
+	// PTRACKER - Initialize proposal tracking
+	// Set to the first chain in the cold and hot ensembles
+	std::vector<int> chains_to_track_proposals  {0, chainN-ensembleN};
+	proposal_tracker = new proposalTracking(chains_to_track_proposals, outputDir+outputFileMoniker);
+
 	const gsl_rng_type *T = gsl_rng_default;	
 	if(!betaSchedule){
 		/*If betaSchedule is allocated internally, it should be released internally*/
@@ -798,7 +941,11 @@ void bayesshipSampler::deallocateMemory()
 		delete [] initialPositionEnsemble;
 		initialPositionEnsemble = nullptr;
 	}
-
+	// PTRACKER - Deallocate
+	if (proposal_tracker)
+	{
+		delete proposal_tracker;
+	}
 }
 
 /*! \brief Constructor for bayesshipSampler class
@@ -1264,6 +1411,8 @@ void bayesshipSampler::stepMH(
 	data->priorTimes[chainID] /= (data->currentStepID[chainID] + 1);
 	/*If rejected outright, exitA*/
 	if(logPrior == limitInf){
+		// PTRACKER - Store outright rejection
+		proposal_tracker->store(chainID, data->positions[chainID][proposalStep], randStep, -1);
 		data->positions[chainID][proposalStep]->updatePosition(data->positions[chainID][currentStep]);
 		data->likelihoodVals[chainID][proposalStep] = data->likelihoodVals[chainID][currentStep];
 		data->priorVals[chainID][proposalStep] = data->priorVals[chainID][currentStep];
@@ -1293,14 +1442,17 @@ void bayesshipSampler::stepMH(
 	/*Reject or accept the step*/
 	if(MHRatio < prob){
 		//reject
+		// PTRACKER - Store MH rejection
+		proposal_tracker->store(chainID, data->positions[chainID][proposalStep], randStep, 0);
 		data->positions[chainID][proposalStep]->updatePosition(data->positions[chainID][currentStep]);
 		data->likelihoodVals[chainID][proposalStep] = data->likelihoodVals[chainID][currentStep];
 		data->priorVals[chainID][proposalStep] = data->priorVals[chainID][currentStep];
 		data->rejectN[chainID][randStep]++;
-		
 	}
 	else{
 		//accept
+		// PTRACKER - Store acceptance
+		proposal_tracker->store(chainID, data->positions[chainID][proposalStep], randStep, 1);
 		data->likelihoodVals[chainID][proposalStep] = logLikelihood;
 		data->priorVals[chainID][proposalStep] = logPrior ;
 		data->successN[chainID][randStep]++;
@@ -1633,6 +1785,7 @@ void bayesshipSampler::writeCheckpoint(samplerData *data)
 			proposalFns->proposals[i]->writeCheckpoint(outputDir, outputFileMoniker);
 	}
 	
+	proposal_tracker->write();
 
 	return;
 }
