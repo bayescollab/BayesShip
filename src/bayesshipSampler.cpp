@@ -83,67 +83,111 @@ bool swapPairFunction( swapJob job1, swapJob job2);
 
 
 // PTRACKER - Class definitions
-proposalTracking::proposalTracker::proposalTracker(std::string filename)
+proposalTracking::proposalTracker::proposalTracker(
+	std::string proposals_filename,	//< File name for storing proposals
+	std::string stats_filename		//< File name for storing proposal stats
+)
 {
-	// Create output file
-	std::ofstream file(filename);
+	// Create proposals file
+	std::ofstream proposals_file(proposals_filename);
 
-	if (file.good())
+	if (!proposals_file.good())
 	{
-		// Write header
-		file << "# logMc, eta, proposal, accept\n";
+		std::cerr << "Unable to create " << proposals_filename << "\n";
 	}
-	else
+	proposals_file.close();
+
+	this->proposals_filename = proposals_filename;
+
+	// Create stats file
+	std::ofstream stats_file(stats_filename);
+
+	if (!stats_file.good())
 	{
-		std::cerr << "Unable to create " << filename << "\n";
+		std::cerr << "Unable to create " << stats_filename << "\n";
 	}
+	stats_file.close();
 
-	file.close();
-
-	this->filename = filename;
+	this->stats_filename = stats_filename;
 }
 
 void proposalTracking::proposalTracker::store(
-	const positionInfo *position, int proposal_idx, int accept_flag
+	positionInfo *position, int proposal_idx, int accept_flag, double time
 )
 {
-	proposed_logMc.push_back(position->parameters[7]);
-	proposed_eta.push_back(position->parameters[8]);
+	// Create vector of params to be stored
+	std::vector<double> v;
+	for (int i = 0; i < position->dimension; i++)
+	{
+		v.push_back(position->getParameter(i));
+	}
+	
+	proposed_params.push_back(v);
 	proposal_func_idx.push_back(proposal_idx);
 	accepted_tracker.push_back(accept_flag);
+	times.push_back(time);
 }
 
 void proposalTracking::proposalTracker::clear()
 {
-	proposed_logMc.clear();
-	proposed_eta.clear();
+	proposed_params.clear();
 	proposal_func_idx.clear();
 	accepted_tracker.clear();
+	times.clear();
 }
 
 void proposalTracking::proposalTracker::write()
 {
-	std::ofstream file(filename, std::ios::app);
-	file.precision(15);
+	// Check sizes of data
+	// Append proposals
+	std::ofstream proposals_file(proposals_filename, std::ios::app);
+	proposals_file.precision(15);
 
-	if (!file.good())
+	if (!proposals_file.good())
 	{
-		std::cerr << "Unable to open " << filename << "\n";
+		std::cerr << "Unable to append to " << proposals_filename << "\n";
+		return;
+	}
+
+	if (!proposed_params.empty())
+	{
+		// Loop over each proposal
+		for (auto &proposal: proposed_params)
+		{
+			// Store each parameter but the last
+			for (auto param = proposal.begin(); param != proposal.end()-1; param++)
+			{
+				proposals_file << *param << " ";
+			}
+			// Store the last parameter, attach newline
+			proposals_file << proposal.back() << "\n";
+		}
+	}
+
+	proposals_file.close();
+
+	// Append stats
+	std::ofstream stats_file(stats_filename, std::ios::app);
+	stats_file.precision(15);
+
+	if (!stats_file.good())
+	{
+		std::cerr <<  "Unable to append to " << stats_filename << "\n";
 		return;
 	}
 
 	if (!proposal_func_idx.empty())
 	{
 		for (size_t i = 0; i < proposal_func_idx.size(); i++)
-		{
-			file << proposed_logMc.at(i) << " ";
-			file << proposed_eta.at(i) << " ";
-			file << proposal_func_idx.at(i) << " ";
-			file << accepted_tracker.at(i) << "\n";			
+		{	
+			stats_file << proposal_func_idx.at(i) << " ";
+			stats_file << accepted_tracker.at(i) << " ";
+			stats_file << times.at(i) << "\n";			
 		}
 	}
 
-	file.close();
+	stats_file.close();
+
 	// Clear the vectors
 	clear();
 }
@@ -152,22 +196,27 @@ proposalTracking::proposalTracking(const std::vector<int> chains, std::string fi
 {
 	this->chains = chains;
 	std::cout << "Storing proposals for chains ";
-	for (auto &chain: chains)
+	for (auto chain = chains.begin(); chain < chains.end()-1; chain++)
 	{
-		std::cout << chain << " ";
+		std::cout << &chain << ", ";
 	}
-	std::cout << " in:\n";
+	std::cout << chains.back() << ".\n";
 
-	// Initialize structs
+	// Initialize structs for each chain
 	for (size_t i = 0; i < chains.size(); i++)
 	{
-		std::string filename(
-			fileprefix + "_mass_params_proposals_chain"
+		// Create filenames
+		std::string proposals_filename(
+			fileprefix + "_proposals_params_chain"
 			+ std::to_string(chains.at(i)) + ".dat"
 		);
-		std::cout << "- " << filename << "\n";
+		std::string stats_filename(
+			fileprefix + "_proposals_stats_chain"
+			+ std::to_string(chains.at(i)) + ".dat"
+		);
+		// Create tracker
 		trackers.push_back(
-			proposalTracker(filename)
+			proposalTracker(proposals_filename, stats_filename)
 		);
 	}
 	trackers.shrink_to_fit();
@@ -175,9 +224,10 @@ proposalTracking::proposalTracking(const std::vector<int> chains, std::string fi
 
 void proposalTracking::store(
 	int chainID,
-	const positionInfo *position,
+	positionInfo *position,
 	int proposal_idx,
-	int accept_flag
+	int accept_flag,
+	double time
 )
 {
 	// Store only if the chainID is in our list of chains.
@@ -195,7 +245,7 @@ void proposalTracking::store(
 	}
 	else // Store at the matched chain tracker
 	{
-		trackers.at(chain_pos).store(position, proposal_idx, accept_flag);
+		trackers.at(chain_pos).store(position, proposal_idx, accept_flag, time);
 	}
 }
 
@@ -1375,6 +1425,7 @@ void bayesshipSampler::stepMH(
 	samplerData *data
 	)
 {
+	double overall_start = omp_get_wtime();
 	int currentStep = data->currentStepID[chainID];
 	int proposalStep = data->currentStepID[chainID]+1;
 	
@@ -1412,7 +1463,8 @@ void bayesshipSampler::stepMH(
 	/*If rejected outright, exitA*/
 	if(logPrior == limitInf){
 		// PTRACKER - Store outright rejection
-		proposal_tracker->store(chainID, data->positions[chainID][proposalStep], randStep, -1);
+		double overall_time = omp_get_wtime() - overall_start;
+		proposal_tracker->store(chainID, data->positions[chainID][proposalStep], randStep, -1, overall_time);
 		data->positions[chainID][proposalStep]->updatePosition(data->positions[chainID][currentStep]);
 		data->likelihoodVals[chainID][proposalStep] = data->likelihoodVals[chainID][currentStep];
 		data->priorVals[chainID][proposalStep] = data->priorVals[chainID][currentStep];
@@ -1443,7 +1495,8 @@ void bayesshipSampler::stepMH(
 	if(MHRatio < prob){
 		//reject
 		// PTRACKER - Store MH rejection
-		proposal_tracker->store(chainID, data->positions[chainID][proposalStep], randStep, 0);
+		double overall_time = omp_get_wtime() - overall_start;
+		proposal_tracker->store(chainID, data->positions[chainID][proposalStep], randStep, 0, overall_time);
 		data->positions[chainID][proposalStep]->updatePosition(data->positions[chainID][currentStep]);
 		data->likelihoodVals[chainID][proposalStep] = data->likelihoodVals[chainID][currentStep];
 		data->priorVals[chainID][proposalStep] = data->priorVals[chainID][currentStep];
@@ -1452,7 +1505,8 @@ void bayesshipSampler::stepMH(
 	else{
 		//accept
 		// PTRACKER - Store acceptance
-		proposal_tracker->store(chainID, data->positions[chainID][proposalStep], randStep, 1);
+		double overall_time = omp_get_wtime() - overall_start;
+		proposal_tracker->store(chainID, data->positions[chainID][proposalStep], randStep, 1, overall_time);
 		data->likelihoodVals[chainID][proposalStep] = logLikelihood;
 		data->priorVals[chainID][proposalStep] = logPrior ;
 		data->successN[chainID][randStep]++;

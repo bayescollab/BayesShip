@@ -196,16 +196,19 @@ private:
 	struct proposalTracker
 	{
 		// Vectors of proposed parameter values
-		std::vector<double> proposed_logMc, proposed_eta;
+		std::vector<std::vector<double>> proposed_params;
+		// std::vector<double> proposed_logMc, proposed_eta;
 		// Vector of proposal function types and if accepted or not
 		// Accepted flags: -1: rejected from prior, 0: rejected by MH, 1: accepted
 		std::vector<int> proposal_func_idx, accepted_tracker;
-		// File name
-		std::string filename;
+		// Vector of time
+		std::vector<double> times;
+		// File names
+		std::string proposals_filename, stats_filename;
 
-		proposalTracker(std::string filename);
+		proposalTracker(std::string proposals_filename, std::string stats_filename);
 
-		void store(const positionInfo *position, int proposal_idx, int accept_flag);
+		void store(positionInfo *position, int proposal_idx, int accept_flag, double time);
 		void write();
 
 		void clear();
@@ -219,7 +222,7 @@ public:
 	proposalTracking(const std::vector<int> chains, std::string filename);
 
 	//! Store the proposal point if the chain is being tracked
-	void store(int chainID, const positionInfo *position, int proposal_idx, int accept_flag);
+	void store(int chainID, positionInfo *position, int proposal_idx, int accept_flag, double time);
 	//! Write the tracked values out to file
 	void write();
 	//! Clear the tracked vectors, to be called after calling write
