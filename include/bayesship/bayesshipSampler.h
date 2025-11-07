@@ -192,25 +192,34 @@ private:
 	//! Vector of chain IDs being tracked
 	std::vector<int> chains;
 
-	//! Struct to hold proposal info to be dumped at each sampler checkpoint
+	//! Struct to hold proposal info to be dumped at each sampler checkpoint.
+	//! Two files (per chain being tracked) are created:
+	//! - [proposals_filename] holds all parameters of each proposal per line
+	//! - [stats_filename] holds per proposal:
+	//!		- the identifying index of the proposal function
+	//!		- the acceptance flag of that proposal (-1: rejected from prior, 0: rejected by MH, 1: accepted)
+	//!		- the duration (in seconds) of the proposal
 	struct proposalTracker
 	{
 		// Vectors of proposed parameter values
 		std::vector<std::vector<double>> proposed_params;
-		// std::vector<double> proposed_logMc, proposed_eta;
 		// Vector of proposal function types and if accepted or not
-		// Accepted flags: -1: rejected from prior, 0: rejected by MH, 1: accepted
+		// Vector of acceptance flags
 		std::vector<int> proposal_func_idx, accepted_tracker;
-		// Vector of time
+		// Vector of times spent on proposals
 		std::vector<double> times;
 		// File names
 		std::string proposals_filename, stats_filename;
 
+		// Create the tracking files
 		proposalTracker(std::string proposals_filename, std::string stats_filename);
 
+		// Store proposal info to tracker
 		void store(positionInfo *position, int proposal_idx, int accept_flag, double time);
+		// Append accumulated info to files
 		void write();
 
+		// Clear all vectors
 		void clear();
 	};
 
@@ -414,7 +423,7 @@ private:
 	bool internalPriorRanges=false;
 	bool internalInitialPositionEnsemble=false;
 
-	proposalTracking *proposal_tracker;
+	proposalTracking *proposal_tracker = nullptr;
 
 };
 

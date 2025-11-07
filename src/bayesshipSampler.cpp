@@ -93,6 +93,7 @@ proposalTracking::proposalTracker::proposalTracker(
 
 	if (!proposals_file.good())
 	{
+		// Raise error if good() returns error bit
 		std::cerr << "Unable to create " << proposals_filename << "\n";
 	}
 	proposals_file.close();
@@ -102,7 +103,12 @@ proposalTracking::proposalTracker::proposalTracker(
 	// Create stats file
 	std::ofstream stats_file(stats_filename);
 
-	if (!stats_file.good())
+	if (stats_file.good())
+	{
+		// Write out header
+		stats_file << "proposal,accept,duration[s]\n";
+	}
+	else
 	{
 		std::cerr << "Unable to create " << stats_filename << "\n";
 	}
@@ -154,10 +160,10 @@ void proposalTracking::proposalTracker::write()
 		// Loop over each proposal
 		for (auto &proposal: proposed_params)
 		{
-			// Store each parameter but the last
+			// Store each parameter but the last, attach comma
 			for (auto param = proposal.begin(); param != proposal.end()-1; param++)
 			{
-				proposals_file << *param << " ";
+				proposals_file << *param << ",";
 			}
 			// Store the last parameter, attach newline
 			proposals_file << proposal.back() << "\n";
@@ -180,8 +186,8 @@ void proposalTracking::proposalTracker::write()
 	{
 		for (size_t i = 0; i < proposal_func_idx.size(); i++)
 		{	
-			stats_file << proposal_func_idx.at(i) << " ";
-			stats_file << accepted_tracker.at(i) << " ";
+			stats_file << proposal_func_idx.at(i) << ",";
+			stats_file << accepted_tracker.at(i) << ",";
 			stats_file << times.at(i) << "\n";			
 		}
 	}
@@ -195,6 +201,7 @@ void proposalTracking::proposalTracker::write()
 proposalTracking::proposalTracking(const std::vector<int> chains, std::string fileprefix)
 {
 	this->chains = chains;
+	// Print out chains being tracked
 	std::cout << "Storing proposals for chains ";
 	for (auto chain = chains.begin(); chain < chains.end()-1; chain++)
 	{
@@ -202,17 +209,17 @@ proposalTracking::proposalTracking(const std::vector<int> chains, std::string fi
 	}
 	std::cout << chains.back() << ".\n";
 
-	// Initialize structs for each chain
+	// Initialize files and structs for each chain
 	for (size_t i = 0; i < chains.size(); i++)
 	{
 		// Create filenames
 		std::string proposals_filename(
 			fileprefix + "_proposals_params_chain"
-			+ std::to_string(chains.at(i)) + ".dat"
+			+ std::to_string(chains.at(i)) + ".csv"
 		);
 		std::string stats_filename(
 			fileprefix + "_proposals_stats_chain"
-			+ std::to_string(chains.at(i)) + ".dat"
+			+ std::to_string(chains.at(i)) + ".csv"
 		);
 		// Create tracker
 		trackers.push_back(
@@ -230,7 +237,7 @@ void proposalTracking::store(
 	double time
 )
 {
-	// Store only if the chainID is in our list of chains.
+	// Store only if the chainID is in our list of tracked chains.
 	// Find where chainID matches.
 	int chain_pos = -1;
 	for (int i = 0; i < chains.size(); i++)
@@ -251,7 +258,7 @@ void proposalTracking::store(
 
 void proposalTracking::write()
 {
-	std::cout << "Writing proposed mass parameters out.\n";
+	std::cout << "Writing proposals out.\n";
 
 	for (auto &tr: trackers)
 	{
