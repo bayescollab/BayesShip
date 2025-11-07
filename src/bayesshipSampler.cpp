@@ -1846,7 +1846,10 @@ void bayesshipSampler::writeCheckpoint(samplerData *data)
 			proposalFns->proposals[i]->writeCheckpoint(outputDir, outputFileMoniker);
 	}
 	
-	proposal_tracker->write();
+	if (proposal_tracker)
+	{
+		proposal_tracker->write();
+	}
 
 	return;
 }
