@@ -70,6 +70,7 @@ template<class U>
 U pow_int(U base, int power);
 //#################################################################
 //#################################################################
+void printTime(double time, std::string message);
 
 }
 #endif

@@ -142,29 +142,6 @@ void bayesshipSampler::assignInitialPosition(samplerData *data)
 	}
 }
 
-//! \brief Print time elapsed to STDOUT. Adapts to duration length (seconds, minutes, hours).
-//! \param time	Elapsed time in seconds. Currently expected to be omp_get_wtime output.
-//! \param message Message prefixed to the time. Adds a space between them.
-void printTime(double time, std::string message)
-{
-	// Units of time to be printed out. Initially in seconds.
-	std::string units = "s";
-	// If over 60 seconds, convert to minutes
-	if (time >= 60.)
-	{
-		time /= 60.;
-		units = "min";
-	}
-	// If over 60 minutes, convert to hours
-	if (time >= 60.)
-	{
-		time /= 60.;
-		units = "hr";
-	}
-	
-	std::cout << message << " " << time << " " << units << "\n";
-}
-
 /*! \brief Routine to initiate sampling
  *
  * All sampling arguments should be set first through the object member variables, before sampling. See the Ptrjmcmc.h file for all options
