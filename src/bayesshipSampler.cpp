@@ -142,6 +142,29 @@ void bayesshipSampler::assignInitialPosition(samplerData *data)
 	}
 }
 
+//! \brief Print time elapsed to STDOUT. Adapts to duration length (seconds, minutes, hours).
+//! \param time	Elapsed time in seconds. Currently expected to be omp_get_wtime output.
+//! \param message Message prefixed to the time. Adds a space between them.
+void printTime(double time, std::string message)
+{
+	// Units of time to be printed out. Initially in seconds.
+	std::string units = "s";
+	// If over 60 seconds, convert to minutes
+	if (time >= 60.)
+	{
+		time /= 60.;
+		units = "min";
+	}
+	// If over 60 minutes, convert to hours
+	if (time >= 60.)
+	{
+		time /= 60.;
+		units = "hr";
+	}
+	
+	std::cout << message << " " << time << " " << units << "\n";
+}
+
 /*! \brief Routine to initiate sampling
  *
  * All sampling arguments should be set first through the object member variables, before sampling. See the Ptrjmcmc.h file for all options
@@ -275,7 +298,6 @@ void bayesshipSampler::sample()
 		std::cout<<"Skipping prior exploration"<<std::endl;		
 	}
 	if(burnIterations >0){
-		std::cout<<"Burning in "<<std::endl;
 		bool saveRandomizeSwappingFlag = randomizeSwapping;
 		bool savePool = threadPool;
 		double saveSwapProb = swapProb;
@@ -307,6 +329,14 @@ void bayesshipSampler::sample()
 	
 		isolateEnsemblesInternal = isolateEnsemblesBurn;
 
+
+		std::cout<<"Burning in "<<std::endl;
+
+		// Initial time for tracking burn-in duration
+		double burn_start_time = 0.;
+		// Track time elapsed. See below for implementation.
+		double burn_time = 0.;
+
 		for( int i = 0 ;i<2;i++){
 			burnPeriod=true;
 			adjustTemps=true;
@@ -323,6 +353,9 @@ void bayesshipSampler::sample()
 			int steps = 0;
 			//int deltaStep = (int)(1./saveSwapProb);
 			int deltaStep = 2;
+			#ifdef _OPENMP
+			burn_start_time = omp_get_wtime();
+			#endif // _OPENMP
 			while(steps < burnIterations/4 - deltaStep){
 				sampleLoop(deltaStep,burnData);
 				steps+=deltaStep;
@@ -339,6 +372,9 @@ void bayesshipSampler::sample()
 					burnData->updateBetas(betas);
 				}
 			}
+			#ifdef _OPENMP
+			burn_time += omp_get_wtime() - burn_start_time;
+			#endif // _OPENMP
 
 			//####################################################
 			
@@ -397,10 +433,17 @@ void bayesshipSampler::sample()
 
 
 			std::cout<<"Exploring"<<std::endl;
+			#ifdef _OPENMP
+			burn_start_time = omp_get_wtime();
+			#endif // _OPENMP
 			sampleLoop(burnIterations/4,burnData);
+			#ifdef _OPENMP
+			burn_time += omp_get_wtime() - burn_start_time;
+			#endif // _OPENMP
 		}
 		burnPeriod=false;
 		swapProb=saveSwapProb;
+		printTime(burn_time, "BURN-IN TIME:");
 		std::cout<<"Final temperatures after burn in"<<std::endl;
 		for(int i = 0 ; i<ensembleSize; i++){
 				std::cout<<"Temp: "<<i<<": "<<betas[chainIndex(0,i)]<<std::endl;
