@@ -279,7 +279,10 @@ void bayesshipSampler::sample()
 		bool savePool = threadPool;
 		double saveSwapProb = swapProb;
 		randomizeSwapping = false;
-		t0 = burnIterations /8.;
+		if (t0 == 0)
+		{
+			t0 = burnIterations /8.;
+		}
 
 		burnData = new samplerData(maxDim, ensembleN,ensembleSize, burnIterations, proposalFns->proposalN, RJ,betas);
 		if(priorData){
@@ -308,6 +311,7 @@ void bayesshipSampler::sample()
 
 
 		std::cout<<"Burning in "<<std::endl;
+		std::cout << "(t0, ν) = (" << t0 << ", " << nu << ")\n";
 
 		// Initial time for tracking burn-in duration
 		double burn_start_time = 0.;
@@ -668,7 +672,7 @@ void bayesshipSampler::allocateMemory( )
 		/*Geometric spacing -- In principal, we should space these out geometrically between 1 and 0,
  * 		but that proves to be inefficient. Start by spacing out geometrically between 0 and 1/100, 
  * 		which is the likelihood raised to 1/100. That's plenty.*/
-		double deltaBeta = pow( (1e2),1./ensembleSize);
+		double deltaBeta = pow(Tmax,1./(ensembleSize-2));
 		//std::cout<<"Initial Beta Schedule"<<std::endl;
 		for(int i = 1 ; i<ensembleSize-1;i++){
 			betaSchedule[i] = betaSchedule[i-1]/deltaBeta;
