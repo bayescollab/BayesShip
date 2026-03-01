@@ -195,8 +195,6 @@ void bayesshipSampler::sample()
 		if(burnPriorIterations >0){
 			std::cout<<"Burning in for prior"<<std::endl;
 			
-			t0 = burnPriorIterations /2.;
-
 			burnPeriod=true;
 			adjustTemps=false;
 
