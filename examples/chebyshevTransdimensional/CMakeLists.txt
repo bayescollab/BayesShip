@@ -2,9 +2,9 @@ add_executable(chebyshevTransdimensional "src/chebyshevTransdimensional.cpp")
 
 target_link_libraries(chebyshevTransdimensional PUBLIC bayesship)
 
-target_link_libraries( chebyshevTransdimensional PUBLIC "${LIBS}")
+target_link_libraries( chebyshevTransdimensional PUBLIC ${PROJECT_NAME}_compiler_flags)
 
-target_include_directories( chebyshevTransdimensional PUBLIC "${INCLUDE_DIRS}")
+# target_include_directories( chebyshevTransdimensional PUBLIC "${INCLUDE_DIRS}")
 
 file(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/examples/chebyshevTransdimensional/python/")
 file(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/examples/chebyshevTransdimensional/plots/")

@@ -1,6 +1,6 @@
-cmake_minimum_required (VERSION 3.11)
+cmake_minimum_required (VERSION 3.28)
 project(BayesShip
-	VERSION 0.0.0 	
+	VERSION 1.0.0 	
 	DESCRIPTION "A Parallel Tempering Reversible Jump Markov Chain Monte Carlo library"
 	LANGUAGES CXX C)
 
@@ -13,25 +13,17 @@ option(ENABLE_SWIG "Use SWIG to compile python modules" ON)
 option(DEBUG "set debugger options" OFF)
 
 
-if(DEBUG)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -std=c++11")
-	#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O2 -Wall CPPDEFINES=BOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS")
-else()
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -std=c++11")
-	#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 CPPDEFINES=BOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS")
-endif()
-
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install/" CACHE PATH "..." FORCE)
 endif()
 # The version number.
-set (BAYESSHIP_VERSION_MAJOR 1)
-set (BAYESSHIP_VERSION_MINOR 0)
+set (BAYESSHIP_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
+set (BAYESSHIP_VERSION_MINOR ${PROJECT_VERSION_MINOR})
 
 set (BAYESSHIP_ROOT_DIRECTORY "${PROJECT_SOURCE_DIR}/")
 
  
-# configure a header file to pass some of the CMake settings
+# Configure a header file to pass some of the CMake settings
 # to the source code
 configure_file (
   "${PROJECT_SOURCE_DIR}/include/bayesship/BayesShipConfig.h.in"
@@ -47,9 +39,16 @@ file(GLOB HEADER_LIST CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/include/bayesship
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
 
 include_directories("${PROJECT_BINARY_DIR}/include/bayesship")
+
+# Create interface to pass compiler options to build objects
+add_library(${PROJECT_NAME}_compiler_flags INTERFACE)
+# Specify C++11 standard
+target_compile_features(${PROJECT_NAME}_compiler_flags INTERFACE cxx_std_11)
+
 #Required packages
 find_package(HDF5 COMPONENTS CXX)
 if(HDF5_FOUND AND IMPLEMENT_HDF5 )
+	# Preprocessor def used by the source files
 	add_compile_definitions(_HDF5)
 else()
 	message ( "HDF5 is currently required for some MCMC and RJMCMC functionality" )
@@ -58,12 +57,8 @@ endif()
 find_package(nlohmann_json REQUIRED)
 
 find_package(OpenMP)
-#if(OpenMP_FOUND AND IMPLEMENT_OMP)
-#	add_compile_definitions(_OPENMP)
-#endif()
 find_package(GSL REQUIRED)
 find_package(Threads REQUIRED)
-#find_package(Eigen3 REQUIRED)
 find_package(Armadillo REQUIRED)
 find_package(FFTW3 REQUIRED)
 
@@ -73,29 +68,44 @@ if( NOT SWIG_FOUND AND ENABLE_SWIG)
 	message("SWIG not found, not producing python wrappings")
 endif()
 
-
-#find_package(MLPACK)
-#if(MLPACK_FOUND)
-#	add_compile_definitions(_MLPACK)
-#endif()
-
+# Leaving in INCLUDE_DIRS and LIBS as the SWIG CMake uses them
+# However, the rest of the libraries are to use target_link_libraries()
 set(INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/include;${OpenMP_INCLUDE_DIR};${HDF5_INCLUDE_DIR};${GSL_INCLUDE_DIR};${FFTW3_INCLUDE_DIR};${ARMADILLO_INCLUDE_DIRS}")
 set(LIBS "OpenMP::OpenMP_CXX;${GSL_LIBRARIES};${FFTW3_LIBRARIES};${ARMADILLO_LIBRARIES}" )
+# This is the proper way to link and include libraries
+target_include_directories(${PROJECT_NAME}_compiler_flags INTERFACE 
+	${ARMADILLO_INCLUDE_DIRS} ${FFTW3_INCLUDE_DIR} "${PROJECT_SOURCE_DIR}/include"
+)
+target_link_libraries(${PROJECT_NAME}_compiler_flags INTERFACE
+	OpenMP::OpenMP_CXX
+	GSL::gsl
+	${FFTW3_LIBRARIES}
+	${ARMADILLO_LIBRARIES}
+)
 
 if(IMPLEMENT_HDF5)
 	set(LIBS "${HDF5_LIBRARIES};${LIBS}")
 	set(INCLUDE_DIRS "${HDF5_INCLUDE_DIR};${INCLUDE_DIRS}")
+	target_link_libraries(
+		${PROJECT_NAME}_compiler_flags INTERFACE hdf5::hdf5_cpp
+	)
 endif()
 
 if(SWIG_FOUND AND ENABLE_SWIG )
-	find_package(PythonLibs REQUIRED)
-	find_package(Python REQUIRED)
+	# FindPythonLibs deprecated since CMake 3.12
+	# find_package(PythonLibs REQUIRED)
+	find_package(Python COMPONENTS Interpreter Development REQUIRED)
+		message("Python_INCLUDE_DIRS: ${Python_INCLUDE_DIRS}")
+	
 	cmake_policy(SET CMP0078 NEW)
-	#cmake_policy(SET CMP0086 NEW)
+	cmake_policy(SET CMP0086 NEW)
 	message("Using SWIG to compile python wrappers")
 	include(UseSWIG)
-	set(LIBS "${PYTHON_LIBRARIES};${LIBS}")
-	set(INCLUDE_DIRS "${PYTHON_INCLUDE_DIR};${INCLUDE_DIRS}")
+	set(LIBS "${Python_LIBRARIES};${LIBS}")
+	set(INCLUDE_DIRS "${Python_INCLUDE_DIRS};${INCLUDE_DIRS}")
+	target_link_libraries(
+		${PROJECT_NAME}_compiler_flags INTERFACE Python::Python
+	)
 	#set(LIBS "${SWIG_DIR};${LIBS}")
 	#set(INCLUDE_DIRS "${SWIG_INCLUDE_DIR};${INCLUDE_DIRS}")
 	set (USE_SWIG TRUE)

@@ -195,8 +195,6 @@ void bayesshipSampler::sample()
 		if(burnPriorIterations >0){
 			std::cout<<"Burning in for prior"<<std::endl;
 			
-			t0 = burnPriorIterations /2.;
-
 			burnPeriod=true;
 			adjustTemps=false;
 
@@ -275,12 +273,14 @@ void bayesshipSampler::sample()
 		std::cout<<"Skipping prior exploration"<<std::endl;		
 	}
 	if(burnIterations >0){
-		std::cout<<"Burning in "<<std::endl;
 		bool saveRandomizeSwappingFlag = randomizeSwapping;
 		bool savePool = threadPool;
 		double saveSwapProb = swapProb;
 		randomizeSwapping = false;
-		t0 = burnIterations /8.;
+		if (t0 == 0)
+		{
+			t0 = burnIterations /8.;
+		}
 
 		burnData = new samplerData(maxDim, ensembleN,ensembleSize, burnIterations, proposalFns->proposalN, RJ,betas);
 		if(priorData){
@@ -307,6 +307,15 @@ void bayesshipSampler::sample()
 	
 		isolateEnsemblesInternal = isolateEnsemblesBurn;
 
+
+		std::cout<<"Burning in "<<std::endl;
+		std::cout << "(t0, ν) = (" << t0 << ", " << nu << ")\n";
+
+		// Initial time for tracking burn-in duration
+		double burn_start_time = 0.;
+		// Track time elapsed. See below for implementation.
+		double burn_time = 0.;
+
 		for( int i = 0 ;i<2;i++){
 			burnPeriod=true;
 			adjustTemps=true;
@@ -323,6 +332,9 @@ void bayesshipSampler::sample()
 			int steps = 0;
 			//int deltaStep = (int)(1./saveSwapProb);
 			int deltaStep = 2;
+			#ifdef _OPENMP
+			burn_start_time = omp_get_wtime();
+			#endif // _OPENMP
 			while(steps < burnIterations/4 - deltaStep){
 				sampleLoop(deltaStep,burnData);
 				steps+=deltaStep;
@@ -339,6 +351,9 @@ void bayesshipSampler::sample()
 					burnData->updateBetas(betas);
 				}
 			}
+			#ifdef _OPENMP
+			burn_time += omp_get_wtime() - burn_start_time;
+			#endif // _OPENMP
 
 			//####################################################
 			
@@ -397,10 +412,17 @@ void bayesshipSampler::sample()
 
 
 			std::cout<<"Exploring"<<std::endl;
+			#ifdef _OPENMP
+			burn_start_time = omp_get_wtime();
+			#endif // _OPENMP
 			sampleLoop(burnIterations/4,burnData);
+			#ifdef _OPENMP
+			burn_time += omp_get_wtime() - burn_start_time;
+			#endif // _OPENMP
 		}
 		burnPeriod=false;
 		swapProb=saveSwapProb;
+		printTime(burn_time, "BURN-IN TIME:");
 		std::cout<<"Final temperatures after burn in"<<std::endl;
 		for(int i = 0 ; i<ensembleSize; i++){
 				std::cout<<"Temp: "<<i<<": "<<betas[chainIndex(0,i)]<<std::endl;
@@ -648,7 +670,7 @@ void bayesshipSampler::allocateMemory( )
 		/*Geometric spacing -- In principal, we should space these out geometrically between 1 and 0,
  * 		but that proves to be inefficient. Start by spacing out geometrically between 0 and 1/100, 
  * 		which is the likelihood raised to 1/100. That's plenty.*/
-		double deltaBeta = pow( (1e2),1./ensembleSize);
+		double deltaBeta = pow(Tmax,1./(ensembleSize-2));
 		//std::cout<<"Initial Beta Schedule"<<std::endl;
 		for(int i = 1 ; i<ensembleSize-1;i++){
 			betaSchedule[i] = betaSchedule[i-1]/deltaBeta;
