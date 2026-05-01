@@ -42,8 +42,14 @@ set_target_properties(bayesship_static PROPERTIES OUTPUT_NAME "bayesship")
 
 
 #Install
-install(TARGETS bayesship DESTINATION "${CMAKE_INSTALL_PREFIX}/lib")
-install(TARGETS bayesship_static DESTINATION "${CMAKE_INSTALL_PREFIX}/lib")
+install(TARGETS bayesship
+    EXPORT BayesShipTargets
+    LIBRARY DESTINATION lib
+)
+install(TARGETS bayesship_static
+    EXPORT BayesShipTargets
+    ARCHIVE DESTINATION lib
+)
 
 
 #if(USE_SWIG)
