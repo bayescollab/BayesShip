@@ -419,6 +419,29 @@ void errorMessage(std::string message, int code)
 	return;
 }
 
+//! \brief Print time elapsed to STDOUT. Adapts to duration length (seconds, minutes, hours).
+//! \param time	Elapsed time in seconds. Currently expected to be omp_get_wtime output.
+//! \param message Message prefixed to the time. Adds a space between them.
+void printTime(double time, std::string message)
+{
+	// Units of time to be printed out. Initially in seconds.
+	std::string units = "s";
+	// If over 60 seconds, convert to minutes
+	if (time >= 60.)
+	{
+		time /= 60.;
+		units = "min";
+	}
+	// If over 60 minutes, convert to hours
+	if (time >= 60.)
+	{
+		time /= 60.;
+		units = "hr";
+	}
+	
+	std::cout << message << " " << time << " " << units << "\n";
+}
+
 //########################################################
 //########################################################
 /*! \brief Gelman Rubin statistic between chainN chains with lengths[chainN].

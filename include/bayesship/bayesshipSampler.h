@@ -342,8 +342,10 @@ public:
 	bool burnPeriod = false;
 	bool adjustTemps = false;
 	/* Parameters for burn in temperature adjustment*/
-	double t0;
+	double t0=0;
 	double nu=100;
+	//! Max temperature (before T = inf)
+	double Tmax = 100.;
 	double *A=nullptr;
 	gsl_rng **rvec=nullptr;
 

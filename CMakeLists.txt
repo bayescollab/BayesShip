@@ -42,8 +42,8 @@ include_directories("${PROJECT_BINARY_DIR}/include/bayesship")
 
 # Create interface to pass compiler options to build objects
 add_library(${PROJECT_NAME}_compiler_flags INTERFACE)
-# Specify C++11 standard
-target_compile_features(${PROJECT_NAME}_compiler_flags INTERFACE cxx_std_11)
+# Specify C++14 standard
+target_compile_features(${PROJECT_NAME}_compiler_flags INTERFACE cxx_std_14)
 
 #Required packages
 find_package(HDF5 COMPONENTS CXX)
@@ -73,8 +73,10 @@ endif()
 set(INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/include;${OpenMP_INCLUDE_DIR};${HDF5_INCLUDE_DIR};${GSL_INCLUDE_DIR};${FFTW3_INCLUDE_DIR};${ARMADILLO_INCLUDE_DIRS}")
 set(LIBS "OpenMP::OpenMP_CXX;${GSL_LIBRARIES};${FFTW3_LIBRARIES};${ARMADILLO_LIBRARIES}" )
 # This is the proper way to link and include libraries
-target_include_directories(${PROJECT_NAME}_compiler_flags INTERFACE 
-	${ARMADILLO_INCLUDE_DIRS} ${FFTW3_INCLUDE_DIR} "${PROJECT_SOURCE_DIR}/include"
+target_include_directories(${PROJECT_NAME}_compiler_flags INTERFACE
+	${ARMADILLO_INCLUDE_DIRS} ${FFTW3_INCLUDE_DIR}
+	$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+	$<INSTALL_INTERFACE:include>
 )
 target_link_libraries(${PROJECT_NAME}_compiler_flags INTERFACE
 	OpenMP::OpenMP_CXX
@@ -156,3 +158,32 @@ endif()
 install(FILES ${HEADER_LIST} DESTINATION "include/bayesship")
 install(FILES "${CMAKE_BINARY_DIR}/include/bayesship/BayesShipConfig.h" DESTINATION "include/bayesship")
 
+# Export the compiler_flags interface target so the installed package can use it
+install(TARGETS ${PROJECT_NAME}_compiler_flags
+    EXPORT BayesShipTargets
+)
+
+# Install the export set
+install(EXPORT BayesShipTargets
+    FILE BayesShipTargets.cmake
+    NAMESPACE BayesShip::
+    DESTINATION lib/cmake/BayesShip
+)
+
+# Generate and install the package config and version files
+include(CMakePackageConfigHelpers)
+configure_package_config_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/BayesShipConfig.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/BayesShipConfig.cmake"
+    INSTALL_DESTINATION lib/cmake/BayesShip
+)
+write_basic_package_version_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/BayesShipConfigVersion.cmake"
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY AnyNewerVersion
+)
+install(FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/BayesShipConfig.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/BayesShipConfigVersion.cmake"
+    DESTINATION lib/cmake/BayesShip
+)
