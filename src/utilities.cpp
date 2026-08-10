@@ -442,6 +442,16 @@ void printTime(double time, std::string message)
 	std::cout << message << " " << time << " " << units << "\n";
 }
 
+void geometric_beta_schedule(double* betas, int length, double Tmax) {
+  betas[0] = 1;
+  betas[length - 1] = 0;
+
+  double deltaBeta = pow(Tmax, 1. / (length - 2));
+  for (int i = 1; i < length - 1; i++) {
+    betas[i] = betas[i - 1] / deltaBeta;
+  }
+}
+
 //########################################################
 //########################################################
 /*! \brief Gelman Rubin statistic between chainN chains with lengths[chainN].

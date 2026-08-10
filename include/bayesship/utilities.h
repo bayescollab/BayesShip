@@ -72,5 +72,14 @@ U pow_int(U base, int power);
 //#################################################################
 void printTime(double time, std::string message);
 
+/// @brief Compute a geometrically-spaced temperature ladder.
+///
+/// The endpoints of the ladder are fixed to 1 and 0. The interior points are assigned as
+/// betas[i] = betas[i-1] / C,
+/// where C = Tmax^{1 / (length-2)} so that beta[length-2] = 1/Tmax.
+/// @param betas   [out] Pre-allocated array of [length].
+/// @param length  Number of temperatures, including the endpoints.
+/// @param Tmax    Maximum finite temperature (before T=∞).
+void geometric_beta_schedule(double* betas, int length, double Tmax);
 }
 #endif
