@@ -662,22 +662,8 @@ void bayesshipSampler::allocateMemory( )
 	if(!betaSchedule){
 		/*If betaSchedule is allocated internally, it should be released internally*/
 		internalBetaScheduleFlag = true;
-
 		betaSchedule = new double[ensembleSize];
-
-		betaSchedule[0] = 1;
-		betaSchedule[ensembleSize-1]=0;
-		/*Geometric spacing -- In principal, we should space these out geometrically between 1 and 0,
- * 		but that proves to be inefficient. Start by spacing out geometrically between 0 and 1/100, 
- * 		which is the likelihood raised to 1/100. That's plenty.*/
-		double deltaBeta = pow(Tmax,1./(ensembleSize-2));
-		//std::cout<<"Initial Beta Schedule"<<std::endl;
-		for(int i = 1 ; i<ensembleSize-1;i++){
-			betaSchedule[i] = betaSchedule[i-1]/deltaBeta;
-			//std::cout<<betaSchedule[i]<<std::endl;
-		}
-
-			
+		geometric_beta_schedule(betaSchedule, ensembleSize, Tmax);
 	}
 	/*Assign temperature parameters*/
 	if(!betas){
