@@ -42,8 +42,8 @@ include_directories("${PROJECT_BINARY_DIR}/include/bayesship")
 
 # Create interface to pass compiler options to build objects
 add_library(${PROJECT_NAME}_compiler_flags INTERFACE)
-# Specify C++14 standard
-target_compile_features(${PROJECT_NAME}_compiler_flags INTERFACE cxx_std_14)
+# Specify C++23 standard
+target_compile_features(${PROJECT_NAME}_compiler_flags INTERFACE cxx_std_23)
 
 #Required packages
 find_package(HDF5 COMPONENTS CXX)
