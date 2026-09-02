@@ -195,14 +195,14 @@ private:
 	{
 		for(auto i =0u; i<numThreads; i++)
 		{
-			Threads.emplace_back([=]{
+			Threads.emplace_back([=, this]{
 				while(true)
 				{
 					jobtype j;
 					{
 						std::unique_lock<std::mutex> lock{EventMutex};
 
-						EventVar.wait(lock,[=]{return stopping || !tasks.empty(); });
+						EventVar.wait(lock,[=, this]{return stopping || !tasks.empty(); });
 						
 						if (stopping && tasks.empty())
 							break;	
@@ -478,14 +478,14 @@ private:
 	{
 		for(auto i =0u; i<numThreads; i++)
 		{
-			this->Threads.emplace_back([=]{
+			this->Threads.emplace_back([=, this]{
 				while(true)
 				{
 					jobtype j,k;
 					{
 						std::unique_lock<std::mutex> lock{this->EventMutex};
 
-						this->EventVar.wait(lock,[=]{return this->stopping || !this->tasks.empty(); });
+						this->EventVar.wait(lock,[=, this]{return this->stopping || !this->tasks.empty(); });
 						
 						if (this->stopping && this->tasks.empty())
 							break;	
