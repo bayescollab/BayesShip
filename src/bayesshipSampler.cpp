@@ -1291,10 +1291,13 @@ void bayesshipSampler::stepMH(
 	
 	
 	/*Calculate the MH ratio*/
-	double MHRatio = 
-		(logLikelihood - data->likelihoodVals[chainID][currentStep]) * betas[chainID]
-		+logPrior - data->priorVals[chainID][currentStep] 
-		+ MHRatioCorrection;
+	double MHRatio = (betas[chainID] == 0
+							? 0.0
+							: (logLikelihood -
+								data->likelihoodVals[chainID][currentStep]) *
+								betas[chainID]) +
+						logPrior - data->priorVals[chainID][currentStep] +
+						MHRatioCorrection;
 
 	/*Random number representing probability*/
 	double prob = log(gsl_rng_uniform(rvec[chainID]));
