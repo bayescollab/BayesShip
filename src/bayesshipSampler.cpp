@@ -676,7 +676,7 @@ void bayesshipSampler::sample()
 		
 	gsl_set_error_handler(oldHandler);
 	if(stoppedEarly){
-		std::cout<<"STOPPED EARLY (signal or wall-time budget).\nCheckpoint generation "<<ckptGeneration<<" is complete; rerun with the same outputDir and ignoreExistingCheckpoint=false to continue."<<std::endl;
+		std::cout<<"STOPPED EARLY (signal or wall-time budget).\nCheckpoint generation "<<ckptGeneration<<" is complete; run again with the same output directory to continue."<<std::endl;
 	}
 
 	std::cout<<"Total sampling time (seconds): "<<(double)(-start + omp_get_wtime())<<std::endl;
@@ -2044,7 +2044,7 @@ void bayesshipSampler::loadCheckpoint()
 		std::cout<<"WARNING: checkpoint generation "<<g<<" is not usable ("<<reason<<")"<<std::endl;
 	}
 	if(!gens.empty()){
-		errorMessage("ERROR: checkpoint generations exist in "+root+" but none passes verification. Not starting over automatically; inspect them, or set ignoreExistingCheckpoint to discard.", 1);
+		errorMessage("ERROR: checkpoint generations exist in "+root+" but none passes verification. Not starting over automatically; inspect them, or start a new run in an empty output directory.", 1);
 	}
 	loadCheckpointFrom(outputDir+outputFileMoniker+"_checkpoint.json", outputDir);
 }
