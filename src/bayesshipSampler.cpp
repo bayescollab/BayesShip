@@ -2070,8 +2070,7 @@ void bayesshipSampler::loadCheckpointFrom(const std::string &inputFile, const st
 
 	j.at("maxDim").get_to(this->maxDim);	
 	j.at("RJ").get_to(this->RJ);	
-	j.at("threadPool").get_to(this->threadPool);	
-	j.at("minDim").get_to(this->minDim);	
+	j.at("minDim").get_to(this->minDim);
 	j.at("ensembleSize").get_to(this->ensembleSize);	
 	j.at("ensembleN").get_to(this->ensembleN);	
 	j.at("seed").get_to(this->seed);
@@ -2080,9 +2079,21 @@ void bayesshipSampler::loadCheckpointFrom(const std::string &inputFile, const st
 	 * stores, so every resume gets a fresh range.*/
 	this->seed += 101.*ensembleSize*ensembleN;
 	std::cout<<"Random number seed advanced to "<<this->seed<<" for the resumed run"<<std::endl;
-	j.at("swapProb").get_to(this->swapProb);
-	j.at("averageDynamics").get_to(this->averageDynamics);	
-	j.at("randomizeSwapping").get_to(this->randomizeSwapping);	
+	/*How the run proceeds (swap rate, threading, swap order, temperature dynamics) is taken from the current
+	 * settings, not the checkpoint, so a resume can change it. What defines the run (layout, temperatures,
+	 * positions, seed) comes from the checkpoint above and below.*/
+	if(j.contains("swapProb") && j["swapProb"].get<double>() != swapProb){
+		std::cout<<"NOTE: using swapProb "<<swapProb<<" from the current settings (the checkpoint recorded "<<j["swapProb"].get<double>()<<")"<<std::endl;
+	}
+	if(j.contains("threadPool") && j["threadPool"].get<bool>() != threadPool){
+		std::cout<<"NOTE: using threadPool "<<threadPool<<" from the current settings (the checkpoint recorded "<<j["threadPool"].get<bool>()<<")"<<std::endl;
+	}
+	if(j.contains("randomizeSwapping") && j["randomizeSwapping"].get<bool>() != randomizeSwapping){
+		std::cout<<"NOTE: using randomizeSwapping "<<randomizeSwapping<<" from the current settings (the checkpoint recorded "<<j["randomizeSwapping"].get<bool>()<<")"<<std::endl;
+	}
+	if(j.contains("averageDynamics") && j["averageDynamics"].get<bool>() != averageDynamics){
+		std::cout<<"NOTE: using averageDynamics "<<averageDynamics<<" from the current settings (the checkpoint recorded "<<j["averageDynamics"].get<bool>()<<")"<<std::endl;
+	}
 	std::vector<double> betaScheduleTemp;
 	j.at("betaSchedule").get_to(betaScheduleTemp);	
 	std::vector<double> betasTemp;
