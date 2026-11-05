@@ -32,6 +32,12 @@ void gaussianProposal::writeCheckpoint(  std::string outputDirectory, std::strin
 }
 void gaussianProposal::loadCheckpoint(  std::string inputDirectory, std::string runMoniker)
 {
+	/*This proposal has its own generators (seeded seed + i at construction). Reseed them from the sampler's seed,
+	 * which loading the checkpoint has just advanced, so a resumed run does not replay their streams either.*/
+	for(int i = 0 ; i<chainN; i++){
+		gsl_rng_set(r[i], (unsigned long)sampler->seed + i);
+	}
+
 	std::string inputFile(inputDirectory+runMoniker + + "_checkpoint_gaussianProposalVariables.json");
 	if(!checkDirExist(inputFile)){
 		return;

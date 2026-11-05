@@ -4,6 +4,7 @@
 #include "bayesship/dataUtilities.h"
 #include <vector>
 #include <string>
+#include <atomic>
 #include <armadillo>
 
 /*! \file 
@@ -88,6 +89,8 @@ public:
 	
 	int **FisherAttemptsSinceLastUpdate=nullptr;
 	int updateFreq = 200;
+	/*! Set whenever a Fisher matrix is (re)computed: the stored copy in <moniker>_fisher/ is then out of date*/
+	std::atomic<bool> fisherChanged{false};
 
 	std::vector<std::vector<int>> blocks;
 	std::vector<double> blockProb;
@@ -103,6 +106,10 @@ public:
 	blockFisherProposal(int chainN, int maxDim, blockFisherCalculation fisherCalc, void **parameters, int updateFreq,bayesshipSampler *sampler, std::vector<std::vector<int>> blocks,std::vector<double> blockProb);
 	virtual ~blockFisherProposal();
 	virtual void propose(positionInfo *current, positionInfo *proposed, int chainID,int stepID,double *MHRatioModifications);
+	virtual void writeCheckpoint(std::string outputDirectory , std::string runMoniker);
+	virtual void loadCheckpoint( std::string inputDirectory, std::string runMoniker);
+	/*! All Fisher matrices, eigen-decompositions and flags, as stored in <moniker>_fisher/*/
+	nlohmann::json fisherState();
 
 };
 
@@ -133,6 +140,8 @@ public:
 	
 	int *FisherAttemptsSinceLastUpdate=nullptr;
 	int updateFreq = 200;
+	/*! Set whenever a Fisher matrix is (re)computed: the stored copy in <moniker>_fisher/ is then out of date*/
+	std::atomic<bool> fisherChanged{false};
 
 	void **parameters=nullptr;
 
@@ -143,6 +152,10 @@ public:
 	fisherProposal(int chainN, int maxDim, FisherCalculation fisherCalc, void **parameters, int updateFreq,bayesshipSampler *sampler);
 	virtual ~fisherProposal();
 	virtual void propose(positionInfo *current, positionInfo *proposed, int chainID,int stepID,double *MHRatioModifications);
+	virtual void writeCheckpoint(std::string outputDirectory , std::string runMoniker);
+	virtual void loadCheckpoint( std::string inputDirectory, std::string runMoniker);
+	/*! All Fisher matrices, eigen-decompositions and flags, as stored in <moniker>_fisher/*/
+	nlohmann::json fisherState();
 
 };
 

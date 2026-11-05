@@ -1,6 +1,8 @@
 #include "bayesship/proposalFunctions.h"
 #include "bayesship/utilities.h"
 #include <armadillo>
+#include <nlohmann/json.hpp>
+#include <fstream>
 
 
 /*! \file
@@ -11,6 +13,132 @@
  *
  */
 namespace bayesship{
+
+/*! The Fisher matrices are only recomputed during burn-in, so the ones in use while sampling cannot be rebuilt
+ * when a run resumes -- store them (with their eigen-decompositions) so a resumed run proposes exactly as before.
+ *
+ * Since they stop changing after burn-in, they are kept once in their own folder, <moniker>_fisher/, and rewritten
+ * only when a matrix was computed since the last write. Each checkpoint generation (outputDirectory here) gets a
+ * small reference file with the size and hash of the Fisher file it goes with.*/
+static std::string blockFisherDirectory(bayesshipSampler *sampler)
+{
+	return sampler->outputDir+sampler->outputFileMoniker+"_fisher";
+}
+
+void blockFisherProposal::writeCheckpoint(std::string outputDirectory, std::string runMoniker)
+{
+	std::string fisherFile = blockFisherDirectory(sampler)+"/blockFisherProposal.json";
+	if(fisherChanged){
+		std::cout<<"Writing block Fisher state to "<<fisherFile<<std::endl;
+		nlohmann::json j = fisherState();
+		if(makeDirectory(blockFisherDirectory(sampler)) && atomicWriteFile(fisherFile, j.dump())){
+			fisherChanged = false;
+		}
+		else{
+			std::cout<<"WARNING: could not write "<<fisherFile<<" -- will retry with the next checkpoint"<<std::endl;
+		}
+	}
+
+	uint64_t hash, size;
+	if(!fileHashFNV1a(fisherFile, &hash, &size)){
+		/*Nothing computed yet (e.g. no burn-in), so nothing to refer to*/
+		return;
+	}
+	nlohmann::json ref;
+	ref["file"] = "blockFisherProposal.json";
+	ref["size"] = size;
+	ref["hash"] = hash;
+	std::ofstream fileOut(outputDirectory+runMoniker + "_checkpoint_blockFisherProposalRef.json");
+	fileOut << ref;
+}
+
+nlohmann::json blockFisherProposal::fisherState()
+{
+	nlohmann::json j;
+	std::vector<int> blockSizes;
+	for(size_t b = 0 ; b<blocks.size(); b++){
+		blockSizes.push_back(blocks[b].size());
+	}
+	j["chainN"] = chainN;
+	j["blockSizes"] = blockSizes;
+	for(int i = 0 ; i<chainN; i++){
+		nlohmann::json chain = nlohmann::json::array();
+		for(size_t b = 0 ; b<blocks.size(); b++){
+			int n = blocks[b].size();
+			nlohmann::json entry;
+			entry["noFisher"] = noFisher[i][b];
+			entry["attempts"] = FisherAttemptsSinceLastUpdate[i][b];
+			/*Matrices are uninitialized until first computed*/
+			if(!noFisher[i][b]){
+				std::vector<double> fisher, vecs;
+				for(int k = 0 ; k<n; k++){
+					fisher.insert(fisher.end(), Fisher[i][b][k], Fisher[i][b][k]+n);
+					vecs.insert(vecs.end(), FisherEigenVecs[i][b][k], FisherEigenVecs[i][b][k]+n);
+				}
+				entry["Fisher"] = fisher;
+				entry["eigenVals"] = std::vector<double>(FisherEigenVals[i][b], FisherEigenVals[i][b]+n);
+				entry["eigenVecs"] = vecs;
+			}
+			chain.push_back(entry);
+		}
+		j["Chains"].push_back(chain);
+	}
+	return j;
+}
+
+void blockFisherProposal::loadCheckpoint(std::string inputDirectory, std::string runMoniker)
+{
+	std::string refFile(inputDirectory+runMoniker + "_checkpoint_blockFisherProposalRef.json");
+	if(!checkDirExist(refFile)){
+		/*Checkpoint from before the Fisher state was stored, or taken before any was computed*/
+		return;
+	}
+	nlohmann::json ref;
+	std::ifstream refIn(refFile);
+	refIn>>ref;
+	std::string inputFile = blockFisherDirectory(sampler)+"/"+ref.at("file").get<std::string>();
+	uint64_t hash, size;
+	if(!fileHashFNV1a(inputFile, &hash, &size) || size != ref.at("size").get<uint64_t>() || hash != ref.at("hash").get<uint64_t>()){
+		std::cout<<"WARNING: "<<inputFile<<" is missing or does not match this checkpoint -- the Fisher matrices will be recomputed"<<std::endl;
+		return;
+	}
+	nlohmann::json j;
+	std::ifstream fileIn(inputFile);
+	fileIn>>j;
+
+	std::vector<int> blockSizes;
+	for(size_t b = 0 ; b<blocks.size(); b++){
+		blockSizes.push_back(blocks[b].size());
+	}
+	if(j.at("chainN").get<int>() != chainN || j.at("blockSizes").get<std::vector<int>>() != blockSizes){
+		std::cout<<"WARNING: "<<inputFile<<" does not match the current chains/blocks -- the Fisher matrices will be recomputed"<<std::endl;
+		return;
+	}
+	std::cout<<"Loading block Fisher checkpoint from "<<inputFile<<std::endl;
+	for(int i = 0 ; i<chainN; i++){
+		for(size_t b = 0 ; b<blocks.size(); b++){
+			const nlohmann::json &entry = j["Chains"][i][b];
+			int n = blocks[b].size();
+			noFisher[i][b] = entry.at("noFisher").get<bool>();
+			FisherAttemptsSinceLastUpdate[i][b] = entry.at("attempts").get<int>();
+			if(noFisher[i][b]){
+				continue;
+			}
+			std::vector<double> fisher = entry.at("Fisher").get<std::vector<double>>();
+			std::vector<double> vals = entry.at("eigenVals").get<std::vector<double>>();
+			std::vector<double> vecs = entry.at("eigenVecs").get<std::vector<double>>();
+			for(int k = 0 ; k<n; k++){
+				for(int l = 0 ; l<n; l++){
+					Fisher[i][b][k][l] = fisher[k*n+l];
+					FisherEigenVecs[i][b][k][l] = vecs[k*n+l];
+				}
+				FisherEigenVals[i][b][k] = vals[k];
+			}
+		}
+	}
+	/*What is in memory now is exactly what is on disk*/
+	fisherChanged = false;
+}
 
 blockFisherProposal::blockFisherProposal(int chainN, int maxDim, blockFisherCalculation fisherCalc, void **parameters, int updateFreq, bayesshipSampler *sampler, std::vector<std::vector<int>> blocks, std::vector<double> blockProb)
 {
@@ -197,9 +325,11 @@ void blockFisherProposal::propose(positionInfo *currentPosition, positionInfo *p
 			return;	
 		}
 		noFisher[chainID][alpha]= false;
+		fisherChanged = true;
 		for(int i = 0 ; i<blocks[alpha].size(); i++){
 			for(int j = 0 ; j<blocks[alpha].size(); j++){
-				FisherEigenVecs[chainID][alpha][i][j] = eigenvec(i,j);
+				/*Armadillo returns eigenvectors as columns; store eigenvector j as row j, the way propose() reads it*/
+				FisherEigenVecs[chainID][alpha][j][i] = eigenvec(i,j);
 			}
 			FisherEigenVals[chainID][alpha][i] = eigval(i);
 		}

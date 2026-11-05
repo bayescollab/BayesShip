@@ -325,7 +325,11 @@ void samplerData::calculateEvidence()
 				integratedLikelihoods[index]+=likelihoodVals[chainIndex][k];
 			}
 			norm+=currentStepID[chainIndex];
-		}		
+			if(evidenceLogLSumOffset.size() == (size_t)chainN){
+				integratedLikelihoods[index]+=evidenceLogLSumOffset[chainIndex];
+				norm+=evidenceStepOffset[chainIndex];
+			}
+		}
 		integratedLikelihoods[index]/=norm;
 		betasLocal[index] = betas[chainIndex];
 	}
@@ -1249,6 +1253,72 @@ int samplerData::create_data_dump(bool cold_only, bool trim,std::string filename
 	}
 	return 0;
 
+}
+
+int samplerData::write_batch_dump(bool cold_only, const std::vector<int> &startSteps, std::string filename)
+{
+	/*create_data_dump already knows how to write [trimLengths, currentStepID) for every stored chain, so
+	 * borrow trimLengths for the duration of the call.*/
+	std::vector<int> savedTrim(trimLengths, trimLengths + chainN);
+	int stored = cold_only ? ensembleN : chainN;
+	for(int i = 0 ; i<chainN; i++){
+		trimLengths[i] = startSteps[i];
+	}
+	int rc = 0;
+	for(int i = 0 ; i<stored; i++){
+		if(currentStepID[i] - startSteps[i] < 1){
+			std::cout<<"write_batch_dump: chain "<<i<<" has no new steps to write"<<std::endl;
+			rc = -1;
+		}
+	}
+	if(rc == 0){
+		rc = create_data_dump(cold_only, true, filename);
+	}
+	for(int i = 0 ; i<chainN; i++){
+		trimLengths[i] = savedTrim[i];
+	}
+	return rc;
+}
+
+int samplerData::read_batch_dump(bool cold_only, std::string filename, std::vector<int> &nextRow)
+{
+	int stored = cold_only ? ensembleN : chainN;
+	try{
+		H5::H5File file(filename, H5F_ACC_RDONLY);
+		H5::Group output_group(file.openGroup("/MCMC_OUTPUT"));
+		H5::Group output_LL_LP_group(file.openGroup("/MCMC_OUTPUT/LOGL_LOGP"));
+		for(int i = 0 ; i<stored; i++){
+			H5::DataSet dataset(output_group.openDataSet("CHAIN "+std::to_string(i)));
+			H5::DataSet dataset_ll_lp(output_LL_LP_group.openDataSet("CHAIN "+std::to_string(i)));
+			H5::DataSpace space(dataset.getSpace());
+			H5::DataSpace space_ll_lp(dataset_ll_lp.getSpace());
+			hsize_t dims[2];
+			hsize_t dims_ll_lp[2];
+			if(space.getSimpleExtentNdims() != 2 || space_ll_lp.getSimpleExtentNdims() != 2){return -1;}
+			space.getSimpleExtentDims(dims);
+			space_ll_lp.getSimpleExtentDims(dims_ll_lp);
+			if((int)dims[1] != maxDim || dims_ll_lp[1] != 2 || dims[0] != dims_ll_lp[0]){return -1;}
+			if(nextRow[i] + (int)dims[0] > iterations){return -1;}
+			std::vector<double> buffer(dims[0]*dims[1]);
+			std::vector<double> buffer_ll_lp(dims_ll_lp[0]*dims_ll_lp[1]);
+			dataset.read(buffer.data(), H5::PredType::NATIVE_DOUBLE);
+			dataset_ll_lp.read(buffer_ll_lp.data(), H5::PredType::NATIVE_DOUBLE);
+			for(int j = 0 ; j<(int)dims[0]; j++){
+				for(int k = 0 ; k<maxDim; k++){
+					positions[i][nextRow[i]+j]->parameters[k] = buffer[j*maxDim+k];
+				}
+				likelihoodVals[i][nextRow[i]+j] = buffer_ll_lp[j*2];
+				priorVals[i][nextRow[i]+j] = buffer_ll_lp[j*2+1];
+			}
+			nextRow[i] += (int)dims[0];
+		}
+	}
+	catch( H5::Exception &error )
+	{
+		error.printErrorStack();
+		return -1;
+	}
+	return 0;
 }
 
 int samplerData::append_to_data_dump( std::string filename)

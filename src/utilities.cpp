@@ -9,6 +9,12 @@
 #include <gsl/gsl_linalg.h>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
+#include <cstdio>
+#include <cerrno>
+#include <unistd.h>
+#include <fcntl.h>
+#include <dirent.h>
+#include <sys/stat.h>
 /*! \file 
  *
  * #Source file for general utilities
@@ -45,6 +51,109 @@ bool checkDirExist(std::string fname){
 	return false;	
 }
 
+
+static std::string parentDirectory(const std::string &path)
+{
+	size_t pos = path.find_last_of('/');
+	if(pos == std::string::npos){return ".";}
+	if(pos == 0){return "/";}
+	return path.substr(0,pos);
+}
+
+bool fsyncPath(const std::string &path)
+{
+	int fd = open(path.c_str(), O_RDONLY);
+	if(fd < 0){return false;}
+	int rc = fsync(fd);
+	close(fd);
+	return rc == 0;
+}
+
+bool atomicRename(const std::string &from, const std::string &to)
+{
+	if(rename(from.c_str(), to.c_str()) != 0){return false;}
+	/*Make the rename itself durable. Not all filesystems allow fsync on a directory, so this is best-effort*/
+	fsyncPath(parentDirectory(to));
+	return true;
+}
+
+bool atomicWriteFile(const std::string &path, const std::string &contents)
+{
+	std::string tmp = path + ".tmp";
+	FILE *f = fopen(tmp.c_str(),"wb");
+	if(!f){return false;}
+	bool ok = fwrite(contents.data(),1,contents.size(),f) == contents.size();
+	ok = (fflush(f) == 0) && ok;
+	ok = (fsync(fileno(f)) == 0) && ok;
+	ok = (fclose(f) == 0) && ok;
+	if(!ok){
+		remove(tmp.c_str());
+		return false;
+	}
+	if(!atomicRename(tmp,path)){
+		remove(tmp.c_str());
+		return false;
+	}
+	return true;
+}
+
+bool fileHashFNV1a(const std::string &path, uint64_t *hash, uint64_t *size)
+{
+	FILE *f = fopen(path.c_str(),"rb");
+	if(!f){return false;}
+	uint64_t h = 1469598103934665603ULL;
+	uint64_t n = 0;
+	unsigned char buf[1<<16];
+	size_t got;
+	while( (got = fread(buf,1,sizeof(buf),f)) > 0){
+		for(size_t i = 0 ; i<got; i++){
+			h ^= buf[i];
+			h *= 1099511628211ULL;
+		}
+		n += got;
+	}
+	bool ok = !ferror(f);
+	fclose(f);
+	if(!ok){return false;}
+	*hash = h;
+	*size = n;
+	return true;
+}
+
+std::vector<std::string> listDirectory(const std::string &dir)
+{
+	std::vector<std::string> names;
+	DIR *d = opendir(dir.c_str());
+	if(!d){return names;}
+	struct dirent *e;
+	while( (e = readdir(d)) ){
+		std::string name(e->d_name);
+		if(name == "." || name == ".."){continue;}
+		names.push_back(name);
+	}
+	closedir(d);
+	return names;
+}
+
+bool isDirectory(const std::string &path)
+{
+	struct stat st;
+	return stat(path.c_str(),&st) == 0 && S_ISDIR(st.st_mode);
+}
+
+bool makeDirectory(const std::string &path)
+{
+	if(mkdir(path.c_str(),0755) != 0 && errno != EEXIST){return false;}
+	return isDirectory(path);
+}
+
+void removeDirectoryFlat(const std::string &path)
+{
+	for(const std::string &name : listDirectory(path)){
+		remove( (path+"/"+name).c_str());
+	}
+	rmdir(path.c_str());
+}
 
 /*! \brief Local utility to dot a matrix and a vector: M.A = O
  *

@@ -3,6 +3,8 @@
 
 #include "bayesship/dataUtilities.h"
 #include <string>
+#include <vector>
+#include <cstdint>
 #include <iostream>
 #include <functional>
 #include <gsl/gsl_rng.h>
@@ -222,6 +224,18 @@ public:
 	void **userParameters=nullptr;
 	/*! If a checkpoint file exists in the output directory, ignore it (true) or load it (false)*/
 	bool ignoreExistingCheckpoint=false;
+	/*! Stop cleanly (after committing a batch) once this many seconds have passed since sample() began and no further batch fits. 0 = no limit of our own. The SLURM job end time (SLURM_JOB_END_TIME) and the environment variable BAYESSHIP_WALL_TIME_LIMIT are honored as well.*/
+	double wallTimeLimitSeconds = 0;
+	/*! Safety margin kept free at the end of the wall time, on top of two batch durations (override: BAYESSHIP_WALL_TIME_MARGIN)*/
+	double wallTimeMarginSeconds = 120;
+	/*! Catch SIGTERM/SIGUSR1/SIGINT while sampling and stop cleanly after the current batch instead of dying mid-write*/
+	bool handleStopSignals = true;
+	/*! Number of checkpoint generations kept on disk*/
+	int checkpointGenerationsToKeep = 2;
+	/*! On resume, each chain's log likelihood and log prior are re-evaluated at its checkpointed position and must match the values the checkpoint recorded to within this relative tolerance, or sampling stops: a mismatch means the likelihood or prior was rebuilt differently from the run being continued. Negative disables the check.*/
+	double resumeValueRelTol = 1e-10;
+	/*! Set by sample(): true if it returned because of a stop signal or the wall-time budget before reaching its target*/
+	bool stoppedEarly = false;
 
 	/*! Whether to allow for swapping between ensembles in collection*/
 	bool isolateEnsembles=false;
@@ -342,8 +356,10 @@ public:
 	void setActiveData( samplerData *newData);
 
 	
-	/*! Write checkpoint file for sampler -- stores data in json to completely reconstruct Sampler object*/
-	void writeCheckpoint(samplerData *data);
+	/*! Write a new checkpoint generation (see commitBatch / writeCheckpoint in bayesshipSampler.cpp). Returns false if it could not be written; the previous generation is then untouched.*/
+	bool writeCheckpoint(samplerData *data);
+	/*! Write the newest batch of samples to its own file, then a checkpoint generation referring to it. Called after every batch.*/
+	bool commitBatch(samplerData *data);
 	/*! Load checkpoint file for sampler -- Loads data and allocates memory for sampler
  * 		A sampler object with the following must be first declared, then this function can be called:
  * 			Likelihood function
@@ -354,9 +370,42 @@ public:
  * 		All else will be initialized 
  * 		*/
 	void loadCheckpoint();
+	/*! Whether any checkpoint (generation directory or legacy single file) exists in the output directory*/
+	bool checkpointExists();
 	//NLOHMANN_DEFINE_TYPE_INTRUSIVE(bayesshipSampler,chainN)
 	bool getCurrentIsolateEnsemblesInternal();
 private:
+	struct BatchFileInfo{
+		std::string name;
+		uint64_t size=0;
+		uint64_t hash=0;
+	};
+	std::vector<BatchFileInfo> batchFiles;
+	/*! Next row (per chain) not yet written to a batch file*/
+	std::vector<int> dumpedUpTo;
+	int rowsStored = 0;
+	bool samplingStarted = false;
+	int ckptGeneration = 0;
+	int consecutiveCommitFailures = 0;
+	double sampleStartTime = 0;
+	/*! Per-chain log likelihood / log prior recorded in the checkpoint being resumed (empty for older checkpoints)*/
+	std::vector<double> resumeLogL;
+	std::vector<double> resumeLogP;
+	void checkResumedValues(samplerData *data);
+	/*! Per-chain evidence totals (log likelihood sum, steps) recorded in the checkpoint being resumed*/
+	std::vector<double> resumeEvidenceSum;
+	std::vector<double> resumeEvidenceSteps;
+	void applyEvidenceTotals(samplerData *data, bool historyReloaded);
+	std::string batchDirectory();
+	std::string checkpointDirectory();
+	bool verifyGeneration(const std::string &genDir, std::string &reason);
+	void loadCheckpointFrom(const std::string &inputFile, const std::string &proposalPrefix);
+	void restoreHistory(samplerData *data);
+	void writeFinalOutput(samplerData *data);
+	void writeStatAtomic(samplerData *data, std::string filename);
+	bool stopRequested(double worstBatchSeconds);
+	void installStopHandlers();
+	void restoreStopHandlers();
 	/*! Whether to allow for swapping between ensembles INTERNAL USE ONLY*/
 	bool isolateEnsemblesInternal=false;
 	/*! Number of chains total = ensembleSize*ensembleN*/

@@ -1,6 +1,8 @@
 #include "bayesship/proposalFunctions.h"
 #include "bayesship/utilities.h"
 #include <armadillo>
+#include <nlohmann/json.hpp>
+#include <fstream>
 
 
 /*! \file
@@ -8,6 +10,111 @@
  * # Source file for the Fisher proposal template
  */
 namespace bayesship{
+
+/*! Same scheme as blockFisherProposal: the Fisher state is kept once in <moniker>_fisher/ (it only changes during
+ * burn-in), and each checkpoint generation gets a reference file with the size and hash of the Fisher file it goes with.*/
+static std::string fisherDirectory(bayesshipSampler *sampler)
+{
+	return sampler->outputDir+sampler->outputFileMoniker+"_fisher";
+}
+
+void fisherProposal::writeCheckpoint(std::string outputDirectory, std::string runMoniker)
+{
+	std::string fisherFile = fisherDirectory(sampler)+"/fisherProposal.json";
+	if(fisherChanged){
+		std::cout<<"Writing Fisher state to "<<fisherFile<<std::endl;
+		nlohmann::json j = fisherState();
+		if(makeDirectory(fisherDirectory(sampler)) && atomicWriteFile(fisherFile, j.dump())){
+			fisherChanged = false;
+		}
+		else{
+			std::cout<<"WARNING: could not write "<<fisherFile<<" -- will retry with the next checkpoint"<<std::endl;
+		}
+	}
+
+	uint64_t hash, size;
+	if(!fileHashFNV1a(fisherFile, &hash, &size)){
+		/*Nothing computed yet (e.g. no burn-in), so nothing to refer to*/
+		return;
+	}
+	nlohmann::json ref;
+	ref["file"] = "fisherProposal.json";
+	ref["size"] = size;
+	ref["hash"] = hash;
+	std::ofstream fileOut(outputDirectory+runMoniker + "_checkpoint_fisherProposalRef.json");
+	fileOut << ref;
+}
+
+nlohmann::json fisherProposal::fisherState()
+{
+	nlohmann::json j;
+	j["chainN"] = chainN;
+	j["maxDim"] = maxDim;
+	for(int i = 0 ; i<chainN; i++){
+		nlohmann::json entry;
+		entry["noFisher"] = noFisher[i];
+		entry["attempts"] = FisherAttemptsSinceLastUpdate[i];
+		/*Matrices are uninitialized until first computed*/
+		if(!noFisher[i]){
+			std::vector<double> fisher, vecs;
+			for(int k = 0 ; k<maxDim; k++){
+				fisher.insert(fisher.end(), Fisher[i][k], Fisher[i][k]+maxDim);
+				vecs.insert(vecs.end(), FisherEigenVecs[i][k], FisherEigenVecs[i][k]+maxDim);
+			}
+			entry["Fisher"] = fisher;
+			entry["eigenVals"] = std::vector<double>(FisherEigenVals[i], FisherEigenVals[i]+maxDim);
+			entry["eigenVecs"] = vecs;
+		}
+		j["Chains"].push_back(entry);
+	}
+	return j;
+}
+
+void fisherProposal::loadCheckpoint(std::string inputDirectory, std::string runMoniker)
+{
+	std::string refFile(inputDirectory+runMoniker + "_checkpoint_fisherProposalRef.json");
+	if(!checkDirExist(refFile)){
+		/*Checkpoint from before the Fisher state was stored, or taken before any was computed*/
+		return;
+	}
+	nlohmann::json ref;
+	std::ifstream refIn(refFile);
+	refIn>>ref;
+	std::string inputFile = fisherDirectory(sampler)+"/"+ref.at("file").get<std::string>();
+	uint64_t hash, size;
+	if(!fileHashFNV1a(inputFile, &hash, &size) || size != ref.at("size").get<uint64_t>() || hash != ref.at("hash").get<uint64_t>()){
+		std::cout<<"WARNING: "<<inputFile<<" is missing or does not match this checkpoint -- the Fisher matrices will be recomputed"<<std::endl;
+		return;
+	}
+	nlohmann::json j;
+	std::ifstream fileIn(inputFile);
+	fileIn>>j;
+	if(j.at("chainN").get<int>() != chainN || j.at("maxDim").get<int>() != maxDim){
+		std::cout<<"WARNING: "<<inputFile<<" does not match the current chains/dimension -- the Fisher matrices will be recomputed"<<std::endl;
+		return;
+	}
+	std::cout<<"Loading Fisher state from "<<inputFile<<std::endl;
+	for(int i = 0 ; i<chainN; i++){
+		const nlohmann::json &entry = j["Chains"][i];
+		noFisher[i] = entry.at("noFisher").get<bool>();
+		FisherAttemptsSinceLastUpdate[i] = entry.at("attempts").get<int>();
+		if(noFisher[i]){
+			continue;
+		}
+		std::vector<double> fisher = entry.at("Fisher").get<std::vector<double>>();
+		std::vector<double> vals = entry.at("eigenVals").get<std::vector<double>>();
+		std::vector<double> vecs = entry.at("eigenVecs").get<std::vector<double>>();
+		for(int k = 0 ; k<maxDim; k++){
+			for(int l = 0 ; l<maxDim; l++){
+				Fisher[i][k][l] = fisher[k*maxDim+l];
+				FisherEigenVecs[i][k][l] = vecs[k*maxDim+l];
+			}
+			FisherEigenVals[i][k] = vals[k];
+		}
+	}
+	/*What is in memory now is exactly what is on disk*/
+	fisherChanged = false;
+}
 
 fisherProposal::fisherProposal(int chainN, int maxDim, FisherCalculation fisherCalc, void **parameters, int updateFreq, bayesshipSampler *sampler)
 {
@@ -130,9 +237,11 @@ void fisherProposal::propose(positionInfo *currentPosition, positionInfo *propos
 			return;	
 		}
 		noFisher[chainID]= false;
+		fisherChanged = true;
 		for(int i = 0 ; i<maxDim; i++){
 			for(int j = 0 ; j<maxDim; j++){
-				FisherEigenVecs[chainID][i][j] = eigenvec(i,j);
+				/*Armadillo returns eigenvectors as columns; store eigenvector j as row j, the way propose() reads it*/
+				FisherEigenVecs[chainID][j][i] = eigenvec(i,j);
 			}
 			FisherEigenVals[chainID][i] = eigval(i);
 		}

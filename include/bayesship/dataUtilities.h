@@ -104,6 +104,11 @@ public:
 	double evidence;
 	double evidenceError;
 	double *integratedLikelihoods=nullptr;
+	/*! Per chain: log likelihood sum and step count that calculateEvidence adds to what is held in memory. Used when a
+	 * run resumes and a chain's earlier history is not reloaded (e.g. hot chains with cold-only storage), so the
+	 * evidence keeps counting the steps from before the restart. Empty means no offsets.*/
+	std::vector<double> evidenceLogLSumOffset;
+	std::vector<double> evidenceStepOffset;
 	//int *chain_lengths=NULL;
 
 
@@ -139,6 +144,10 @@ public:
 	void deallocatePrimitivePointer(double ***newPointer);
 	int create_data_dump(bool cold_only,bool trim,std::string filename);
 	int append_to_data_dump(std::string filename);
+	/*! Write only the steps [startSteps[chain], currentStepID[chain]) of each stored chain to a standalone file (one "batch" of a run). startSteps has length chainN. Returns 0 on success.*/
+	int write_batch_dump(bool cold_only, const std::vector<int> &startSteps, std::string filename);
+	/*! Read a file written by write_batch_dump back into this object: the rows of each stored chain are placed at positions[chain][nextRow[chain] ...], and nextRow is advanced. Capacity must already exist (see extendSize). Returns 0 on success.*/
+	int read_batch_dump(bool cold_only, std::string filename, std::vector<int> &nextRow);
 	void set_trim(int trim);
 	void updateBetas(double *betas);
 	void calculateEvidence();

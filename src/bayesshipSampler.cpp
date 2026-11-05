@@ -6,6 +6,12 @@
 #include "bayesship/proposalFunctions.h"
 #include "bayesship/standardPriors.h"
 #include <cmath>
+#include <algorithm>
+#include <functional>
+#include <limits>
+#include <cstring>
+#include <csignal>
+#include <ctime>
 #include <string>
 #include <fstream>
 #include <gsl/gsl_randist.h>
@@ -154,8 +160,22 @@ void bayesshipSampler::sample()
 	/* Overwrite data with checkpoint file if it exists.
  * 		Need memory allocated first
  */
-	if( checkDirExist(outputDir+outputFileMoniker+"_checkpoint.json") && !ignoreExistingCheckpoint){
+	stoppedEarly = false;
+	sampleStartTime = omp_get_wtime();
+	double worstBatchSeconds = 0;
+	int resumedRows = 0;
+	bool resuming = false;
+	if( checkpointExists() && !ignoreExistingCheckpoint){
 		loadCheckpoint();
+		resuming = true;
+		if(samplingStarted){
+			/*Burn-in (and the prior exploration feeding it) already happened in the run that wrote this
+			 * checkpoint. The loaded betas are the post-burn-in temperatures and the loaded positions are
+			 * the end of a sampling batch, so go straight back to sampling.*/
+			std::cout<<"Resuming sampling from checkpoint generation "<<ckptGeneration<<" (batch "<<batchFiles.size()<<", "<<rowsStored<<" stored steps per chain): skipping prior exploration and burn-in"<<std::endl;
+			priorIterations = 0;
+			burnIterations = 0;
+		}
 	}
 	else{
 		allocateMemory();
@@ -469,11 +489,33 @@ void bayesshipSampler::sample()
 	}
 
 	isolateEnsemblesInternal = isolateEnsembles;
-	data->updateBetas(betas);	
+	data->updateBetas(betas);
+	if(resuming && samplingStarted){
+		/*Before restoreHistory moves the re-evaluated start behind the stored history*/
+		checkResumedValues(data);
+	}
+	if(resuming && samplingStarted && rowsStored > 0){
+		if(RJ){
+			/*Status / model ID are not stored in a way read_batch_dump restores yet: keep the batch files
+			 * (they are complete) but count only the steps taken since this restart in memory.*/
+			std::cout<<"WARNING: resuming an RJ run -- earlier samples stay in "<<batchDirectory()<<" but are not reloaded; the final _output.hdf5 will only cover steps since the restart"<<std::endl;
+			dumpedUpTo = std::vector<int>(chainN, 0);
+		}
+		else{
+			restoreHistory(data);
+			resumedRows = rowsStored;
+		}
+	}
+	if(resuming && samplingStarted){
+		applyEvidenceTotals(data, !RJ && rowsStored > 0);
+	}
+	installStopHandlers();
 	if(independentSamples == 0){
 		if( ( iterations < batchSize && batchSize > 0 ) || batchSize == 0  ){
+			double batchStart = omp_get_wtime();
 			sampleLoop(iterations,data);
-			writeCheckpoint(data);
+			commitBatch(data);
+			worstBatchSeconds = std::max(worstBatchSeconds, omp_get_wtime() - batchStart);
 			if(!RJ){
 				data->updateACs(threads);
 				int independentSamples = data->countIndependentSamples();
@@ -481,22 +523,21 @@ void bayesshipSampler::sample()
 				data->calculateEvidence();
 				std::cout<<"Current ln Evidence: "<<data->evidence<<std::endl;
 			}
-			#ifdef _HDF5
-			data->create_data_dump(coldOnlyStorage, true, outputDir+outputFileMoniker+"_output.hdf5");
-			#endif
-			data->writeStatFile(outputDir+outputFileMoniker+"_stat.txt");
+			writeFinalOutput(data);
+			writeStatAtomic(data, outputDir+outputFileMoniker+"_stat.txt");
 			for(int i = 0 ; i<proposalFns->proposalN; i++){
 					proposalFns->proposals[i]->writeStatFile(outputDir, outputFileMoniker);
 			}
 		}
 		else  {
-			int currentSamples=0;
+			int currentSamples=resumedRows;
 			int currentIndependentSamples=0;
-			bool initializedData=false;
 			double AC=0;
 			while(currentSamples < iterations){
+				double batchStart = omp_get_wtime();
 				sampleLoop(batchSize,data);
-				writeCheckpoint(data);
+				commitBatch(data);
+				worstBatchSeconds = std::max(worstBatchSeconds, omp_get_wtime() - batchStart);
 				currentSamples+=batchSize;
 	
 				if(!RJ){
@@ -512,17 +553,7 @@ void bayesshipSampler::sample()
 				}
 	
 
-				#ifdef _HDF5
-				if(!initializedData){
-					data->create_data_dump(coldOnlyStorage, true, outputDir+outputFileMoniker+"_output.hdf5");
-					initializedData = true;
-				}
-				else{
-					data->append_to_data_dump(outputDir+outputFileMoniker+"_output.hdf5");
-
-				}
-				#endif
-				data->writeStatFile(outputDir+outputFileMoniker+"_stat.txt");
+				writeStatAtomic(data, outputDir+outputFileMoniker+"_stat.txt");
 				for(int i = 0 ; i<proposalFns->proposalN; i++){
 						proposalFns->proposals[i]->writeStatFile(outputDir, outputFileMoniker);
 				}
@@ -551,8 +582,15 @@ void bayesshipSampler::sample()
 				printProgress( (double) currentSamples/iterations);
 				std::cout<<std::endl;
 				if(currentSamples<iterations){
+					if(stopRequested(worstBatchSeconds)){
+						stoppedEarly = true;
+						break;
+					}
 					data->extendSize(batchSize-1);
 				}
+			}
+			if(!stoppedEarly){
+				writeFinalOutput(data);
 			}
 		}
 	}
@@ -564,13 +602,15 @@ void bayesshipSampler::sample()
 			batchSize = independentSamples;
 			localBatchSize = true;
 		}
-		bool initializedData=false;
 		while(currentIndependentSamples < independentSamples){
 
+			/*Samples first, then the checkpoint that refers to them -- see commitBatch*/
+			double batchStart = omp_get_wtime();
 			sampleLoop(batchSize,data);
+			commitBatch(data);
+			worstBatchSeconds = std::max(worstBatchSeconds, omp_get_wtime() - batchStart);
 			data->calculateEvidence();
 			std::cout<<"Current ln Evidence: "<<data->evidence<<std::endl;
-			writeCheckpoint(data);
 	
 			data->updateACs(threads);
 			currentIndependentSamples = data->countIndependentSamples();
@@ -581,17 +621,7 @@ void bayesshipSampler::sample()
 			AC /= data->ensembleN;
 	
 
-			#ifdef _HDF5
-			if(!initializedData){
-				data->create_data_dump(coldOnlyStorage, true, outputDir+outputFileMoniker+"_output.hdf5");
-				initializedData = true;
-			}
-			else{
-				data->append_to_data_dump(outputDir+outputFileMoniker+"_output.hdf5");
-
-			}
-			#endif
-			data->writeStatFile(outputDir+outputFileMoniker+"_stat.txt");
+			writeStatAtomic(data, outputDir+outputFileMoniker+"_stat.txt");
 			for(int i = 0 ; i<proposalFns->proposalN; i++){
 					proposalFns->proposals[i]->writeStatFile(outputDir, outputFileMoniker);
 			}
@@ -629,14 +659,25 @@ void bayesshipSampler::sample()
 						batchSize/=2;
 					}
 				}
+				if(stopRequested(worstBatchSeconds)){
+					stoppedEarly = true;
+					break;
+				}
 				data->extendSize(batchSize-1);
 			}
 			
 		}
+		if(!stoppedEarly){
+			writeFinalOutput(data);
+		}
 
 	}
+	restoreStopHandlers();
 		
 	gsl_set_error_handler(oldHandler);
+	if(stoppedEarly){
+		std::cout<<"STOPPED EARLY (signal or wall-time budget).\nCheckpoint generation "<<ckptGeneration<<" is complete; rerun with the same outputDir and ignoreExistingCheckpoint=false to continue."<<std::endl;
+	}
 
 	std::cout<<"Total sampling time (seconds): "<<(double)(-start + omp_get_wtime())<<std::endl;
 
@@ -1288,8 +1329,20 @@ void bayesshipSampler::stepMH(
 	data->likelihoodTimes[chainID] += time;
 	data->likelihoodEvals[chainID]++;
 	data->likelihoodTimes[chainID] /= (data->likelihoodEvals[chainID]) ;
-	
-	
+
+	/*Zero likelihood: the tempered target L^beta is zero for every beta>0, and so is its beta->0+
+	 * limit, which is what the beta==0 rung samples (the prior restricted to where L>0). Reject
+	 * outright, like a -inf prior. This keeps -inf out of likelihoodVals (calculateEvidence averages
+	 * them per rung) and out of the MHRatio arithmetic below.*/
+	if(logLikelihood == limitInf){
+		data->positions[chainID][proposalStep]->updatePosition(data->positions[chainID][currentStep]);
+		data->likelihoodVals[chainID][proposalStep] = data->likelihoodVals[chainID][currentStep];
+		data->priorVals[chainID][proposalStep] = data->priorVals[chainID][currentStep];
+		data->rejectN[chainID][randStep]++;
+		data->currentStepID[chainID] +=1;
+		return;
+	}
+
 	/*Calculate the MH ratio*/
 	double MHRatio = (betas[chainID] == 0
 							? 0.0
@@ -1595,19 +1648,240 @@ proposalData::~proposalData()
 	}
 }
 
-void bayesshipSampler::writeCheckpoint(samplerData *data)
-{
-	std::string outputFile(outputDir+outputFileMoniker+"_checkpoint.json");
-	std::cout<<"Writing Checkpoint File: "<<outputFile<<std::endl;
-	//nlohmann::json j;	
-	//j["chainN"] = chainN;
-	//
-	//std::ifstream fileOut(outputDir+outputFileMoniker+"_checkpoint.json");
-	//i >> j;
-	
-	//nlohmann::json j = *this;
-	nlohmann::json j;
+/*Signal handling: SIGTERM/SIGUSR1/SIGINT during sampling only set a flag. The sampling loops look at it between batches (after the batch has been committed) and stop cleanly.
+ * A second signal restores the default action, so an impatient Ctrl-C still kills the process.*/
+static volatile sig_atomic_t bayesshipStopSignal = 0;
+static struct sigaction bayesshipOldActions[3];
+static bool bayesshipHandlersInstalled = false;
+static const int bayesshipStopSignals[3] = {SIGTERM, SIGUSR1, SIGINT};
 
+static void bayesshipSignalHandler(int sig)
+{
+	if(bayesshipStopSignal){
+		signal(sig, SIG_DFL);
+		raise(sig);
+		return;
+	}
+	bayesshipStopSignal = sig;
+}
+
+void bayesshipSampler::installStopHandlers()
+{
+	bayesshipStopSignal = 0;
+	if(!handleStopSignals || bayesshipHandlersInstalled){return;}
+	struct sigaction act;
+	memset(&act, 0, sizeof(act));
+	act.sa_handler = bayesshipSignalHandler;
+	sigemptyset(&act.sa_mask);
+	for(int i = 0 ; i<3; i++){
+		sigaction(bayesshipStopSignals[i], &act, &bayesshipOldActions[i]);
+	}
+	bayesshipHandlersInstalled = true;
+}
+
+void bayesshipSampler::restoreStopHandlers()
+{
+	if(!bayesshipHandlersInstalled){return;}
+	for(int i = 0 ; i<3; i++){
+		sigaction(bayesshipStopSignals[i], &bayesshipOldActions[i], nullptr);
+	}
+	bayesshipHandlersInstalled = false;
+}
+
+/*! \brief Whether sampling should stop after the batch that was just committed
+ *
+ * True if a stop signal arrived, or if the remaining wall time (the sooner of wallTimeLimitSeconds /
+ * BAYESSHIP_WALL_TIME_LIMIT measured from the start of sample(), and the SLURM job end time) cannot
+ * fit another batch plus margin. Budget for the next batch is twice the slowest batch so far.
+ */
+bool bayesshipSampler::stopRequested(double worstBatchSeconds)
+{
+	if(bayesshipStopSignal){
+		std::cout<<"Stop signal "<<(int)bayesshipStopSignal<<" received -- stopping after the committed batch"<<std::endl;
+		return true;
+	}
+	double limit = wallTimeLimitSeconds;
+	if(limit <= 0){
+		const char *env = getenv("BAYESSHIP_WALL_TIME_LIMIT");
+		if(env){limit = atof(env);}
+	}
+	double margin = wallTimeMarginSeconds;
+	const char *envMargin = getenv("BAYESSHIP_WALL_TIME_MARGIN");
+	if(envMargin){margin = atof(envMargin);}
+
+	double remaining = std::numeric_limits<double>::infinity();
+	if(limit > 0){
+		remaining = std::min(remaining, limit - (omp_get_wtime() - sampleStartTime));
+	}
+	const char *slurmEnd = getenv("SLURM_JOB_END_TIME");
+	if(slurmEnd){
+		double end = atof(slurmEnd);
+		if(end > 0){
+			remaining = std::min(remaining, end - (double)time(nullptr));
+		}
+	}
+	if(remaining < 2*worstBatchSeconds + margin){
+		std::cout<<"Wall time remaining ("<<remaining<<" s) is below the budget for another batch (2 x "<<worstBatchSeconds<<" s + "<<margin<<" s margin) -- stopping after the committed batch"<<std::endl;
+		return true;
+	}
+	return false;
+}
+
+/*! Stat files are derived output, but a truncated one is confusing: write them atomically too*/
+void bayesshipSampler::writeStatAtomic(samplerData *data, std::string filename)
+{
+	std::string tmp = filename + ".tmp";
+	data->writeStatFile(tmp);
+	if(!atomicRename(tmp, filename)){
+		std::cout<<"WARNING: could not update "<<filename<<std::endl;
+	}
+}
+
+/*! Once a run has reached its target, write the full chain history as a single file (what _output.hdf5 always was)*/
+void bayesshipSampler::writeFinalOutput(samplerData *data)
+{
+	#ifdef _HDF5
+	std::string finalName = outputDir+outputFileMoniker+"_output.hdf5";
+	std::string tmp = finalName + ".tmp";
+	if(data->create_data_dump(coldOnlyStorage, true, tmp) != 0){
+		std::cout<<"WARNING: failed to write "<<finalName<<"; the per-batch files in "<<batchDirectory()<<" are intact"<<std::endl;
+		remove(tmp.c_str());
+		return;
+	}
+	fsyncPath(tmp);
+	if(!atomicRename(tmp, finalName)){
+		std::cout<<"WARNING: failed to move "<<tmp<<" to "<<finalName<<std::endl;
+	}
+	#endif
+}
+
+std::string bayesshipSampler::batchDirectory()
+{
+	return outputDir+outputFileMoniker+"_batches";
+}
+std::string bayesshipSampler::checkpointDirectory()
+{
+	return outputDir+outputFileMoniker+"_checkpoints";
+}
+
+static std::string hashToString(uint64_t h)
+{
+	char buf[32];
+	snprintf(buf, sizeof(buf), "%016llx", (unsigned long long)h);
+	return std::string(buf);
+}
+
+static std::string generationName(int generation)
+{
+	char buf[32];
+	snprintf(buf, sizeof(buf), "gen_%06d", generation);
+	return std::string(buf);
+}
+
+/*! generation numbers present in the checkpoint directory (complete ones only: in-progress ones carry a .tmp suffix), newest first*/
+static std::vector<int> listGenerations(const std::string &dir)
+{
+	std::vector<int> gens;
+	for(const std::string &name : listDirectory(dir)){
+		int g;
+		char extra;
+		if(name.size() == 10 && sscanf(name.c_str(), "gen_%d%c", &g, &extra) == 1){
+			gens.push_back(g);
+		}
+	}
+	std::sort(gens.begin(), gens.end(), std::greater<int>());
+	return gens;
+}
+
+bool bayesshipSampler::checkpointExists()
+{
+	if(!listGenerations(checkpointDirectory()).empty()){return true;}
+	return checkDirExist(outputDir+outputFileMoniker+"_checkpoint.json");
+}
+
+/*! \brief Write one batch of samples, then the checkpoint that refers to it
+ *
+ * Order matters: the checkpoint's chain positions are the end of the batch, so the samples must be safely
+ * on disk first. If we are killed in between, the orphaned batch file is simply rewritten on resume (the
+ * checkpoint never lists it); if the batch write fails, the rows are retried together with the next batch
+ * (dumpedUpTo is not advanced). Returns false if either step failed.
+ */
+bool bayesshipSampler::commitBatch(samplerData *data)
+{
+	bool ok = true;
+	#ifdef _HDF5
+	if(dumpedUpTo.size() != (size_t)chainN){
+		dumpedUpTo = std::vector<int>(chainN, 0);
+	}
+	std::string batchDir = batchDirectory();
+	char name[64];
+	snprintf(name, sizeof(name), "batch_%06d.hdf5", (int)batchFiles.size());
+	std::string tmp = batchDir+"/batch_tmp.hdf5";
+	bool written = makeDirectory(batchDir) && data->write_batch_dump(coldOnlyStorage, dumpedUpTo, tmp) == 0;
+	uint64_t hash=0, size=0;
+	written = written && fsyncPath(tmp) && fileHashFNV1a(tmp, &hash, &size)
+		&& atomicRename(tmp, batchDir+"/"+name);
+	if(written){
+		batchFiles.push_back(BatchFileInfo{std::string(name), size, hash});
+		for(int i = 0 ; i<chainN; i++){
+			dumpedUpTo[i] = data->currentStepID[i];
+		}
+		rowsStored = dumpedUpTo[0];
+	}
+	else{
+		std::cout<<"WARNING: failed to write sample batch "<<name<<" -- these steps will be included with the next batch"<<std::endl;
+		remove(tmp.c_str());
+		ok = false;
+	}
+	#endif
+	samplingStarted = true;
+	if(!writeCheckpoint(data)){
+		ok = false;
+	}
+	if(ok){
+		consecutiveCommitFailures = 0;
+	}
+	else{
+		consecutiveCommitFailures++;
+		if(consecutiveCommitFailures >= 3){
+			errorMessage("FATAL: checkpoint/batch writing failed 3 batches in a row (disk full or quota exceeded?). Stopping so the last good checkpoint generation is not silently left stale.", 1);
+		}
+	}
+	return ok;
+}
+
+/*! \brief Write a new checkpoint generation
+ *
+ * Layout: <outputDir><moniker>_checkpoints/gen_NNNNNN/ holding sampler.json, whatever the proposal functions
+ * write, and MANIFEST.json (size + FNV-1a hash of every other file). A generation is assembled in
+ * gen_NNNNNN.tmp, fsync'd, and only then renamed into place, so a generation either exists complete or not at
+ * all. The newest checkpointGenerationsToKeep generations are retained.
+ */
+bool bayesshipSampler::writeCheckpoint(samplerData *data)
+{
+	std::string root = checkpointDirectory();
+	if(!makeDirectory(root)){
+		std::cout<<"WARNING: cannot create checkpoint directory "<<root<<std::endl;
+		return false;
+	}
+	if(ckptGeneration < 0){ckptGeneration = 0;}
+	{
+		/*Never reuse a number that exists on disk (e.g. generations from a run we are ignoring)*/
+		std::vector<int> existing = listGenerations(root);
+		if(!existing.empty() && existing[0] >= ckptGeneration){ckptGeneration = existing[0];}
+	}
+	int generation = ckptGeneration + 1;
+	std::string finalDir = root+"/"+generationName(generation);
+	std::string tmpDir = finalDir+".tmp";
+	removeDirectoryFlat(tmpDir);
+	std::cout<<"Writing Checkpoint Generation: "<<finalDir<<std::endl;
+	if(!makeDirectory(tmpDir)){
+		std::cout<<"WARNING: cannot create "<<tmpDir<<std::endl;
+		return false;
+	}
+
+	nlohmann::json j;
+	j["checkpointFormat"]=2;
 	j["maxDim"]=this->maxDim;
 	j["RJ"]=this->RJ;
 	j["threadPool"] = this->threadPool;
@@ -1620,40 +1894,179 @@ void bayesshipSampler::writeCheckpoint(samplerData *data)
 	j["randomizeSwapping"] = this->randomizeSwapping;
 	j["betaSchedule"] = std::vector<double>(this->betaSchedule, this->betaSchedule + this->ensembleSize);
 	j["betas"] = std::vector<double>(this->betas, this->betas + this->chainN);
+	j["samplingStarted"] = this->samplingStarted;
+	j["coldOnlyStorage"] = this->coldOnlyStorage;
+	j["rowsStored"] = this->rowsStored;
+	if(dumpedUpTo.size() == (size_t)chainN){
+		/*Steps already in batch files, per stored chain (not every chain necessarily has taken the same number of steps)*/
+		int stored = coldOnlyStorage ? ensembleN : chainN;
+		j["rowsStoredPerChain"] = std::vector<int>(dumpedUpTo.begin(), dumpedUpTo.begin()+stored);
+	}
+	for(size_t i = 0 ; i<batchFiles.size(); i++){
+		j["batchFiles"].push_back({{"name",batchFiles[i].name},{"size",batchFiles[i].size},{"hash",hashToString(batchFiles[i].hash)}});
+	}
+	if(batchFiles.empty()){
+		j["batchFiles"] = nlohmann::json::array();
+	}
 	if(this->priorRanges){
 		for(int i = 0 ; i<this->maxDim; i++){
 			j["priorRanges"]["Dim "+std::to_string(i)] 
 				= std::vector<double>(this->priorRanges[i],this->priorRanges[i] + 2);
 		}
 	}
+	/*What calculateEvidence counts for each chain (in-memory history plus any offset carried from an earlier
+	 * restart), so a resumed run can carry it on for chains whose history it does not reload*/
+	for(int i = 0 ; i<this->chainN; i++){
+		double sum = 0;
+		for(int k = 0 ; k<data->currentStepID[i]; k++){
+			sum += data->likelihoodVals[i][k];
+		}
+		double steps = data->currentStepID[i];
+		if(data->evidenceLogLSumOffset.size() == (size_t)chainN){
+			sum += data->evidenceLogLSumOffset[i];
+			steps += data->evidenceStepOffset[i];
+		}
+		j["evidenceTotals"]["LogLikelihoodSum"]["Chain "+std::to_string(i)] = sum;
+		j["evidenceTotals"]["Steps"]["Chain "+std::to_string(i)] = steps;
+	}
 	for(int i = 0 ; i<this->chainN; i++){
 		int finalPos = data->currentStepID[i];
-		j["finalPosition"]["Parameters"]["Chain "+std::to_string(i)] 
+		j["finalPosition"]["Parameters"]["Chain "+std::to_string(i)]
 			= std::vector<double>(data->positions[i][finalPos]->parameters,data->positions[i][finalPos]->parameters + this->maxDim);
 		if(this->RJ){
 			j["finalPosition"]["Status"]["Chain "+std::to_string(i)] 
 				= std::vector<double>(data->positions[i][finalPos]->status,data->positions[i][finalPos]->status + this->maxDim);
 			j["finalPosition"]["Model ID"]["Chain "+std::to_string(i)] = data->positions[i][finalPos]->modelID;
 		}
+		/*Not restored on resume (the chains are re-evaluated) but compared against, to catch a likelihood or prior
+		 * that was rebuilt differently. JSON has no -inf: it is written as null and read back as -inf.*/
+		j["finalPosition"]["LogLikelihood"]["Chain "+std::to_string(i)] = data->likelihoodVals[i][finalPos];
+		j["finalPosition"]["LogPrior"]["Chain "+std::to_string(i)] = data->priorVals[i][finalPos];
 	}
 
-	std::ofstream fileOut(outputFile);
-	fileOut << j;
+	bool ok = atomicWriteFile(tmpDir+"/sampler.json", j.dump());
 	
+	/*The proposal functions write their own files with whatever directory prefix they are given*/
 	for(int i = 0 ; i<proposalFns->proposalN; i++){
-			proposalFns->proposals[i]->writeCheckpoint(outputDir, outputFileMoniker);
+			proposalFns->proposals[i]->writeCheckpoint(tmpDir+"/", outputFileMoniker);
 	}
-	
 
-	return;
+	nlohmann::json manifest;
+	manifest["generation"] = generation;
+	manifest["files"] = nlohmann::json::array();
+	for(const std::string &name : listDirectory(tmpDir)){
+		if(name == "MANIFEST.json" || name == "MANIFEST.json.tmp"){continue;}
+		uint64_t hash, size;
+		if(!fsyncPath(tmpDir+"/"+name) || !fileHashFNV1a(tmpDir+"/"+name, &hash, &size)){
+			ok = false;
+			continue;
+		}
+		manifest["files"].push_back({{"name",name},{"size",size},{"hash",hashToString(hash)}});
+	}
+	ok = ok && atomicWriteFile(tmpDir+"/MANIFEST.json", manifest.dump());
+	ok = ok && fsyncPath(tmpDir);
+	ok = ok && atomicRename(tmpDir, finalDir);
+	if(!ok){
+		std::cout<<"WARNING: checkpoint generation "<<generation<<" could NOT be written; the previous generation is untouched"<<std::endl;
+		removeDirectoryFlat(tmpDir);
+		return false;
+	}
+	ckptGeneration = generation;
+
+	/*Prune*/
+	std::vector<int> gens = listGenerations(root);
+	for(size_t i = checkpointGenerationsToKeep; i<gens.size(); i++){
+		removeDirectoryFlat(root+"/"+generationName(gens[i]));
+	}
+	for(const std::string &name : listDirectory(root)){
+		if(name.size() > 4 && name.compare(name.size()-4, 4, ".tmp") == 0 && root+"/"+name != tmpDir){
+			removeDirectoryFlat(root+"/"+name);
+		}
+	}
+	return true;
 }
+
+/*! Check a checkpoint generation: every file in its manifest present with the recorded size and hash, and every batch file it refers to as well.*/
+bool bayesshipSampler::verifyGeneration(const std::string &genDir, std::string &reason)
+{
+	try{
+		nlohmann::json manifest, j;
+		std::ifstream mf(genDir+"/MANIFEST.json");
+		if(!mf){reason = "no MANIFEST.json"; return false;}
+		mf >> manifest;
+		for(const auto &f : manifest.at("files")){
+			uint64_t hash, size;
+			std::string name = f.at("name").get<std::string>();
+			if(!fileHashFNV1a(genDir+"/"+name, &hash, &size)){reason = name+" unreadable"; return false;}
+			if(size != f.at("size").get<uint64_t>() || hashToString(hash) != f.at("hash").get<std::string>()){
+				reason = name+" does not match the manifest (truncated or corrupt)";
+				return false;
+			}
+		}
+		std::ifstream sf(genDir+"/sampler.json");
+		if(!sf){reason = "no sampler.json"; return false;}
+		sf >> j;
+		for(const auto &f : j.at("batchFiles")){
+			uint64_t hash, size;
+			std::string name = f.at("name").get<std::string>();
+			if(!fileHashFNV1a(batchDirectory()+"/"+name, &hash, &size)){reason = "batch file "+name+" is missing"; return false;}
+			if(size != f.at("size").get<uint64_t>() || hashToString(hash) != f.at("hash").get<std::string>()){
+				reason = "batch file "+name+" does not match the checkpoint (truncated or corrupt)";
+				return false;
+			}
+		}
+	}
+	catch(std::exception &e){
+		reason = std::string("unparseable: ")+e.what();
+		return false;
+	}
+	return true;
+}
+
+/*! \brief Load the newest valid checkpoint generation
+ *
+ * Falls back to older generations when the newest fails verification, and to the pre-generation
+ * single-file format (_checkpoint.json) when no generation directory exists. Stops with an error if
+ * checkpoints exist but none is usable: silently starting over would discard the run.
+ */
 void bayesshipSampler::loadCheckpoint()
 {
-	std::string inputFile(outputDir+outputFileMoniker+"_checkpoint.json");
+	std::string root = checkpointDirectory();
+	std::vector<int> gens = listGenerations(root);
+	for(int g : gens){
+		std::string genDir = root+"/"+generationName(g);
+		std::string reason;
+		if(verifyGeneration(genDir, reason)){
+			ckptGeneration = g;
+			loadCheckpointFrom(genDir+"/sampler.json", genDir+"/");
+			return;
+		}
+		std::cout<<"WARNING: checkpoint generation "<<g<<" is not usable ("<<reason<<")"<<std::endl;
+	}
+	if(!gens.empty()){
+		errorMessage("ERROR: checkpoint generations exist in "+root+" but none passes verification. Not starting over automatically; inspect them, or set ignoreExistingCheckpoint to discard.", 1);
+	}
+	loadCheckpointFrom(outputDir+outputFileMoniker+"_checkpoint.json", outputDir);
+}
+
+void bayesshipSampler::loadCheckpointFrom(const std::string &inputFile, const std::string &proposalPrefix)
+{
 	std::cout<<"Loading Checkpoint File: "<<inputFile<<std::endl;
 	nlohmann::json j ;
 	std::ifstream fileIn(inputFile);
 	fileIn>>j;
+
+	/*The loaded layout replaces the sampler's. A caller that has already sized per-chain objects from its own
+	 * ensemble/dimension settings (userParameters, an initial position) would then index past them, so a
+	 * mismatch is fatal in that case rather than silent memory corruption.*/
+	if(userParameters || initialPosition){
+		int ckptDim = j.at("maxDim").get<int>();
+		int ckptSize = j.at("ensembleSize").get<int>();
+		int ckptN = j.at("ensembleN").get<int>();
+		if(ckptDim != maxDim || ckptSize != ensembleSize || ckptN != ensembleN){
+			errorMessage("ERROR: the checkpoint was written for dimension "+std::to_string(ckptDim)+", "+std::to_string(ckptSize)+" temperatures x "+std::to_string(ckptN)+" chains, but this run is set up for dimension "+std::to_string(maxDim)+", "+std::to_string(ensembleSize)+" x "+std::to_string(ensembleN)+". These cannot change when resuming.", 1);
+		}
+	}
 
 	j.at("maxDim").get_to(this->maxDim);	
 	j.at("RJ").get_to(this->RJ);	
@@ -1661,8 +2074,13 @@ void bayesshipSampler::loadCheckpoint()
 	j.at("minDim").get_to(this->minDim);	
 	j.at("ensembleSize").get_to(this->ensembleSize);	
 	j.at("ensembleN").get_to(this->ensembleN);	
-	j.at("seed").get_to(this->seed);	
-	j.at("swapProb").get_to(this->swapProb);	
+	j.at("seed").get_to(this->seed);
+	/*A resumed run must not replay the random streams of the run it continues. allocateMemory seeds chain i
+	 * with seed + i*101, so move the seed past that whole range. The advanced seed is what the next checkpoint
+	 * stores, so every resume gets a fresh range.*/
+	this->seed += 101.*ensembleSize*ensembleN;
+	std::cout<<"Random number seed advanced to "<<this->seed<<" for the resumed run"<<std::endl;
+	j.at("swapProb").get_to(this->swapProb);
 	j.at("averageDynamics").get_to(this->averageDynamics);	
 	j.at("randomizeSwapping").get_to(this->randomizeSwapping);	
 	std::vector<double> betaScheduleTemp;
@@ -1677,6 +2095,30 @@ void bayesshipSampler::loadCheckpoint()
 	}
 	for(int i = 0 ; i<ensembleSize*ensembleN; i++){
 		this->betas[i] = betasTemp[i];
+	}
+
+	/*Format 2 additions: where in the run the checkpoint was taken, and the sample batches it refers to*/
+	samplingStarted = j.value("samplingStarted", false);
+	rowsStored = j.value("rowsStored", 0);
+	batchFiles.clear();
+	if(j.contains("batchFiles")){
+		for(const auto &f : j["batchFiles"]){
+			BatchFileInfo info;
+			info.name = f.at("name").get<std::string>();
+			info.size = f.at("size").get<uint64_t>();
+			info.hash = std::stoull(f.at("hash").get<std::string>(), nullptr, 16);
+			batchFiles.push_back(info);
+		}
+	}
+	if(j.contains("coldOnlyStorage") && j["coldOnlyStorage"].get<bool>() != coldOnlyStorage){
+		errorMessage("ERROR: the checkpoint was written with a different coldOnlyStorage setting than the one now requested; the stored sample batches would not match.", 1);
+	}
+	dumpedUpTo = std::vector<int>(ensembleSize*ensembleN, rowsStored);
+	if(j.contains("rowsStoredPerChain")){
+		std::vector<int> perChain = j["rowsStoredPerChain"].get<std::vector<int>>();
+		for(size_t i = 0 ; i<perChain.size() && i<dumpedUpTo.size(); i++){
+			dumpedUpTo[i] = perChain[i];
+		}
 	}
 	
 	if(j.contains(std::string("priorRanges")) ){
@@ -1722,16 +2164,149 @@ void bayesshipSampler::loadCheckpoint()
 		}
 		if(j["finalPosition"].contains(std::string("Model ID"))){
 			for(int i = 0  ;i<chainN; i++){
-				j["finalPosition"]["Model ID"]["Chain "+std::to_string(i)].get_to(initialPositionEnsemble[i]->modelID);	
+				j["finalPosition"]["Model ID"]["Chain "+std::to_string(i)].get_to(initialPositionEnsemble[i]->modelID);
+			}
+		}
+		resumeLogL.clear();
+		resumeLogP.clear();
+		if(j["finalPosition"].contains(std::string("LogLikelihood")) && j["finalPosition"].contains(std::string("LogPrior"))){
+			for(int i = 0  ;i<chainN; i++){
+				const nlohmann::json &l = j["finalPosition"]["LogLikelihood"]["Chain "+std::to_string(i)];
+				const nlohmann::json &p = j["finalPosition"]["LogPrior"]["Chain "+std::to_string(i)];
+				resumeLogL.push_back(l.is_null() ? limitInf : l.get<double>());
+				resumeLogP.push_back(p.is_null() ? limitInf : p.get<double>());
 			}
 		}
 	}
-	for(int i = 0 ; i<proposalFns->proposalN; i++){
-			proposalFns->proposals[i]->loadCheckpoint(outputDir, outputFileMoniker);
+	resumeEvidenceSum.clear();
+	resumeEvidenceSteps.clear();
+	if(j.contains(std::string("evidenceTotals"))){
+		for(int i = 0  ;i<chainN; i++){
+			const nlohmann::json &s = j["evidenceTotals"]["LogLikelihoodSum"]["Chain "+std::to_string(i)];
+			resumeEvidenceSum.push_back(s.is_null() ? limitInf : s.get<double>());
+			resumeEvidenceSteps.push_back(j["evidenceTotals"]["Steps"]["Chain "+std::to_string(i)].get<double>());
+		}
 	}
-	
-		
+	for(int i = 0 ; i<proposalFns->proposalN; i++){
+			proposalFns->proposals[i]->loadCheckpoint(proposalPrefix, outputFileMoniker);
+	}
 	return;
+}
+
+/*! \brief Carry the evidence sums of the stopped run into the resumed one
+ *
+ * calculateEvidence averages each rung's recorded log likelihoods over the history held in memory. Chains whose
+ * history is reloaded from the batch files (stored chains, non-RJ) already have it, and here it is only checked
+ * against the totals the checkpoint recorded. Every other chain (e.g. hot chains with cold-only storage) gets the
+ * recorded totals as an offset, so the evidence continues from where the stopped run left it instead of
+ * restarting from the resumed steps.
+ */
+void bayesshipSampler::applyEvidenceTotals(samplerData *data, bool historyReloaded)
+{
+	if(resumeEvidenceSum.size() != (size_t)chainN){
+		std::cout<<"NOTE: this checkpoint does not record the evidence totals; for chains whose history is not reloaded the evidence only counts steps since the restart"<<std::endl;
+		return;
+	}
+	int stored = coldOnlyStorage ? ensembleN : chainN;
+	data->evidenceLogLSumOffset = std::vector<double>(chainN, 0);
+	data->evidenceStepOffset = std::vector<double>(chainN, 0);
+	int carried = 0;
+	for(int i = 0 ; i<chainN; i++){
+		if(historyReloaded && i<stored){
+			double sum = 0;
+			for(int k = 0 ; k<data->currentStepID[i]; k++){
+				sum += data->likelihoodVals[i][k];
+			}
+			if(data->currentStepID[i] != resumeEvidenceSteps[i]
+				|| std::abs(sum - resumeEvidenceSum[i]) > 1e-12*std::max(1.0, std::abs(sum))){
+				std::cout<<"WARNING: chain "<<i<<": the reloaded history ("<<data->currentStepID[i]<<" steps, log likelihood sum "<<sum<<") does not match what the stopped run counted ("<<resumeEvidenceSteps[i]<<" steps, sum "<<resumeEvidenceSum[i]<<")"<<std::endl;
+			}
+			continue;
+		}
+		data->evidenceLogLSumOffset[i] = resumeEvidenceSum[i];
+		data->evidenceStepOffset[i] = resumeEvidenceSteps[i];
+		carried++;
+	}
+	std::cout<<"Evidence totals carried over for "<<carried<<" chains whose history is not reloaded"<<std::endl;
+}
+
+/*! \brief Compare the re-evaluated start of a resumed run with what the checkpoint recorded
+ *
+ * The chains restart at their checkpointed positions and assignInitialPosition re-evaluates likelihood and prior
+ * there. With one deterministic likelihood at every temperature, that must reproduce the recorded values. If it
+ * does not, the likelihood or prior was rebuilt differently (changed source or config, different build,
+ * different floating point) and the resumed run would mix two targets, so stop.
+ */
+void bayesshipSampler::checkResumedValues(samplerData *data)
+{
+	if(resumeValueRelTol < 0){
+		return;
+	}
+	if(resumeLogL.size() != (size_t)chainN || resumeLogP.size() != (size_t)chainN){
+		std::cout<<"NOTE: this checkpoint does not record the chains' log likelihoods; the resumed values cannot be checked"<<std::endl;
+		return;
+	}
+	auto differs = [this](double a, double b){
+		if(a == b){return false;}	/*also covers -inf == -inf*/
+		if(!std::isfinite(a) || !std::isfinite(b)){return true;}
+		return std::abs(a-b) > resumeValueRelTol*std::max(1.0, std::max(std::abs(a), std::abs(b)));
+	};
+	int mismatches = 0;
+	int worst = -1;
+	double worstDiff = -1;
+	for(int i = 0 ; i<chainN; i++){
+		double l = data->likelihoodVals[i][0];
+		double p = data->priorVals[i][0];
+		if(differs(l, resumeLogL[i]) || differs(p, resumeLogP[i])){
+			mismatches++;
+			double d = std::isfinite(l - resumeLogL[i]) ? std::abs(l - resumeLogL[i]) : std::numeric_limits<double>::infinity();
+			if(d > worstDiff){worstDiff = d; worst = i;}
+		}
+	}
+	if(mismatches){
+		errorMessage("ERROR: re-evaluating the checkpointed positions does not reproduce the recorded values for "
+			+std::to_string(mismatches)+" of "+std::to_string(chainN)+" chains (e.g. chain "+std::to_string(worst)
+			+": recorded log likelihood "+std::to_string(resumeLogL[worst])+", now "+std::to_string(data->likelihoodVals[worst][0])
+			+"). The likelihood or prior is not the one this run was sampling with; not resuming.", 1);
+	}
+	std::cout<<"Resumed log likelihoods and priors match the checkpoint for all "<<chainN<<" chains"<<std::endl;
+}
+
+/*! \brief Put the previously stored samples back into a freshly built samplerData
+ *
+ * Needed so autocorrelations, the independent-sample count and the final merged output cover the whole run and
+ * not just what happened since the restart. The start position of the new run (the checkpointed final position,
+ * already evaluated by assignInitialPosition at index 0) is moved to index rowsStored, behind the history.
+ */
+void bayesshipSampler::restoreHistory(samplerData *data)
+{
+	#ifdef _HDF5
+	int stored = coldOnlyStorage ? ensembleN : chainN;
+	int maxRows = 0;
+	for(int i = 0 ; i<stored; i++){
+		maxRows = std::max(maxRows, dumpedUpTo[i]);
+	}
+	data->extendSize(maxRows);
+	for(int i = 0 ; i<stored; i++){
+		int rows = dumpedUpTo[i];
+		data->positions[i][rows]->updatePosition(data->positions[i][0]);
+		data->likelihoodVals[i][rows] = data->likelihoodVals[i][0];
+		data->priorVals[i][rows] = data->priorVals[i][0];
+	}
+	std::vector<int> nextRow(chainN, 0);
+	for(const BatchFileInfo &b : batchFiles){
+		if(data->read_batch_dump(coldOnlyStorage, batchDirectory()+"/"+b.name, nextRow) != 0){
+			errorMessage("ERROR: could not read stored sample batch "+b.name+" while resuming", 1);
+		}
+	}
+	for(int i = 0 ; i<stored; i++){
+		if(nextRow[i] != dumpedUpTo[i]){
+			errorMessage("ERROR: stored sample batches hold "+std::to_string(nextRow[i])+" steps for chain "+std::to_string(i)+" but the checkpoint expects "+std::to_string(dumpedUpTo[i]), 1);
+		}
+		data->currentStepID[i] = dumpedUpTo[i];
+	}
+	std::cout<<"Restored "<<rowsStored<<" stored steps per cold chain from "<<batchFiles.size()<<" batch files"<<std::endl;
+	#endif
 }
 
 samplerData * bayesshipSampler::getActiveData()

@@ -3,6 +3,8 @@
 
 #include <fftw3.h>
 #include <string>
+#include <vector>
+#include <cstdint>
 #include <gsl/gsl_matrix_double.h>
 #include <gsl/gsl_linalg.h>
 #include <gsl/gsl_rng.h>
@@ -21,6 +23,29 @@ bool checkDirExist(std::string fname);
 void printProgress (double percentage);
 
 void errorMessage(std::string message, int code);
+
+/*! \brief Crash-safe file output helpers
+ *
+ * Everything the checkpoint machinery writes goes through these, so that a kill
+ * (SIGKILL at a SLURM time limit, node failure, full disk) can never leave a
+ * half-written file under its final name.
+ */
+/*! fsync() a file or directory by path. Returns true on success.*/
+bool fsyncPath(const std::string &path);
+/*! Write contents to path atomically: temp file in the same directory, flush, fsync, rename, fsync directory. Returns false (and leaves any existing file untouched) on any I/O error.*/
+bool atomicWriteFile(const std::string &path, const std::string &contents);
+/*! Atomically rename from -> to (and fsync the containing directory). Returns false on error.*/
+bool atomicRename(const std::string &from, const std::string &to);
+/*! FNV-1a 64 bit hash of a file's contents (corruption/truncation detection, NOT cryptographic). Returns false if the file cannot be read.*/
+bool fileHashFNV1a(const std::string &path, uint64_t *hash, uint64_t *size);
+/*! Names (not paths) of entries in a directory; empty if it cannot be opened.*/
+std::vector<std::string> listDirectory(const std::string &dir);
+/*! Whether path exists and is a directory*/
+bool isDirectory(const std::string &path);
+/*! Create a directory (single level); true if it exists afterwards*/
+bool makeDirectory(const std::string &path);
+/*! Remove a directory and its (flat) contents. Used to prune old checkpoint generations.*/
+void removeDirectoryFlat(const std::string &path);
 
 void matrixDot(double **M, double *A, double *O ,int m , int n);
 
