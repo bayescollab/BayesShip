@@ -234,6 +234,11 @@ public:
 	int checkpointGenerationsToKeep = 2;
 	/*! On resume, each chain's log likelihood and log prior are re-evaluated at its checkpointed position and must match the values the checkpoint recorded to within this relative tolerance, or sampling stops: a mismatch means the likelihood or prior was rebuilt differently from the run being continued. Negative disables the check.*/
 	double resumeValueRelTol = 1e-10;
+	/*! With coldOnlyStorage (non-RJ), each chain that is not stored keeps only its last hotChainHistoryLength steps in
+	 * memory (trimmed after every batch); history-based proposals (differential evolution, GMM) learn from that window.
+	 * The same window is saved with every checkpoint generation and restored on resume. 0 keeps the full history in
+	 * memory and saves none.*/
+	int hotChainHistoryLength = 2000;
 	/*! Set by sample(): true if it returned because of a stop signal or the wall-time budget before reaching its target*/
 	bool stoppedEarly = false;
 
@@ -401,6 +406,11 @@ private:
 	bool verifyGeneration(const std::string &genDir, std::string &reason);
 	void loadCheckpointFrom(const std::string &inputFile, const std::string &proposalPrefix);
 	void restoreHistory(samplerData *data);
+	/*! Generation directory (with trailing /) the run was resumed from; empty for a fresh run or a legacy checkpoint*/
+	std::string resumedGenerationDir;
+	bool historyWindowActive();
+	void trimHotHistory(samplerData *data);
+	void restoreHotHistory(samplerData *data);
 	void writeFinalOutput(samplerData *data);
 	void writeStatAtomic(samplerData *data, std::string filename);
 	bool stopRequested(double worstBatchSeconds);

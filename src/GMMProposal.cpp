@@ -63,7 +63,8 @@ GMMProposal::~GMMProposal()
 
 bool GMMProposal::train(int chainID)
 {
-	int samples  = stepNumber[chainID];
+	/*Fit on the history held in memory (for hot chains, the recent window kept by keepRecentHistory)*/
+	int samples  = sampler->activeData->currentStepID[chainID];
 	arma::mat data(maxDim, samples, arma::fill::zeros);
 	for(int i = 0 ; i<samples; i++){
 		for(int j = 0 ; j<maxDim; j++){
@@ -80,7 +81,10 @@ bool GMMProposal::train(int chainID)
 void GMMProposal::propose(positionInfo *current, positionInfo *proposed, int chainID,int stepID,double *MHRatioModifications)
 {
 	proposed->updatePosition(current);
-	stepNumber[chainID] = sampler->activeData->currentStepID[chainID];
+	/*Steps since the start of sampling, so the refit schedule does not restart when old history is dropped from
+	 * memory or after a resume*/
+	int stepsInMemory = sampler->activeData->currentStepID[chainID];
+	stepNumber[chainID] = stepsInMemory + sampler->activeData->rowsNotInMemory(chainID);
 	if(!currentData[chainID]){
 		primed[chainID] = false;
 		currentData[chainID] = sampler->activeData;
@@ -93,7 +97,7 @@ void GMMProposal::propose(positionInfo *current, positionInfo *proposed, int cha
 	if(
 		(stepNumber[chainID]%updateInterval== 0 && stepNumber[chainID] !=0) 
 		|| 
-		(stepNumber[chainID] > 5*maxDim  && !primed[chainID]) 
+		(stepsInMemory > 5*maxDim  && !primed[chainID]) 
 	){
 		status = train(chainID);
 	}

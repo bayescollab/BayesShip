@@ -561,7 +561,10 @@ double KDEProposal::evalKDECustom(positionInfo *position,int chainID)
 /*Just use a premade KDE package.. Why do this from scratch?*/
 void KDEProposal::propose(positionInfo *currentPosition, positionInfo *proposedPosition, int chainID,int stepID,double *MHRatioModifications)
 {
-	int currentStep = sampler->getActiveData()->currentStepID[chainID];
+	/*lastUpdatePositionID counts steps since the start of sampling; rows dropped from memory (keepRecentHistory,
+	 * or not reloaded on resume) are skipped*/
+	int dropped = sampler->getActiveData()->rowsNotInMemory(chainID);
+	int currentStep = sampler->getActiveData()->currentStepID[chainID] + dropped;
 
 	proposedPosition->updatePosition(currentPosition);
 	
@@ -579,6 +582,9 @@ void KDEProposal::propose(positionInfo *currentPosition, positionInfo *proposedP
 		currentData[chainID] = data;
 	}
 	
+	if(lastUpdatePositionID[chainID] < dropped){
+		lastUpdatePositionID[chainID] = dropped;
+	}
 	if( ( ( (currentStep-1) - lastUpdatePositionID[chainID] )/updateInterval > 1 )){
 		int positionUpdates = ((currentStep-1) - lastUpdatePositionID[chainID] )/updateInterval;
 
@@ -590,7 +596,8 @@ void KDEProposal::propose(positionInfo *currentPosition, positionInfo *proposedP
 		//Update storage	
 		for(int i = 0 ; i<positionUpdates;i++){
 			lastUpdatePositionID[chainID]+=updateInterval;
-			storedSamples[chainID][stepNumber[chainID]]->updatePosition(data->positions[chainID][lastUpdatePositionID[chainID] ]);
+			if(lastUpdatePositionID[chainID] < dropped){continue;}
+			storedSamples[chainID][stepNumber[chainID]]->updatePosition(data->positions[chainID][lastUpdatePositionID[chainID]-dropped ]);
 			stepNumber[chainID]+=1;
 			//std::cout<<lastUpdatePositionID[chainID]<<" "<<currentStep<<" "<<chainID<<std::endl;
 		}

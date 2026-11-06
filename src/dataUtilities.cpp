@@ -5,6 +5,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <algorithm>
 #include <gsl/gsl_spline.h>
 #include <gsl/gsl_integration.h>
 
@@ -546,56 +547,91 @@ void samplerData::writeStatFile(std::string filename)
 
 void samplerData::extendSize(int additionalIterations)
 {
-	int newSize = additionalIterations+iterations;
-	positionInfo ***tempPositions = new positionInfo**[chainN];
 	for(int i = 0 ; i<chainN; i++){
-		tempPositions[i] = new positionInfo*[newSize];
-		for(int j = 0 ;j<newSize; j++){
-			tempPositions[i][j] = new positionInfo(maxDim,RJ);
-		}
+		extendChain(i, additionalIterations);
 	}
-	//###########################
-	for(int i = 0 ; i<chainN; i++){
-		for(int j = 0 ;j<=currentStepID[i]; j++){
-			tempPositions[i][j]->updatePosition(positions[i][j]);	
-		}
-	}
-	//###########################
-	for(int j = 0 ; j<chainN; j++){
-		for(int i = 0 ; i<iterations; i++){
-			delete positions[j][i];
-		}
-		delete [] positions[j];
-	}
-	delete [] positions;
-
-	positions = tempPositions;	
-
-	//###########################
-
-	double **tempLL = new double*[chainN];
-	double **tempLP = new double*[chainN];
-	for(int i = 0 ; i<chainN; i++){
-		tempLL[i] = new double[newSize];
-		tempLP[i] = new double[newSize];
-		for(int j = 0 ; j<=currentStepID[i];j++){
-			tempLL[i][j]= likelihoodVals[i][j];
-			tempLP[i][j]= priorVals[i][j];
-		}
-	}
-	for(int i = 0 ; i<chainN; i++){
-		delete [] likelihoodVals[i];
-	}
-	delete [] likelihoodVals;
-	for(int i = 0 ; i<chainN; i++){
-		delete [] priorVals[i];
-	}
-	delete [] priorVals;
-	likelihoodVals = tempLL;
-	priorVals = tempLP;
-
-	iterations= newSize;
 	return;
+}
+
+void samplerData::extendChain(int chain, int additionalIterations)
+{
+	if(additionalIterations <= 0){return;}
+	int oldSize = chainCapacity[chain];
+	int newSize = oldSize + additionalIterations;
+	/*The existing positionInfo objects are moved over by pointer; only the new rows are allocated*/
+	positionInfo **tempPositions = new positionInfo*[newSize];
+	for(int j = 0 ; j<oldSize; j++){
+		tempPositions[j] = positions[chain][j];
+	}
+	for(int j = oldSize ; j<newSize; j++){
+		tempPositions[j] = new positionInfo(maxDim,RJ);
+	}
+	delete [] positions[chain];
+	positions[chain] = tempPositions;
+
+	double *tempLL = new double[newSize];
+	double *tempLP = new double[newSize];
+	for(int j = 0 ; j<=currentStepID[chain] && j<oldSize; j++){
+		tempLL[j]= likelihoodVals[chain][j];
+		tempLP[j]= priorVals[chain][j];
+	}
+	delete [] likelihoodVals[chain];
+	delete [] priorVals[chain];
+	likelihoodVals[chain] = tempLL;
+	priorVals[chain] = tempLP;
+
+	chainCapacity[chain] = newSize;
+	iterations = *std::max_element(chainCapacity.begin(), chainCapacity.end());
+	return;
+}
+
+void samplerData::keepRecentHistory(int chain, int keep)
+{
+	int current = currentStepID[chain];
+	if(keep < 1 || current+1 <= keep){return;}
+	int drop = current+1-keep;
+	/*calculateEvidence counts rows [0, currentStepID); the dropped rows are all in that range*/
+	if(evidenceLogLSumOffset.size() != (size_t)chainN){
+		evidenceLogLSumOffset = std::vector<double>(chainN, 0);
+		evidenceStepOffset = std::vector<double>(chainN, 0);
+	}
+	double sum = 0;
+	for(int j = 0 ; j<drop; j++){
+		sum += likelihoodVals[chain][j];
+	}
+	evidenceLogLSumOffset[chain] += sum;
+	evidenceStepOffset[chain] += drop;
+
+	int oldSize = chainCapacity[chain];
+	positionInfo **tempPositions = new positionInfo*[keep];
+	double *tempLL = new double[keep];
+	double *tempLP = new double[keep];
+	for(int j = 0 ; j<keep; j++){
+		tempPositions[j] = positions[chain][drop+j];
+		tempLL[j] = likelihoodVals[chain][drop+j];
+		tempLP[j] = priorVals[chain][drop+j];
+	}
+	for(int j = 0 ; j<drop; j++){
+		delete positions[chain][j];
+	}
+	for(int j = current+1 ; j<oldSize; j++){
+		delete positions[chain][j];
+	}
+	delete [] positions[chain];
+	delete [] likelihoodVals[chain];
+	delete [] priorVals[chain];
+	positions[chain] = tempPositions;
+	likelihoodVals[chain] = tempLL;
+	priorVals[chain] = tempLP;
+	chainCapacity[chain] = keep;
+	currentStepID[chain] = keep-1;
+	iterations = *std::max_element(chainCapacity.begin(), chainCapacity.end());
+}
+
+int samplerData::rowsNotInMemory(int chain) const
+{
+	if(evidenceStepOffset.size() != (size_t)chainN){return 0;}
+	return (int)evidenceStepOffset[chain];
 }
 
 int samplerData::countIndependentSamples()
@@ -643,6 +679,7 @@ samplerData::samplerData(int maxDim, int ensembleN,int ensembleSize, int iterati
 	this->ensembleN = ensembleN;
 	this->ensembleSize = ensembleSize;
 	this->iterations = iterations;
+	this->chainCapacity = std::vector<int>(chainN, iterations);
 	this->RJ = RJ;
 	this->proposalFnN = proposalFnN;
 	if(!this->proposalTimes){	
@@ -810,7 +847,7 @@ samplerData::~samplerData()
 	}
 	if(positions){
 		for(int j = 0 ; j<chainN; j++){
-			for(int i = 0 ; i<iterations; i++){
+			for(int i = 0 ; i<chainCapacity[j]; i++){
 				delete positions[j][i];
 			}
 			delete [] positions[j];
@@ -1298,7 +1335,7 @@ int samplerData::read_batch_dump(bool cold_only, std::string filename, std::vect
 			space.getSimpleExtentDims(dims);
 			space_ll_lp.getSimpleExtentDims(dims_ll_lp);
 			if((int)dims[1] != maxDim || dims_ll_lp[1] != 2 || dims[0] != dims_ll_lp[0]){return -1;}
-			if(nextRow[i] + (int)dims[0] > iterations){return -1;}
+			if(nextRow[i] + (int)dims[0] > chainCapacity[i]){return -1;}
 			std::vector<double> buffer(dims[0]*dims[1]);
 			std::vector<double> buffer_ll_lp(dims_ll_lp[0]*dims_ll_lp[1]);
 			dataset.read(buffer.data(), H5::PredType::NATIVE_DOUBLE);
@@ -1311,6 +1348,96 @@ int samplerData::read_batch_dump(bool cold_only, std::string filename, std::vect
 				priorVals[i][nextRow[i]+j] = buffer_ll_lp[j*2+1];
 			}
 			nextRow[i] += (int)dims[0];
+		}
+	}
+	catch( H5::Exception &error )
+	{
+		error.printErrorStack();
+		return -1;
+	}
+	return 0;
+}
+
+int samplerData::write_history_window(int firstChain, int rows, std::string filename)
+{
+	try{
+		H5::H5File file(filename, H5F_ACC_TRUNC);
+		H5::Group positionGroup(file.createGroup("/HISTORY_WINDOW"));
+		H5::Group LLLPGroup(file.createGroup("/HISTORY_WINDOW_LOGL_LOGP"));
+		for(int i = firstChain ; i<chainN; i++){
+			int L = std::min(rows, currentStepID[i]);
+			if(L < 1){continue;}
+			int start = currentStepID[i] - L;
+			std::vector<double> buffer((size_t)L*maxDim);
+			std::vector<double> bufferLLLP((size_t)L*2);
+			for(int j = 0 ; j<L; j++){
+				for(int k = 0 ; k<maxDim; k++){
+					buffer[(size_t)j*maxDim+k] = positions[i][start+j]->parameters[k];
+				}
+				bufferLLLP[(size_t)j*2] = likelihoodVals[i][start+j];
+				bufferLLLP[(size_t)j*2+1] = priorVals[i][start+j];
+			}
+			hsize_t dims[2] = {(hsize_t)L, (hsize_t)maxDim};
+			hsize_t dimsLLLP[2] = {(hsize_t)L, 2};
+			H5::DataSpace space(2, dims);
+			H5::DataSpace spaceLLLP(2, dimsLLLP);
+			H5::DataSet dataset = positionGroup.createDataSet("CHAIN "+std::to_string(i), H5::PredType::NATIVE_DOUBLE, space);
+			dataset.write(buffer.data(), H5::PredType::NATIVE_DOUBLE);
+			H5::DataSet datasetLLLP = LLLPGroup.createDataSet("CHAIN "+std::to_string(i), H5::PredType::NATIVE_DOUBLE, spaceLLLP);
+			datasetLLLP.write(bufferLLLP.data(), H5::PredType::NATIVE_DOUBLE);
+		}
+	}
+	catch( H5::Exception &error )
+	{
+		error.printErrorStack();
+		return -1;
+	}
+	return 0;
+}
+
+int samplerData::read_history_window(int firstChain, std::string filename)
+{
+	try{
+		H5::H5File file(filename, H5F_ACC_RDONLY);
+		H5::Group positionGroup(file.openGroup("/HISTORY_WINDOW"));
+		H5::Group LLLPGroup(file.openGroup("/HISTORY_WINDOW_LOGL_LOGP"));
+		for(int i = firstChain ; i<chainN; i++){
+			std::string name = "CHAIN "+std::to_string(i);
+			if(H5Lexists(positionGroup.getId(), name.c_str(), H5P_DEFAULT) <= 0){continue;}
+			H5::DataSet dataset(positionGroup.openDataSet(name));
+			H5::DataSet datasetLLLP(LLLPGroup.openDataSet(name));
+			hsize_t dims[2], dimsLLLP[2];
+			H5::DataSpace space(dataset.getSpace());
+			H5::DataSpace spaceLLLP(datasetLLLP.getSpace());
+			if(space.getSimpleExtentNdims() != 2 || spaceLLLP.getSimpleExtentNdims() != 2){return -1;}
+			space.getSimpleExtentDims(dims);
+			spaceLLLP.getSimpleExtentDims(dimsLLLP);
+			if((int)dims[1] != maxDim || dimsLLLP[1] != 2 || dims[0] != dimsLLLP[0]){return -1;}
+			int L = (int)dims[0];
+			std::vector<double> buffer((size_t)L*maxDim);
+			std::vector<double> bufferLLLP((size_t)L*2);
+			dataset.read(buffer.data(), H5::PredType::NATIVE_DOUBLE);
+			datasetLLLP.read(bufferLLLP.data(), H5::PredType::NATIVE_DOUBLE);
+
+			/*Make room for the window plus the steps the chain will take*/
+			extendChain(i, L);
+			int current = currentStepID[i];
+			positions[i][L+current]->updatePosition(positions[i][current]);
+			likelihoodVals[i][L+current] = likelihoodVals[i][current];
+			priorVals[i][L+current] = priorVals[i][current];
+			for(int j = current-1 ; j>=0; j--){
+				positions[i][L+j]->updatePosition(positions[i][j]);
+				likelihoodVals[i][L+j] = likelihoodVals[i][j];
+				priorVals[i][L+j] = priorVals[i][j];
+			}
+			for(int j = 0 ; j<L; j++){
+				for(int k = 0 ; k<maxDim; k++){
+					positions[i][j]->parameters[k] = buffer[(size_t)j*maxDim+k];
+				}
+				likelihoodVals[i][j] = bufferLLLP[(size_t)j*2];
+				priorVals[i][j] = bufferLLLP[(size_t)j*2+1];
+			}
+			currentStepID[i] = current + L;
 		}
 	}
 	catch( H5::Exception &error )

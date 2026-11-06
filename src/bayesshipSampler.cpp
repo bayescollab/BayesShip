@@ -507,6 +507,7 @@ void bayesshipSampler::sample()
 		}
 	}
 	if(resuming && samplingStarted){
+		restoreHotHistory(data);
 		applyEvidenceTotals(data, !RJ && rowsStored > 0);
 	}
 	installStopHandlers();
@@ -586,6 +587,7 @@ void bayesshipSampler::sample()
 						stoppedEarly = true;
 						break;
 					}
+					trimHotHistory(data);
 					data->extendSize(batchSize-1);
 				}
 			}
@@ -663,6 +665,7 @@ void bayesshipSampler::sample()
 					stoppedEarly = true;
 					break;
 				}
+				trimHotHistory(data);
 				data->extendSize(batchSize-1);
 			}
 			
@@ -925,8 +928,12 @@ void bayesshipSampler::sampleLoop(int samples,samplerData *data)
 		//the chain at 0 should always be cold, and therefore always start with the largest possible size
 		int totalFinalSamples = samples +data->currentStepID[0]-1;
 		int *initialStepIDs = new int[chainN];
+		/*Last row each chain may fill: the cold chain's target, or less for a chain holding only a recent window of
+		 * its history (keepRecentHistory), whose storage is smaller*/
+		int *finalStepIDs = new int[chainN];
 		for(int i = 0 ; i<chainN; i++){
 			initialStepIDs[i] = data->currentStepID[i];
+			finalStepIDs[i] = std::min(totalFinalSamples, data->chainCapacity[i]-1);
 		}
 		
 		ThreadPool<sampleJob> *samplePool = new ThreadPool<sampleJob>(threads-2, sampleThreadedFunction,false);
@@ -958,7 +965,7 @@ void bayesshipSampler::sampleLoop(int samples,samplerData *data)
 				}
 				if(chainWaitingSample){
 
-					if(data->currentStepID[i] < totalFinalSamples){
+					if(data->currentStepID[i] < finalStepIDs[i]){
 						sampleJob job;
 						job.sampler = this;
 						job.chainID = i;
@@ -1026,6 +1033,7 @@ void bayesshipSampler::sampleLoop(int samples,samplerData *data)
 		//}
 
 		delete [] initialStepIDs;
+		delete [] finalStepIDs;
 		delete samplePool;
 		delete swapPool;
 	}
@@ -1944,7 +1952,18 @@ bool bayesshipSampler::writeCheckpoint(samplerData *data)
 		j["finalPosition"]["LogPrior"]["Chain "+std::to_string(i)] = data->priorVals[i][finalPos];
 	}
 
+	if(historyWindowActive()){
+		/*Recent steps of the chains not stored in batch files, so history-based proposals are not starved after a
+		 * resume. The current position is in finalPosition; the window is the steps before it.*/
+		j["historyWindow"] = {{"file","historyWindow.hdf5"},{"firstChain",ensembleN},{"rows",hotChainHistoryLength-1}};
+	}
+
 	bool ok = atomicWriteFile(tmpDir+"/sampler.json", j.dump());
+	#ifdef _HDF5
+	if(historyWindowActive()){
+		ok = ok && data->write_history_window(ensembleN, hotChainHistoryLength-1, tmpDir+"/historyWindow.hdf5") == 0;
+	}
+	#endif
 	
 	/*The proposal functions write their own files with whatever directory prefix they are given*/
 	for(int i = 0 ; i<proposalFns->proposalN; i++){
@@ -2038,6 +2057,7 @@ void bayesshipSampler::loadCheckpoint()
 		std::string reason;
 		if(verifyGeneration(genDir, reason)){
 			ckptGeneration = g;
+			resumedGenerationDir = genDir+"/";
 			loadCheckpointFrom(genDir+"/sampler.json", genDir+"/");
 			return;
 		}
@@ -2234,8 +2254,14 @@ void bayesshipSampler::applyEvidenceTotals(samplerData *data, bool historyReload
 			}
 			continue;
 		}
-		data->evidenceLogLSumOffset[i] = resumeEvidenceSum[i];
-		data->evidenceStepOffset[i] = resumeEvidenceSteps[i];
+		/*Whatever is in memory for this chain (a restored history window, or nothing) is counted by
+		 * calculateEvidence itself; the offset is the rest*/
+		double inMemory = 0;
+		for(int k = 0 ; k<data->currentStepID[i]; k++){
+			inMemory += data->likelihoodVals[i][k];
+		}
+		data->evidenceLogLSumOffset[i] = resumeEvidenceSum[i] - inMemory;
+		data->evidenceStepOffset[i] = resumeEvidenceSteps[i] - data->currentStepID[i];
 		carried++;
 	}
 	std::cout<<"Evidence totals carried over for "<<carried<<" chains whose history is not reloaded"<<std::endl;
@@ -2293,11 +2319,9 @@ void bayesshipSampler::restoreHistory(samplerData *data)
 {
 	#ifdef _HDF5
 	int stored = coldOnlyStorage ? ensembleN : chainN;
-	int maxRows = 0;
 	for(int i = 0 ; i<stored; i++){
-		maxRows = std::max(maxRows, dumpedUpTo[i]);
+		data->extendChain(i, dumpedUpTo[i]);
 	}
-	data->extendSize(maxRows);
 	for(int i = 0 ; i<stored; i++){
 		int rows = dumpedUpTo[i];
 		data->positions[i][rows]->updatePosition(data->positions[i][0]);
@@ -2317,6 +2341,48 @@ void bayesshipSampler::restoreHistory(samplerData *data)
 		data->currentStepID[i] = dumpedUpTo[i];
 	}
 	std::cout<<"Restored "<<rowsStored<<" stored steps per cold chain from "<<batchFiles.size()<<" batch files"<<std::endl;
+	#endif
+}
+
+bool bayesshipSampler::historyWindowActive()
+{
+	return coldOnlyStorage && !RJ && hotChainHistoryLength > 0 && ensembleSize > 1;
+}
+
+/*! \brief Keep only the last hotChainHistoryLength steps of every chain that is not stored
+ *
+ * Called after a batch is committed and before the storage is extended for the next one. The stored (cold) chains
+ * keep their full history: it is needed for the autocorrelation estimate and the final output.
+ */
+void bayesshipSampler::trimHotHistory(samplerData *data)
+{
+	if(!historyWindowActive()){return;}
+	for(int i = ensembleN ; i<chainN; i++){
+		data->keepRecentHistory(i, hotChainHistoryLength);
+	}
+}
+
+/*! \brief Put the saved history window of the chains that are not stored back in place on resume
+ *
+ * Has to run before applyEvidenceTotals, which counts what is in memory.
+ */
+void bayesshipSampler::restoreHotHistory(samplerData *data)
+{
+	#ifdef _HDF5
+	if(!historyWindowActive() || resumedGenerationDir.empty()){return;}
+	std::string file = resumedGenerationDir+"historyWindow.hdf5";
+	if(!checkDirExist(file)){
+		std::cout<<"NOTE: this checkpoint has no history window for the hot chains; they restart from their positions alone"<<std::endl;
+		return;
+	}
+	if(data->read_history_window(ensembleN, file) != 0){
+		errorMessage("ERROR: could not read the hot-chain history window "+file+" while resuming", 1);
+	}
+	int rows = 0;
+	for(int i = ensembleN ; i<chainN; i++){
+		rows = std::max(rows, data->currentStepID[i]);
+	}
+	std::cout<<"Restored up to "<<rows<<" recent steps for each of the "<<chainN-ensembleN<<" hot chains"<<std::endl;
 	#endif
 }
 

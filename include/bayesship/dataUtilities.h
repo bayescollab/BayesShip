@@ -109,6 +109,9 @@ public:
 	 * evidence keeps counting the steps from before the restart. Empty means no offsets.*/
 	std::vector<double> evidenceLogLSumOffset;
 	std::vector<double> evidenceStepOffset;
+	/*! Rows allocated for each chain -- shape [chainN]. Chains can differ: hot chains that only keep a recent window
+	 * of their history (keepRecentHistory) are smaller than the stored chains. iterations is the largest of these.*/
+	std::vector<int> chainCapacity;
 	//int *chain_lengths=NULL;
 
 
@@ -140,6 +143,14 @@ public:
 	void updateACs(int threads);
 	int countIndependentSamples();
 	void extendSize(int additionalIterations);
+	/*! Add rows to one chain's storage (existing rows are moved, not copied)*/
+	void extendChain(int chain, int additionalIterations);
+	/*! Drop all but the last keep rows of a chain (the current position included). The dropped rows' log likelihoods
+	 * go into the evidence offsets, so calculateEvidence is unchanged, and the chain's storage shrinks to keep rows.*/
+	void keepRecentHistory(int chain, int keep);
+	/*! Steps of this chain that calculateEvidence counts but that are not held in memory (dropped by keepRecentHistory,
+	 * or taken before a resume that did not reload them). currentStepID + this is the chain's step count in the run.*/
+	int rowsNotInMemory(int chain) const;
 	double *** convertToPrimitivePointer();
 	void deallocatePrimitivePointer(double ***newPointer);
 	int create_data_dump(bool cold_only,bool trim,std::string filename);
@@ -148,6 +159,12 @@ public:
 	int write_batch_dump(bool cold_only, const std::vector<int> &startSteps, std::string filename);
 	/*! Read a file written by write_batch_dump back into this object: the rows of each stored chain are placed at positions[chain][nextRow[chain] ...], and nextRow is advanced. Capacity must already exist (see extendSize). Returns 0 on success.*/
 	int read_batch_dump(bool cold_only, std::string filename, std::vector<int> &nextRow);
+	/*! Write the last (up to) rows steps before the current position of chains [firstChain, chainN) to filename, one
+	 * dataset per chain. Returns 0 on success.*/
+	int write_history_window(int firstChain, int rows, std::string filename);
+	/*! Read a file written by write_history_window into a freshly started samplerData: for each chain in it, the
+	 * position at index 0 (the restart point) moves behind the window, which fills rows 0 .. L-1. Returns 0 on success.*/
+	int read_history_window(int firstChain, std::string filename);
 	void set_trim(int trim);
 	void updateBetas(double *betas);
 	void calculateEvidence();
